@@ -30,10 +30,12 @@ PalaceInterface::PalaceInterface(const GameContext& context, int objectID)
     const auto* const gfx = dune::globals::pGFXManager.get();
 
     const auto* const pTexture = gfx->getSmallDetailPic(Picture_DeathHand);
-    weaponBox.addWidget(&weaponProgressBar, Point((SIDEBARWIDTH - 25 - getWidth(pTexture)) / 2, 5),
+    weaponBox.addWidget(&weaponProgressBar,
+                        Point(static_cast<int>(std::lround((SIDEBARWIDTH - 25 - getWidth(pTexture)) / 2)), 5),
                         getTextureSize(pTexture));
 
-    weaponBox.addWidget(&weaponSelectButton, Point((SIDEBARWIDTH - 25 - getWidth(pTexture)) / 2, 5),
+    weaponBox.addWidget(&weaponSelectButton,
+                        Point(static_cast<int>(std::lround((SIDEBARWIDTH - 25 - getWidth(pTexture)) / 2)), 5),
                         getTextureSize(pTexture));
 
     const auto* const ready = gfx->getGeneratedPicture(GeneratedPicture::PalaceReadyText);

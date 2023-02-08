@@ -73,7 +73,7 @@ void Checkbox::draw(Point position) {
     if (!tex)
         return;
 
-    tex.draw(dune::globals::renderer.get(), position.x, position.y);
+    tex.draw(dune::globals::renderer.get(), static_cast<float>(position.x), static_cast<float>(position.y));
 }
 
 void Checkbox::resize(uint32_t width, uint32_t height) {

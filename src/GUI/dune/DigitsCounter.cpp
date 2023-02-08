@@ -34,7 +34,7 @@ void DigitsCounter::draw(Point position) {
 
     const auto* const tex = gfx->getUIGraphic(UI_MissionSelect);
 
-    tex->draw(renderer, position.x, position.y);
+    tex->draw(renderer, static_cast<float>(position.x), static_cast<float>(position.y));
 
     const auto* const digitsTex = gfx->getUIGraphic(UI_CreditsDigits);
 
@@ -46,7 +46,8 @@ void DigitsCounter::draw(Point position) {
         for (auto i = digits - 1; i >= 0; i--) {
             const auto source = calcSpriteSourceRect(digitsTex, creditsBuffer[i] - '0', 10);
             const auto dest2 =
-                calcSpriteDrawingRect(digitsTex, position.x + 40 + (6 - digits + i) * 10, position.y + 16, 10);
+                calcSpriteDrawingRect(digitsTex, static_cast<float>(position.x + 40 + (6 - digits + i) * 10),
+                                      static_cast<float>(position.y + 16), 10);
             Dune_RenderCopyF(renderer, digitsTex, &source, &dest2);
         }
     }

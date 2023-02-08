@@ -43,7 +43,7 @@ public:
 
     virtual uint32_t peek() = 0;
 
-    virtual uint32_t read1()         = 0;
+    virtual uint8_t read1()          = 0;
     virtual uint16_t read2()         = 0;
     virtual uint16_t read2high()     = 0;
     virtual uint32_t read4()         = 0;
@@ -89,7 +89,7 @@ public:
 
     uint32_t peek() final { return in->peek(); }
 
-    uint32_t read1() final { return Read1(in); }
+    uint8_t read1() final { return Read1(in); }
 
     uint16_t read2() final { return Read2(in); }
 
@@ -135,7 +135,7 @@ public:
 
     uint32_t peek() final { return *buf_ptr; }
 
-    uint32_t read1() final { return Read1(buf_ptr); }
+    uint8_t read1() final { return Read1(buf_ptr); }
 
     uint16_t read2() final { return Read2(buf_ptr); }
 

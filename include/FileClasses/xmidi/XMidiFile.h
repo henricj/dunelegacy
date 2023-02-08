@@ -54,9 +54,9 @@ private:
     XMidiEvent* x_patch_bank_cur{};
     XMidiEvent* x_patch_bank_first{};
 
-    const static char mt32asgm[128];
-    const static char mt32asgs[256];
-    const static char gmasmt32[128];
+    const static unsigned char mt32asgm[128];
+    const static unsigned char mt32asgs[256];
+    const static unsigned char gmasmt32[128];
     std::array<bool, 16> bank127{};
     int convert_type{};
 
@@ -93,19 +93,19 @@ private:
     void CreateNewEvent(int time);
 
     // Variable length quantity
-    int GetVLQ(IDataSource* source, uint32_t& quant);
-    int GetVLQ2(IDataSource* source, uint32_t& quant);
+    static int GetVLQ(IDataSource* source, uint32_t& quant);
+    static int GetVLQ2(IDataSource* source, uint32_t& quant);
 
     void AdjustTimings(uint32_t ppqn); // This is used by Midi's ONLY!
     void ApplyFirstState(first_state& fs, int chan_mask);
 
-    int ConvertNote(int time, unsigned char status, IDataSource* source, int size);
-    int ConvertEvent(int time, unsigned char status, IDataSource* source, int size, first_state& fs);
-    int ConvertSystemMessage(int time, unsigned char status, IDataSource* source);
+    int ConvertNote(int time, uint32_t status, IDataSource* source, int size);
+    int ConvertEvent(int time, uint32_t status, IDataSource* source, int size, first_state& fs);
+    int ConvertSystemMessage(int time, uint32_t status, IDataSource* source);
     int CreateMT32SystemMessage(int time, uint32_t address_base, uint16_t address_offset, uint32_t len,
                                 const void* data = nullptr, IDataSource* source = nullptr);
 
-    int ConvertFiletoList(IDataSource* source, bool is_xmi, first_state& fs);
+    uint16_t ConvertFiletoList(IDataSource* source, bool is_xmi, first_state& fs);
 
     int ExtractTracksFromXmi(IDataSource* source);
     int ExtractTracksFromMid(IDataSource* source, uint32_t ppqn, int num_tracks2, bool type1);

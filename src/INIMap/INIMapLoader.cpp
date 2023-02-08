@@ -435,9 +435,9 @@ void INIMapLoader::loadHouses(const GameContext& context) {
 
         int quota = inifile_->getIntValue(houseName, "Quota", 0);
 
-        pGame->house_[static_cast<int>(houseID)] =
-            std::make_unique<House>(context, houseID, startingCredits, maxUnits, houseInfo.team, quota);
-        auto* const pNewHouse = pGame->getHouse(houseID);
+        pGame->house_[static_cast<int>(houseID)] = std::make_unique<House>(context, houseID, startingCredits, maxUnits,
+                                                                           static_cast<uint8_t>(houseInfo.team), quota);
+        auto* const pNewHouse                    = pGame->getHouse(houseID);
 
         // add players
         for (const auto& playerInfo : houseInfo.playerInfoList) {

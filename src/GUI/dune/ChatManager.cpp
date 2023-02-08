@@ -92,8 +92,8 @@ void ChatManager::draw(Point position) {
             messageDest.h = (chatMessage.pMessageTexture.height_);
         } else {
 
-            auto infoDest =
-                calcDrawingRect(chatMessage.pMessageTexture, position.x + LEFT_BORDER_WIDTH - 20, messageDest.y);
+            auto infoDest = calcDrawingRect(chatMessage.pMessageTexture,
+                                            static_cast<float>(position.x) + LEFT_BORDER_WIDTH - 20, messageDest.y);
 
             float maxHeight{};
 
@@ -109,7 +109,8 @@ void ChatManager::draw(Point position) {
 
                 chatMessage.pUsernameTexture.draw(renderer, pictureDest.x, pictureDest.y);
             } else {
-                auto pictureDest = calcDrawingRect(chatMessage.pPictureTexture, position.x + LEFT_BORDER_WIDTH - 30,
+                auto pictureDest = calcDrawingRect(chatMessage.pPictureTexture,
+                                                   static_cast<float>(position.x) + LEFT_BORDER_WIDTH - 30,
                                                    messageDest.y, HAlign::Right);
 
                 maxHeight = std::max(pictureDest.h, infoDest.h);
@@ -167,8 +168,8 @@ void ChatManager::addHintMessage(std::string_view message, const DuneTexture* pT
     const auto& gui      = GUIStyle::getInstance();
     auto* const renderer = dune::globals::renderer.get();
 
-    const auto lines =
-        greedyWordWrap(message, width, [&gui](std::string_view tmp) { return gui.getTextWidth(tmp, 12); });
+    const auto lines = greedyWordWrap(message, static_cast<float>(width),
+                                      [&gui](std::string_view tmp) { return gui.getTextWidth(tmp, 12); });
 
     const auto height = static_cast<int>(std::ceil(static_cast<float>(lines.size()) * gui.getTextHeight(12) + 4));
 

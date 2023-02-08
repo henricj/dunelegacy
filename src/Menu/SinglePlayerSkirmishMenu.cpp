@@ -103,9 +103,10 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     houseLeftButton.setTextures(pArrowLeft, pArrowLeft, pArrowLeftHighlight);
     houseLeftButton.setOnClick([&] { onHouseLeft(); });
     houseLeftButton.setVisible(false);
-    houseChoiceContainer.addWidget(&houseLeftButton,
-                                   Point(houseChoiceContainer.getSize().x / 2 - getWidth(pArrowLeft) - 85, 160),
-                                   getTextureSize(pArrowLeft));
+    houseChoiceContainer.addWidget(
+        &houseLeftButton,
+        Point(houseChoiceContainer.getSize().x / 2 - static_cast<int>(std::lround(getWidth(pArrowLeft))) - 85, 160),
+        getTextureSize(pArrowLeft));
 
     const auto* const pArrowRight          = gfx->getUIGraphic(UI_Herald_ArrowRight);
     const auto* const pArrowRightHighlight = gfx->getUIGraphic(UI_Herald_ArrowRightHighlight);
@@ -131,7 +132,8 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     missionPlusButton.setOnClick([&] { onMissionIncrement(); });
     windowWidget.addWidget(
         &missionPlusButton,
-        Point(getRendererWidth() / 4 * 3 + 160 / 4 - getWidth(pPlus) / 2 + 72, getRendererHeight() / 2 + 96),
+        Point(getRendererWidth() / 4 * 3 + 160 / 4 - static_cast<int>(std::lround(getWidth(pPlus) / 2)) + 72,
+              getRendererHeight() / 2 + 96),
         getTextureSize(pPlus));
 
     const auto* const pMinus        = gfx->getUIGraphic(UI_Minus);
@@ -140,7 +142,8 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     missionMinusButton.setOnClick([&] { onMissionDecrement(); });
     windowWidget.addWidget(
         &missionMinusButton,
-        Point(getRendererWidth() / 4 * 3 + 160 / 4 - getWidth(pMinus) / 2 + 72, getRendererHeight() / 2 + 109),
+        Point(getRendererWidth() / 4 * 3 + 160 / 4 - static_cast<int>(std::lround(getWidth(pMinus) / 2)) + 72,
+              getRendererHeight() / 2 + 109),
         getTextureSize(pMinus));
 }
 

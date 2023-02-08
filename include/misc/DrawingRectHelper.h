@@ -529,8 +529,8 @@ calcDrawingRectF(const DuneTexture* pTexture, int x, int y, HAlign halign = HAli
    \param  valign      the vertical alignment of pTexture (default is VAlign::Top)
    \return the rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
 */
-constexpr auto
-calcDrawingRectF(const DuneTexture* pTexture, float x, float y, HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+constexpr auto calcDrawingRectF(const DuneTexture* pTexture, float x, float y, HAlign halign = HAlign::Left,
+                                VAlign valign = VAlign::Top) {
     return calcSpriteDrawingRectF(pTexture, x, y, 1, 1, halign, valign);
 }
 

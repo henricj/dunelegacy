@@ -54,7 +54,7 @@ inline constexpr auto PATCH_VOL_PAN_BIAS = 5;
 // The index is the MT32 Patch nubmer and the value is the GM Patch
 // This is only suitable for music that doesn'tdo timbre changes
 // XMidis that contain Timbre changes will not convert properly
-constexpr char XMidiFile::mt32asgm[128] = {
+constexpr unsigned char XMidiFile::mt32asgm[128] = {
     0,   // 0	Piano 1
     1,   // 1	Piano 2
     2,   // 2	Piano 3 (synth)
@@ -187,7 +187,7 @@ constexpr char XMidiFile::mt32asgm[128] = {
 
 // Same as above, except include patch changes
 // so GS instruments can be used
-constexpr char XMidiFile::mt32asgs[256] = {
+constexpr unsigned char XMidiFile::mt32asgs[256] = {
     0,   0, // 0	Piano 1
     1,   0, // 1	Piano 2
     2,   0, // 2	Piano 3 (synth)
@@ -319,7 +319,7 @@ constexpr char XMidiFile::mt32asgs[256] = {
 };
 
 // Reverse mapping. GM Notes converted to MT-32 patches
-constexpr char XMidiFile::gmasmt32[128] = {
+constexpr unsigned char XMidiFile::gmasmt32[128] = {
     0x00, 0x01, 0x03, 0x07, 0x05, 0x06, 0x11, 0x15, 0x16, 0x65, 0x65, 0x62, 0x68, 0x67, 0x66, 0x69, 0x0C, 0x09, 0x0A,
     0x0D, 0x0E, 0x0F, 0x57, 0x0F, 0x3B, 0x3C, 0x3B, 0x3E, 0x3D, 0x3B, 0x3E, 0x3E, 0x40, 0x43, 0x42, 0x47, 0x44, 0x45,
     0x42, 0x46, 0x35, 0x34, 0x36, 0x38, 0x35, 0x33, 0x39, 0x70, 0X30, 0x32, 0x30, 0x32, 0x22, 0x2A, 0x21, 0x7A, 0X58,
@@ -573,7 +573,7 @@ void XMidiFile::ApplyFirstState(first_state& fs, int chan_mask) {
         temp           = patch;
         patch          = new XMidiEvent{};
         patch->time    = temp->time;
-        patch->status  = channel | (MIDI_STATUS_PROG_CHANGE << 4);
+        patch->status  = static_cast<unsigned char>(channel | (MIDI_STATUS_PROG_CHANGE << 4));
         patch->data[0] = temp->data[0];
 
         // Copy Volume
@@ -582,7 +582,7 @@ void XMidiFile::ApplyFirstState(first_state& fs, int chan_mask) {
 
         temp         = vol;
         vol          = new XMidiEvent{};
-        vol->status  = channel | (MIDI_STATUS_CONTROLLER << 4);
+        vol->status  = static_cast<unsigned char>(channel | (MIDI_STATUS_CONTROLLER << 4));
         vol->data[0] = 7;
 
         if (!temp) {
@@ -600,7 +600,7 @@ void XMidiFile::ApplyFirstState(first_state& fs, int chan_mask) {
         temp = bank;
 
         bank         = new XMidiEvent{};
-        bank->status = channel | (MIDI_STATUS_CONTROLLER << 4);
+        bank->status = static_cast<unsigned char>(channel | (MIDI_STATUS_CONTROLLER << 4));
 
         if (!temp)
             bank->data[1] = 0;
@@ -613,7 +613,7 @@ void XMidiFile::ApplyFirstState(first_state& fs, int chan_mask) {
 
         temp         = pan;
         pan          = new XMidiEvent{};
-        pan->status  = channel | (MIDI_STATUS_CONTROLLER << 4);
+        pan->status  = static_cast<unsigned char>(channel | (MIDI_STATUS_CONTROLLER << 4));
         pan->data[0] = 10;
 
         if (!temp)
@@ -623,16 +623,16 @@ void XMidiFile::ApplyFirstState(first_state& fs, int chan_mask) {
 
         if (do_reverb) {
             reverb          = new XMidiEvent{};
-            reverb->status  = channel | (MIDI_STATUS_CONTROLLER << 4);
+            reverb->status  = static_cast<unsigned char>(channel | (MIDI_STATUS_CONTROLLER << 4));
             reverb->data[0] = 91;
-            reverb->data[1] = reverb_value;
+            reverb->data[1] = static_cast<unsigned char>(reverb_value);
         }
 
         if (do_chorus) {
             chorus          = new XMidiEvent{};
-            chorus->status  = channel | (MIDI_STATUS_CONTROLLER << 4);
+            chorus->status  = static_cast<unsigned char>(channel | (MIDI_STATUS_CONTROLLER << 4));
             chorus->data[0] = 93;
-            chorus->data[1] = chorus_value;
+            chorus->data[1] = static_cast<unsigned char>(chorus_value);
         }
 
         vol->time   = 0;
@@ -688,7 +688,7 @@ void XMidiFile::AdjustTimings(uint32_t ppqn) {
         aim *= tempo;
 
         hs_rem += aim % ppqn;
-        hs += aim / ppqn;
+        hs += static_cast<uint32_t>(aim / ppqn);
         hs += hs_rem / ppqn;
         hs_rem %= ppqn;
 
@@ -737,7 +737,7 @@ void XMidiFile::AdjustTimings(uint32_t ppqn) {
 // ConvertSystemMessage is used for SysEx events and Meta events
 // ConvertEvent is used for everything else
 
-int XMidiFile::ConvertEvent(const int time, const unsigned char status, IDataSource* source, const int size,
+int XMidiFile::ConvertEvent(const int time, const uint32_t status, IDataSource* source, const int size,
                             first_state& fs) {
 
     int data = source->read1();
@@ -753,9 +753,9 @@ int XMidiFile::ConvertEvent(const int time, const unsigned char status, IDataSou
             return 2;
 
         CreateNewEvent(time);
-        current->status  = status;
+        current->status  = static_cast<uint8_t>(status);
         current->data[0] = 0;
-        current->data[1] = data;
+        current->data[1] = static_cast<uint8_t>(data);
 
         // Set the bank
         if (!fs.bank[status & 0xF] || fs.bank[status & 0xF]->time > time)
@@ -801,9 +801,9 @@ int XMidiFile::ConvertEvent(const int time, const unsigned char status, IDataSou
     }
 
     CreateNewEvent(time);
-    current->status = status;
+    current->status = static_cast<uint8_t>(status);
 
-    current->data[0] = data;
+    current->data[0] = static_cast<uint8_t>(data);
 
     // Check for patch change, and update fs if req
     if ((status >> 4) == 0xC) {
@@ -861,13 +861,13 @@ int XMidiFile::ConvertEvent(const int time, const unsigned char status, IDataSou
     return 2;
 }
 
-int XMidiFile::ConvertNote(const int time, const unsigned char status, IDataSource* source, const int size) {
+int XMidiFile::ConvertNote(const int time, const uint32_t status, IDataSource* source, const int size) {
     uint32_t delta = 0;
 
-    const int data = source->read1();
+    const auto data = source->read1();
 
     CreateNewEvent(time);
-    current->status = status;
+    current->status = static_cast<uint8_t>(status);
 
     current->data[0] = data;
     current->data[1] = source->read1();
@@ -877,7 +877,7 @@ int XMidiFile::ConvertNote(const int time, const unsigned char status, IDataSour
         current->data[1] = VolumeCurve[current->data[1]];
 
     // Perc track note on
-    if (status == 0x99 && current->data[1] != 0 && convert_type == XMIDIFILE_CONVERT_NOCONVERSION) {
+    if (status == 0x99U && current->data[1] != 0 && convert_type == XMIDIFILE_CONVERT_NOCONVERSION) {
         // Add it to the patch and bank change list
         if (x_patch_bank_first == nullptr) {
             x_patch_bank_first = current;
@@ -903,9 +903,9 @@ int XMidiFile::ConvertNote(const int time, const unsigned char status, IDataSour
     auto* prev = current;
 
     // Create a note off
-    CreateNewEvent(time + delta);
+    CreateNewEvent(time + static_cast<int>(delta));
 
-    current->status  = status;
+    current->status  = static_cast<uint8_t>(status);
     current->data[0] = data;
     current->data[1] = 0;
 
@@ -916,14 +916,14 @@ int XMidiFile::ConvertNote(const int time, const unsigned char status, IDataSour
 }
 
 // Simple routine to convert system messages
-int XMidiFile::ConvertSystemMessage(const int time, const unsigned char status, IDataSource* source) {
+int XMidiFile::ConvertSystemMessage(const int time, const uint32_t status, IDataSource* source) {
     int i = 0;
 
     CreateNewEvent(time);
-    current->status = status;
+    current->status = static_cast<uint8_t>(status);
 
     // Handling of Meta events
-    if (status == 0xFF) {
+    if (status == 0xFFU) {
         current->data[0] = source->read1();
         i++;
     }
@@ -937,7 +937,7 @@ int XMidiFile::ConvertSystemMessage(const int time, const unsigned char status, 
 
     current->ex.sysex_data.buffer = new unsigned char[current->ex.sysex_data.len];
 
-    source->read(reinterpret_cast<char*>(current->ex.sysex_data.buffer), current->ex.sysex_data.len);
+    source->read(current->ex.sysex_data.buffer, current->ex.sysex_data.len);
 
     return i + current->ex.sysex_data.len;
 }
@@ -994,12 +994,12 @@ int XMidiFile::CreateMT32SystemMessage(const int time, uint32_t address_base, ui
 }
 
 // XMidiFile and Midi to List. Returns bit mask of channels used
-int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_state& fs) {
+uint16_t XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_state& fs) {
     int time        = 0; // 120th of a second
     int end         = 0;
     uint32_t status = 0;
     int play_size   = 2;
-    int retval      = 0;
+    uint32_t retval = 0;
 
     if (is_xmi)
         play_size = 3;
@@ -1026,7 +1026,7 @@ int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_s
 
         switch (status >> 4) {
             case MIDI_STATUS_NOTE_ON:
-                retval |= 1 << (status & 0xF);
+                retval |= 1U << (status & 0xF);
                 ConvertNote(time, status, source, play_size);
                 break;
 
@@ -1043,8 +1043,8 @@ int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_s
 
             case MIDI_STATUS_SYSEX:
                 if (status == 0xFF) {
-                    const int pos = source->getPos();
-                    uint32_t data = source->read1();
+                    const auto pos = source->getPos();
+                    uint32_t data  = source->read1();
 
                     if (data == 0x2F) // End, of track
                         end = 1;
@@ -1064,7 +1064,7 @@ int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_s
         }
     }
 
-    return retval;
+    return static_cast<uint16_t>(retval);
 }
 
 // Assumes correct XMidiFile
@@ -1101,7 +1101,7 @@ int XMidiFile::ExtractTracksFromXmi(IDataSource* source) {
         const int begin = source->getPos();
 
         // Convert it
-        const int chan_mask = ConvertFiletoList(source, true, fs);
+        const auto chan_mask = ConvertFiletoList(source, true, fs);
 
         // Apply the first state
         //		ApplyFirstState(fs, chan_mask);
@@ -1133,7 +1133,7 @@ int XMidiFile::ExtractTracksFromMid(IDataSource* source, const uint32_t ppqn, co
     int num      = 0;
     uint32_t len = 0;
     std::array<char, 32> buf{};
-    int chan_mask = 0;
+    uint16_t chan_mask = 0;
 
     first_state fs{};
 
@@ -1152,7 +1152,7 @@ int XMidiFile::ExtractTracksFromMid(IDataSource* source, const uint32_t ppqn, co
             continue;
         }
 
-        const int begin = source->getPos();
+        const auto begin = source->getPos();
 
         // Convert it
         chan_mask |= ConvertFiletoList(source, false, fs);

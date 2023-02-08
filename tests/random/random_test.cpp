@@ -8,8 +8,8 @@
 #include "gtest/gtest.h"
 
 namespace {
-RandomFactory create_random_factory(int n) {
-    std::array<uint8_t, 64> seed;
+RandomFactory create_random_factory(uint8_t n) {
+    std::array<uint8_t, 64> seed{};
 
     std::iota(seed.begin(), seed.end(), n);
 

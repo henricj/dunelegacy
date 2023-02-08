@@ -20,9 +20,9 @@
 
 namespace
 {
-Random create_random(int n)
+Random create_random(uint8_t n)
 {
-    std::array<uint8_t, Random::state_bytes> state;
+    std::array<uint8_t, Random::state_bytes> state{};
 
     std::iota(state.begin(), state.end(), n);
 

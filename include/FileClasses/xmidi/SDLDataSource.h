@@ -53,7 +53,7 @@ public:
 
     virtual void close();
 
-    uint32_t read1() override { return Read1(reader_); }
+    uint8_t read1() override { return Read1(reader_); }
 
     uint16_t read2() override { return Read2(reader_); }
 

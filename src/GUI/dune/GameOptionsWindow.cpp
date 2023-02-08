@@ -204,5 +204,5 @@ void GameOptionsWindow::onGameSpeedPlus() {
 }
 
 void GameOptionsWindow::updateGameSpeedBar() {
-    gameSpeedBar.setProgress(100.0 - ((currentGameSpeed - GAMESPEED_MIN) * 100.0) / (GAMESPEED_MAX - GAMESPEED_MIN));
+    gameSpeedBar.setProgress(100.0f - ((currentGameSpeed - GAMESPEED_MIN) * 100.0f) / (GAMESPEED_MAX - GAMESPEED_MIN));
 }

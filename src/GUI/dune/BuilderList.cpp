@@ -198,12 +198,14 @@ bool BuilderList::handleKeyPress(const SDL_KeyboardEvent& key) {
 void BuilderList::draw(Point position) {
     auto* const renderer    = dune::globals::renderer.get();
     auto* const currentGame = dune::globals::currentGame.get();
-    auto* const gfx         = dune::globals::pGFXManager.get();
+    const auto* const gfx   = dune::globals::pGFXManager.get();
 
-    SDL_Rect blackRectDest{position.x, position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING, getSize().x,
-                           getRealHeight(getSize().y) - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING
-                               - ORDERBTN_HEIGHT};
-    renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
+    const SDL_FRect blackRectDest{
+        static_cast<float>(position.x), static_cast<float>(position.y) + ARROWBTN_HEIGHT + BUILDERBTN_SPACING,
+        static_cast<float>(getSize().x),
+        static_cast<float>(getRealHeight(getSize().y)) - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING
+            - ORDERBTN_HEIGHT};
+    renderFillRectF(renderer, &blackRectDest, COLOR_BLACK);
 
     const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
 
@@ -409,8 +411,9 @@ void BuilderList::drawOverlay(Point position) {
             tooltipText  = text;
         }
 
-        const auto dest = calcDrawingRect(pLastTooltip, position.x + getButtonPosition(btn).x - 6,
-                                          position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
+        const auto dest =
+            calcDrawingRect(pLastTooltip, static_cast<float>(position.x + getButtonPosition(btn).x - 6),
+                            static_cast<float>(position.y) + lastMousePos.y, HAlign::Right, VAlign::Center);
         Dune_RenderCopyF(renderer, pLastTooltip.get(), nullptr, &dest);
     }
 }
@@ -504,10 +507,10 @@ int BuilderList::getButton(int x, int y) const {
     if (const auto* pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
         for (int i = 0; i < static_cast<int>(pBuilder->getBuildList().size()); i++) {
             if (i >= currentListPos && i < currentListPos + getNumButtons(getSize().y)) {
-                if (x >= getButtonPosition(i - currentListPos).x
-                    && x < getButtonPosition(i - currentListPos).x + BUILDERBTN_WIDTH
-                    && y >= getButtonPosition(i - currentListPos).y
-                    && y < getButtonPosition(i - currentListPos).y + BUILDERBTN_HEIGHT) {
+                const auto button_position = getButtonPosition(i - currentListPos);
+
+                if (x >= button_position.x && x < button_position.x + BUILDERBTN_WIDTH && y >= button_position.y
+                    && y < button_position.y + BUILDERBTN_HEIGHT) {
 
                     return i;
                 }

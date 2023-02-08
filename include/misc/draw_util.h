@@ -65,7 +65,15 @@ inline void renderDrawHLine(SDL_Renderer* renderer, int x1, int y, int x2, uint3
     renderDrawLine(renderer, x1, y, x2, y, color);
 }
 
+inline void renderDrawHLine(SDL_Renderer* renderer, float x1, float y, float x2, uint32_t color) {
+    renderDrawLine(renderer, x1, y, x2, y, color);
+}
+
 inline void renderDrawVLine(SDL_Renderer* renderer, int x, int y1, int y2, uint32_t color) {
+    renderDrawLine(renderer, x, y1, x, y2, color);
+}
+
+inline void renderDrawVLine(SDL_Renderer* renderer, float x, float y1, float y2, uint32_t color) {
     renderDrawLine(renderer, x, y1, x, y2, color);
 }
 

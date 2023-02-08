@@ -310,8 +310,8 @@ void MapChoice::drawSpecificStuff() {
                 assert(arrowFrame >= 0 && arrowFrame < 4);
                 const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 const auto dest = calcSpriteDrawingRectF(
-                    arrow, group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
-                    group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y, 4, 1);
+                    arrow, static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
+                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y), 4, 1);
 
                 Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }
@@ -320,8 +320,8 @@ void MapChoice::drawSpecificStuff() {
         case MAPCHOICESTATE_BLINKING: {
             if (dune::as_milliseconds(dune::dune_clock::now() - selectionTime) % 900 < 450) {
                 if (const auto* const pieceTexture = gfx->getMapChoicePiece(selectedRegion, house)) {
-                    pieceTexture->draw(renderer, piecePosition[selectedRegion].x + centerAreaRect.x,
-                                       piecePosition[selectedRegion].y + centerAreaRect.y);
+                    pieceTexture->draw(renderer, static_cast<float>(piecePosition[selectedRegion].x + centerAreaRect.x),
+                                       static_cast<float>(piecePosition[selectedRegion].y + centerAreaRect.y));
                 }
             }
 
@@ -337,8 +337,8 @@ void MapChoice::drawSpecificStuff() {
                     static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128 % 4);
                 const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 const auto dest = calcSpriteDrawingRectF(
-                    arrow, group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
-                    group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y, 4, 1);
+                    arrow, static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
+                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y), 4, 1);
 
                 Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }

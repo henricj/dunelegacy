@@ -197,7 +197,7 @@ int XMidiSequence::playEvent() {
     // SysEx gets sent immediately
     else if (event_->status != 0xFF) {
         handler->sequenceSendSysEx(sequence_id, event_->status, event_->ex.sysex_data.buffer,
-                                   event_->ex.sysex_data.len);
+                                   static_cast<uint16_t>(event_->ex.sysex_data.len));
     }
 
     // If we've got another note, play that next

@@ -70,9 +70,9 @@ void putPixel(SDL_Surface* surface, int x, int y, uint32_t color) {
                   + static_cast<ptrdiff_t>(x) * bpp;
 
     switch (bpp) {
-        case 1: *p = color; break;
+        case 1: *p = static_cast<uint8_t>(color); break;
 
-        case 2: *reinterpret_cast<uint16_t*>(p) = color; break;
+        case 2: *reinterpret_cast<uint16_t*>(p) = static_cast<uint16_t>(color); break;
 
         case 3: {
             if constexpr (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
@@ -525,6 +525,8 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
         SDL_SetSurfaceBlendMode(retPic.get(), SDL_BLENDMODE_NONE);
     }
 
+    const auto offset = static_cast<uint8_t>(srcColor - destColor);
+
     const sdl2::surface_lock lock{retPic.get()};
 
     const auto pitch            = static_cast<ptrdiff_t>(lock.pitch());
@@ -535,7 +537,7 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
 
         for (auto x = 0; x < retPic->w; ++x, ++p) {
             if (*p >= srcColor && *p < srcColor + 7)
-                *p -= srcColor - destColor;
+                *p -= offset;
         }
     }
 

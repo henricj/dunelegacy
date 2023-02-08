@@ -317,53 +317,53 @@ void QuantBot::update() {
 
             case GameMode::Custom: {
                 // add a unit ratio based on map size
-                double ratio      = 0.0;
+                auto ratio        = 0.0_fix;
                 const int mapsize = map_tiles;
                 if (mapsize <= 1024) {
-                    ratio = 0.20;
+                    ratio = 0.20_fix;
                 } else if (mapsize <= 2048) {
-                    ratio = 0.35;
+                    ratio = 0.35_fix;
                 } else if (mapsize <= 4096) {
-                    ratio = 0.5;
+                    ratio = 0.5_fix;
                 } else if (mapsize <= 6114) {
-                    ratio = 0.65;
+                    ratio = 0.65_fix;
                 } else if (mapsize <= 8192) {
-                    ratio = 0.8;
+                    ratio = 0.8_fix;
                 } else if (mapsize <= 12288) {
-                    ratio = 0.9;
+                    ratio = 0.9_fix;
                 } else {
                     ratio = 1;
                 }
 
                 switch (difficulty) {
                     case Difficulty::Brutal: {
-                        harvesterLimit     = 50 * ratio;
-                        militaryValueLimit = 65000 * ratio;
+                        harvesterLimit     = (50 * ratio).lround();
+                        militaryValueLimit = (65000 * ratio).lround();
                         // logDebug("BUILD BRUTAL SKIRM ");
                     } break;
 
                     case Difficulty::Easy: {
-                        harvesterLimit = 10 * ratio;
+                        harvesterLimit = (10 * ratio).lround();
 
-                        militaryValueLimit = 10000 * ratio;
+                        militaryValueLimit = (10000 * ratio).lround();
                         // logDebug("BUILD EASY SKIRM ");
                     } break;
 
                     case Difficulty::Medium: {
-                        harvesterLimit     = 20 * ratio;
-                        militaryValueLimit = 20000 * ratio;
+                        harvesterLimit     = (20 * ratio).lround();
+                        militaryValueLimit = (20000 * ratio).lround();
                         // logDebug("BUILD MEDIUM SKIRM ");
                     } break;
 
                     case Difficulty::Hard: {
-                        harvesterLimit     = 35 * ratio;
-                        militaryValueLimit = 40000 * ratio;
+                        harvesterLimit     = (35 * ratio).lround();
+                        militaryValueLimit = (40000 * ratio).lround();
                         // logDebug("BUILD HARD SKIRM ");
                     } break;
 
                     case Difficulty::Defend: {
-                        harvesterLimit     = 20 * ratio;
-                        militaryValueLimit = 20000 * ratio;
+                        harvesterLimit     = (20 * ratio).lround();
+                        militaryValueLimit = (20000 * ratio).lround();
                         // logDebug("BUILD MEDIUM SKIRM ");
                     } break;
                 }
