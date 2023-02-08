@@ -5,11 +5,7 @@ add_executable(FileSystemTestCase FileSystemTestCase.cpp)
 target_link_libraries(FileSystemTestCase PRIVATE dune GTest::gtest GTest::gtest_main)
 
 if(DUNE_PRECOMPILED_HEADERS)
-	if(MSVC)
-		target_precompile_headers(FileSystemTestCase PRIVATE ../../src/stdafx.h)
-	else()
-		target_precompile_headers(FileSystemTestCase REUSE_FROM dune)
-	endif()
+	target_precompile_headers(FileSystemTestCase PRIVATE ../../src/stdafx.h)
 endif()
 
 if(MSVC)

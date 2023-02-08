@@ -96,11 +96,7 @@ add_custom_command(
 )
 
 if(DUNE_PRECOMPILED_HEADERS)
-    if(MSVC)
-        target_precompile_headers(INIFileTestCase PRIVATE ../../src/stdafx.h)
-    else()
-	    target_precompile_headers(INIFileTestCase REUSE_FROM dune)
-    endif()
+    target_precompile_headers(INIFileTestCase PRIVATE ../../src/stdafx.h)
 endif()
 
 add_test(NAME INIFile COMMAND INIFileTestCase)
