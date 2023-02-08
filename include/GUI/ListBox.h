@@ -132,10 +132,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void addEntry(std::string text, void* data) {
-        entries_.emplace_back(std::move(text), data);
-        updateList();
-    }
+    void addEntry(std::string text, void* data);
 
     /**
         Insert a new entry to this list box at the specified index
@@ -143,13 +140,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void insertEntry(int index, std::string text, int data = 0) {
-        if (index <= selectedElement_)
-            selectedElement_++;
-
-        entries_.emplace(entries_.begin() + index, std::move(text), data);
-        updateList();
-    }
+    void insertEntry(int index, std::string text, int data = 0);
 
     /**
         Insert a new entry to this list box at the specified index
@@ -157,19 +148,13 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void insertEntry(int index, std::string text, void* data) {
-        if (index <= selectedElement_)
-            selectedElement_++;
-
-        entries_.emplace(entries_.begin() + index, std::move(text), data);
-        updateList();
-    }
+    void insertEntry(int index, std::string text, void* data);
 
     /**
         Returns the number of entries in this list box
         \return number of entries
     */
-    [[nodiscard]] int getNumEntries() const { return entries_.size(); }
+    [[nodiscard]] auto getNumEntries() const { return entries_.size(); }
 
     /**
         Returns the text of the entry specified by index.
@@ -188,14 +173,7 @@ public:
         \param  index   the zero-based index of the entry
         \param  text    the text to set
     */
-    void setEntry(unsigned int index, std::string_view text) {
-        if (index >= entries_.size()) {
-            return;
-        }
-
-        entries_.at(index).text = text;
-        updateList();
-    }
+    void setEntry(unsigned int index, std::string_view text);
 
     /**
         Returns the data assigned to the entry specified by index.
@@ -239,16 +217,10 @@ public:
         \param  index   the zero-based index of the entry
         \param  data    the data to set
     */
-    void setEntryPtrData(unsigned int index, void* data) {
-        if (index >= entries_.size()) {
-            return;
-        }
-
-        entries_.at(index).data.ptrData = data;
-    }
+    void setEntryPtrData(unsigned int index, void* data);
 
     /**
-        Returns the text of the selected entr.
+        Returns the text of the selected entry.
         \return the text of the entry ("" if non is selected)
     */
     [[nodiscard]] std::string getSelectedEntry() const {
@@ -288,29 +260,12 @@ public:
         Removes the entry which is specified by index
         \param  index   the zero-based index of the element to remove
     */
-    void removeEntry(int index) {
-        const auto iter = entries_.begin() + index;
-        entries_.erase(iter);
-        if (index == selectedElement_) {
-            selectedElement_ = -1;
-        } else if (index < selectedElement_) {
-            selectedElement_--;
-        }
-
-        if (index < firstVisibleElement_)
-            firstVisibleElement_--;
-
-        updateList();
-    }
+    void removeEntry(int index);
 
     /**
             Deletes all entries in the list.
     */
-    void clearAllEntries() {
-        entries_.clear();
-        selectedElement_ = -1;
-        updateList();
-    }
+    void clearAllEntries();
 
     /**
         Sets the function that should be called when the selection in this list box changes.

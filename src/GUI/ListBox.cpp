@@ -145,6 +145,65 @@ void ListBox::setActive() {
     }
 }
 
+void ListBox::addEntry(std::string text, void* data) {
+    entries_.emplace_back(std::move(text), data);
+    updateList();
+}
+
+void ListBox::insertEntry(int index, std::string text, int data) {
+    if (index <= selectedElement_)
+        selectedElement_++;
+
+    entries_.emplace(entries_.begin() + index, std::move(text), data);
+    updateList();
+}
+
+void ListBox::insertEntry(int index, std::string text, void* data) {
+    if (index <= selectedElement_)
+        selectedElement_++;
+
+    entries_.emplace(entries_.begin() + index, std::move(text), data);
+    updateList();
+}
+
+void ListBox::setEntry(unsigned index, std::string_view text) {
+    if (index >= entries_.size()) {
+        return;
+    }
+
+    entries_.at(index).text = text;
+    updateList();
+}
+
+void ListBox::setEntryPtrData(unsigned index, void* data) {
+    if (index >= entries_.size()) {
+        return;
+    }
+
+    entries_.at(index).data.ptrData = data;
+}
+
+void ListBox::removeEntry(int index) {
+    const auto iter = entries_.begin() + index;
+    entries_.erase(iter);
+    if (index == selectedElement_) {
+        selectedElement_ = -1;
+    } else if (index < selectedElement_) {
+        selectedElement_--;
+    }
+
+    if (index < firstVisibleElement_)
+        firstVisibleElement_--;
+
+    updateList();
+}
+
+void ListBox::clearAllEntries() {
+    entries_.clear();
+    selectedElement_ = -1;
+    updateList();
+}
+
 void ListBox::setSelectedItem(int index, bool bInteractive) {
     const bool bChanged = index != selectedElement_;
 
