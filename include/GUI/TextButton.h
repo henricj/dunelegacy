@@ -32,9 +32,9 @@ public:
     TextButton();
 
     TextButton(const TextButton&) = delete;
-    TextButton(TextButton&&);
+    TextButton(TextButton&&) noexcept;
     TextButton& operator=(const TextButton&) = delete;
-    TextButton& operator=(TextButton&&);
+    TextButton& operator=(TextButton&&) noexcept;
 
     /// destructor
     ~TextButton() override;

@@ -4,9 +4,9 @@ TextButton::TextButton() {
     parent::enableResizing(true, true);
 }
 
-TextButton::TextButton(TextButton&&) = default;
+TextButton::TextButton(TextButton&&) noexcept = default;
 
-TextButton& TextButton::operator=(TextButton&&) = default;
+TextButton& TextButton::operator=(TextButton&&) noexcept = default;
 
 TextButton::~TextButton() = default;
 
