@@ -51,8 +51,8 @@ inline constexpr auto PATCH_VOL_PAN_BIAS = 5;
 } // namespace
 
 // This is a default set of patches to convert from MT32 to GM
-// The index is the MT32 Patch nubmer and the value is the GM Patch
-// This is only suitable for music that doesn'tdo timbre changes
+// The index is the MT32 Patch number and the value is the GM Patch
+// This is only suitable for music that doesn't do timbre changes
 // XMidis that contain Timbre changes will not convert properly
 constexpr unsigned char XMidiFile::mt32asgm[128] = {
     0,   // 0	Piano 1
