@@ -41,7 +41,7 @@ class UnitBase;
 class AirUnit;
 class InfantryBase;
 
-enum deadUnitEnum {
+enum deadUnitEnum : uint8_t {
     DeadUnit_Infantry           = 1,
     DeadUnit_Infantry_Squashed1 = 2,
     DeadUnit_Infantry_Squashed2 = 3,
@@ -52,7 +52,7 @@ enum deadUnitEnum {
 struct DEADUNITTYPE {
     CoordF realPos;
     int16_t timer;
-    uint8_t type;
+    deadUnitEnum type;
     HOUSETYPE house;
     bool onSand;
 };
@@ -217,7 +217,7 @@ public:
     void save(OutputStream& stream, uint32_t gameCycleCount) const;
 
     void assignAirUnit(uint32_t newObjectID);
-    void assignDeadUnit(uint8_t type, HOUSETYPE house, CoordF position);
+    void assignDeadUnit(deadUnitEnum type, HOUSETYPE house, CoordF position);
 
     void assignNonInfantryGroundObject(uint32_t newObjectID);
     int assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition = INVALID_POS);

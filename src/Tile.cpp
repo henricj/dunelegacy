@@ -102,11 +102,11 @@ void Tile::load(InputStream& stream) {
         deadUnits_.reserve(numDeadUnits);
         for (uint32_t i = 0; i < numDeadUnits; i++) {
             DEADUNITTYPE newDeadUnit;
-            newDeadUnit.type      = stream.readUint8();
+            newDeadUnit.type      = static_cast<deadUnitEnum>(stream.readUint8());
             newDeadUnit.house     = static_cast<HOUSETYPE>(stream.readUint8());
             newDeadUnit.onSand    = stream.readBool();
-            newDeadUnit.realPos.x = stream.readSint32();
-            newDeadUnit.realPos.y = stream.readSint32();
+            newDeadUnit.realPos.x = static_cast<float>(stream.readSint32());
+            newDeadUnit.realPos.y = static_cast<float>(stream.readSint32());
             newDeadUnit.timer     = stream.readSint16();
 
             deadUnits_.push_back(newDeadUnit);
@@ -182,8 +182,8 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
             stream.writeUint8(deadUnit.type);
             stream.writeUint8(static_cast<uint8_t>(deadUnit.house));
             stream.writeBool(deadUnit.onSand);
-            stream.writeSint32(deadUnit.realPos.x);
-            stream.writeSint32(deadUnit.realPos.y);
+            stream.writeSint32(static_cast<int32_t>(deadUnit.realPos.x));
+            stream.writeSint32(static_cast<int32_t>(deadUnit.realPos.y));
             stream.writeSint16(deadUnit.timer);
         }
     }
@@ -228,7 +228,7 @@ void Tile::assignAirUnit(uint32_t newObjectID) {
     assignedAirUnitList_.push_back(newObjectID);
 }
 
-void Tile::assignDeadUnit(uint8_t type, HOUSETYPE house, CoordF position) {
+void Tile::assignDeadUnit(deadUnitEnum type, HOUSETYPE house, CoordF position) {
 #if HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
     deadUnits_.emplace_back(position, static_cast<uint16_t>(2000), type, house, isSand() || isDunes());
 #else
