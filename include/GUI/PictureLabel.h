@@ -35,19 +35,19 @@ public:
         This method sets the surface for this picture label.
         \param  pSurface    This surface is shown
     */
-    virtual void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface);
+    void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface);
 
     /**
         This method sets the texture for this picture label.
         \param  pTexture        This texture is shown
     */
-    virtual void setTexture(const DuneTexture* pTexture);
+    void setTexture(const DuneTexture* pTexture);
 
     /**
         This method sets the texture for this picture label.
         \param  texture        This texture is shown
     */
-    virtual void setOwningTexture(DuneTexture texture) {
+    void setOwningTexture(DuneTexture texture) {
         localTexture_.reset(texture.texture_);
         duneTexture_ = std::move(texture);
 

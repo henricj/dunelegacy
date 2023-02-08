@@ -78,25 +78,25 @@ public:
         The player just started to produce an item.
         \param  itemID  the item that is produced
     */
-    virtual void onProduceItem(ItemID_enum itemID);
+    void onProduceItem(ItemID_enum itemID);
 
     /**
         The player just placed a structure.
         \param  pStructure  the structure that was placed (nullptr for Slab)
     */
-    virtual void onPlaceStructure(const StructureBase* pStructure);
+    void onPlaceStructure(const StructureBase* pStructure);
 
     /**
         A unit of this player was deployed.
         \param  pUnit  the unit that was deployed
     */
-    virtual void onUnitDeployed(const UnitBase* pUnit);
+    void onUnitDeployed(const UnitBase* pUnit);
 
     /**
         The set of selected units or structures has changed.
         \param  selectedObjectIDs   the new set of selected objects
     */
-    virtual void onSelectionChanged(const dune::selected_set_type& selectedObjectIDs);
+    void onSelectionChanged(const dune::selected_set_type& selectedObjectIDs);
 
     /**
         Returns one of the 9 saved units lists

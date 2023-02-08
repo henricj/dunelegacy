@@ -60,7 +60,7 @@ public:
     Shpfile(Shpfile&&)                 = delete;
     Shpfile& operator=(const Shpfile&) = delete;
     Shpfile& operator=(Shpfile&&)      = delete;
-    virtual ~Shpfile();
+    ~Shpfile();
 
     sdl2::surface_ptr getPicture(uint32_t indexOfFile);
 

@@ -39,14 +39,14 @@ public:
         to fit this text.
         \param  text The new text for this checkbox
     */
-    virtual void setText(std::string text);
+    void setText(std::string text);
 
     /**
         This method sets a new text for this checkbox and resizes it
         to fit this text.
         \param  text The new text for this checkbox
     */
-    virtual void setText(std::string_view text);
+    void setText(std::string_view text);
 
     /**
         Get the text of this checkbox.
@@ -59,7 +59,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
+    void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
 
     /**
         This method sets this checkbox to checked or unchecked. It does the same as setToggleState().

@@ -30,7 +30,7 @@ public:
     RadioButtonManager();
 
     /// destructor
-    virtual ~RadioButtonManager();
+    ~RadioButtonManager();
 
     void registerRadioButton(RadioButton* pRadioButton);
 

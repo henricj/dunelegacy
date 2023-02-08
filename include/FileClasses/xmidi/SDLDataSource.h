@@ -51,7 +51,7 @@ public:
 
     ~ISDLDataSource() override;
 
-    virtual void close();
+    void close();
 
     uint8_t read1() override { return Read1(reader_); }
 
@@ -90,7 +90,7 @@ public:
 
     ~OSDLDataSource() override;
 
-    virtual void close();
+    void close();
 
     void write1(uint32_t val) override { Write1(rwop, static_cast<uint8_t>(val)); }
 

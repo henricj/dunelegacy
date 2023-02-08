@@ -37,8 +37,8 @@ public:
         \param  pSymbolSurface          This is the symbol to show
         \param  pActiveSymbolSurface    This is the symbol to show on mouse over
     */
-    virtual void setSymbol(sdl2::surface_unique_or_nonowning_ptr pSymbolSurface,
-                           sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface = nullptr) {
+    void setSymbol(sdl2::surface_unique_or_nonowning_ptr pSymbolSurface,
+                   sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface = nullptr) {
         if (!pSymbolSurface) {
             return;
         }

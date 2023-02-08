@@ -336,7 +336,7 @@ public:
         Sets the color for this list box.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual void setColor(uint32_t color) {
+    void setColor(uint32_t color) {
         this->color_ = color;
         updateList();
         scrollbar_.setColor(color);

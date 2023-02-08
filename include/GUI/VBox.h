@@ -52,14 +52,14 @@ public:
         \param newWidget    Widget to add
         \param fixedHeight  a fixed height for this widget (must be greater than the minimum size)
     */
-    virtual void addWidget(Widget* newWidget, int32_t fixedHeight);
+    void addWidget(Widget* newWidget, int32_t fixedHeight);
 
     /**
         This method adds a new widget to this container.
         \param newWidget    Widget to add
         \param weight       The weight for this widget (default=1.0)
     */
-    virtual void addWidget(Widget* newWidget, double weight = 1.0);
+    void addWidget(Widget* newWidget, double weight = 1.0);
 
     /**
         Returns the minimum size of this container. The container should not

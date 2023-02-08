@@ -39,7 +39,7 @@ public:
         Sets a font size for this text view. Default font size of a text view is 14
         \param  fontSize      the size of the new font
     */
-    virtual void setTextFontSize(int fontSize) {
+    void setTextFontSize(int fontSize) {
         this->fontSize_ = fontSize;
         resize(getSize().x, getSize().y);
     }
@@ -48,7 +48,7 @@ public:
         Gets the font size of this text view. Default font size of a text view is 14
         \return the font size of this text view
     */
-    [[nodiscard]] virtual int getTextFontSize() const { return fontSize_; }
+    [[nodiscard]] int getTextFontSize() const { return fontSize_; }
 
     /**
         Sets the text color for this label.
@@ -56,8 +56,8 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
         \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT,
-                              Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT,
+                      Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         this->text_color_        = textcolor;
         this->text_shadow_color_ = textshadowcolor;
         this->background_color_  = backgroundcolor;
@@ -69,7 +69,7 @@ public:
         \param alignment Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
        Alignment_Top or Alignment_Bottom)
     */
-    virtual void setAlignment(Alignment_Enum alignment) {
+    void setAlignment(Alignment_Enum alignment) {
         this->alignment_ = alignment;
         invalidateTextures();
     }
@@ -79,14 +79,14 @@ public:
         \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
        Alignment_Top or Alignment_Bottom)
     */
-    [[nodiscard]] virtual Alignment_Enum getAlignment() const { return alignment_; }
+    [[nodiscard]] Alignment_Enum getAlignment() const { return alignment_; }
 
     /**
         This method sets a new text for this label and resizes this label
         to fit this text.
         \param  text The new text for this button
     */
-    virtual void setText(const std::string& text) {
+    void setText(const std::string& text) {
         this->text_ = text;
         resizeAll();
     }

@@ -36,7 +36,7 @@ public:
         This method sets a new text for this message box.
         \param  text The new text for this message box
     */
-    virtual void setText(std::string text);
+    void setText(std::string text);
 
     /**
         Get the text of this message box.
@@ -49,7 +49,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
+    void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
 
     /**
         This method resizes the message box to width and height. This method should only be
@@ -99,7 +99,7 @@ private:
     /**
         This method is called when the OK button is pressed.
     */
-    virtual void onOK();
+    void onOK();
 
     VBox vbox;           ///< vertical box
     HBox hbox;           ///< horizontal box

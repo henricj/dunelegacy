@@ -64,19 +64,19 @@ public:
         Checks whether the news ticker currently shows a message
         \return true if a message is shown, false otherwise
     */
-    virtual bool newsTickerHasMessage() { return newsticker.hasMessage(); }
+    bool newsTickerHasMessage() { return newsticker.hasMessage(); }
 
     /**
         This method adds a message to the news ticker
         \param  text    the message to add
     */
-    virtual void addToNewsTicker(std::string text) { newsticker.addMessage(std::move(text)); }
+    void addToNewsTicker(std::string text) { newsticker.addMessage(std::move(text)); }
 
     /**
         This method adds a urgent message to the news ticker
         \param  text    the urgent message to add
     */
-    virtual void addUrgentMessageToNewsTicker(std::string text) { newsticker.addUrgentMessage(std::move(text)); }
+    void addUrgentMessageToNewsTicker(std::string text) { newsticker.addUrgentMessage(std::move(text)); }
 
     /**
         Returns the radar view
@@ -93,7 +93,7 @@ public:
     /**
         This method updates the object interface
     */
-    virtual void updateObjectInterface();
+    void updateObjectInterface();
 
 private:
     void removeOldContainer();

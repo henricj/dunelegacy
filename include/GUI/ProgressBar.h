@@ -113,14 +113,14 @@ public:
         to fit this text.
         \param  text The new text for this progress bar
     */
-    virtual void setText(std::string text);
+    void setText(std::string text);
 
     /**
         This method sets a new text for this progress bar and resizes it
         to fit this text.
         \param  text The new text for this progress bar
     */
-    virtual void setText(std::string_view text) { setText(std::string{text}); }
+    void setText(std::string_view text) { setText(std::string{text}); }
 
     /**
         Get the text of this progress bar.
@@ -133,7 +133,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->text_color_        = textcolor;
         this->text_shadow_color_ = textshadowcolor;
         invalidateTextures();

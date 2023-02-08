@@ -44,7 +44,7 @@ public:
         to fit this text.
         \param  text The new text for this button
     */
-    virtual void setText(std::string text);
+    void setText(std::string text);
 
     /**
         This method sets a new text for this button and resizes this button
@@ -64,7 +64,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor_       = textcolor;
         this->textshadowcolor_ = textshadowcolor;
         invalidateTextures();

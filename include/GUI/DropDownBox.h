@@ -304,7 +304,7 @@ public:
         Sets the color for this drop down box.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual void setColor(uint32_t color);
+    void setColor(uint32_t color);
 
     /**
         Enable or disable this widget. A disabled widget is not responding
@@ -317,7 +317,7 @@ public:
         Enable or disable the onClick event for this dropdownbox.
         \param  bOnClickEnabled true = enable the onClick event for this dropdownbox, false = disable onClick event
     */
-    virtual void setOnClickEnabled(bool bOnClickEnabled) { this->bOnClickEnabled_ = bOnClickEnabled; }
+    void setOnClickEnabled(bool bOnClickEnabled) { this->bOnClickEnabled_ = bOnClickEnabled; }
 
     /**
         Returns whether the onClick event for this dropdownbox is enabled.

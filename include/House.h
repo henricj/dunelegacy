@@ -42,14 +42,14 @@ public:
     House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, uint8_t teamID = 0,
           int quota = 0);
     House(const GameContext& context, InputStream& stream);
-    virtual ~House();
+    ~House();
 
     House(const House&)            = delete;
     House(House&&)                 = delete;
     House& operator=(const House&) = delete;
     House& operator=(House&&)      = delete;
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const;
 
     void addPlayer(std::unique_ptr<Player> newPlayer);
 

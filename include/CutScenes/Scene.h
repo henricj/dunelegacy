@@ -37,7 +37,7 @@ public:
     Scene();
 
     /// Destructor
-    virtual ~Scene();
+    ~Scene();
 
     /**
         This method adds a new video event at the end of this scene.

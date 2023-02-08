@@ -48,7 +48,7 @@ public:
         This method sets a new text for this text box.
         \param  Text The new text for this text box
     */
-    virtual void setText(std::string_view text) { setText(text, false); }
+    void setText(std::string_view text) { setText(text, false); }
 
     /**
         Get the text of this text box.
@@ -60,7 +60,7 @@ public:
         Sets a font size for this text box. Default font size of a text box is 14
         \param  fontSize      the size of the new font
     */
-    virtual void setTextFontSize(int fontSize) {
+    void setTextFontSize(int fontSize) {
         this->fontSize_ = fontSize;
         resize(getSize().x, getSize().y);
     }
@@ -69,37 +69,37 @@ public:
         Gets the font size of this text box. Default font size of a text box is 14
         \return the font size of this text box
     */
-    [[nodiscard]] virtual int getTextFontSize() const { return fontSize_; }
+    [[nodiscard]] int getTextFontSize() const { return fontSize_; }
 
     /**
         Sets the text color for this text box.
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
+    void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
 
     /**
         Sets the maximum length of the typed text
         \param  maxTextLength   the maximum length, -1 = unlimited
     */
-    virtual void setMaximumTextLength(int maxTextLength) { this->maxTextLength_ = maxTextLength; }
+    void setMaximumTextLength(int maxTextLength) { this->maxTextLength_ = maxTextLength; }
 
     /**
         Gets the maximum length of the typed text
     */
-    [[nodiscard]] virtual int getMaximumTextLength() const { return maxTextLength_; }
+    [[nodiscard]] int getMaximumTextLength() const { return maxTextLength_; }
 
     /**
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */
-    virtual void setAllowedChars(std::string allowedChars = {}) { this->allowedChars_ = std::move(allowedChars); }
+    void setAllowedChars(std::string allowedChars = {}) { this->allowedChars_ = std::move(allowedChars); }
 
     /**
         Sets the set of forbidden characters for this text box.
         \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
     */
-    virtual void setForbiddenChars(std::string forbiddenChars = {}) {
+    void setForbiddenChars(std::string forbiddenChars = {}) {
         this->forbiddenChars_ = std::move(forbiddenChars);
     }
 
@@ -180,7 +180,7 @@ protected:
         \param  text            The new text for this text box
         \param  bInteractive    Was this text change initiated by the user?
     */
-    virtual void setText(std::string_view text, bool bInteractive);
+    void setText(std::string_view text, bool bInteractive);
 
     /**
         This method frees all textures that are used by this text box

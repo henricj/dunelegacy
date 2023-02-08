@@ -182,7 +182,7 @@ public:
         Sets the color for this scrollbar.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual void setColor(uint32_t color) {
+    void setColor(uint32_t color) {
         this->color_ = color;
         updateArrowButtonSurface();
     }

@@ -30,7 +30,7 @@ public:
 
     Palette(const Palette& palette);
 
-    virtual ~Palette();
+    ~Palette();
 
     Palette& operator=(const Palette& palette);
 
