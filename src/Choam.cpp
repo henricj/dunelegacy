@@ -22,14 +22,14 @@ Choam::~Choam() = default;
 
 void Choam::save(OutputStream& stream) const {
     stream.writeUint32(gsl::narrow<uint32_t>(availableItems.size()));
-    for (const BuildItem& buildItem : availableItems) {
+    for (const auto& buildItem : availableItems) {
         buildItem.save(stream);
     }
 }
 
 void Choam::load(InputStream& stream) {
     const uint32_t num = stream.readUint32();
-    for (uint32_t i = 0; i < num; i++) {
+    for (auto i = 0U; i < num; ++i) {
         BuildItem tmp;
         tmp.load(stream);
         availableItems.push_back(tmp);
@@ -37,7 +37,7 @@ void Choam::load(InputStream& stream) {
 }
 
 int Choam::getPrice(ItemID_enum itemID) const {
-    for (const BuildItem& buildItem : availableItems) {
+    for (const auto& buildItem : availableItems) {
         if (buildItem.itemID_ == itemID) {
             return buildItem.price_;
         }
@@ -53,7 +53,7 @@ bool Choam::isCheap(ItemID_enum itemID) const {
 }
 
 int Choam::getNumAvailable(ItemID_enum itemID) const {
-    for (const BuildItem& buildItem : availableItems) {
+    for (const auto& buildItem : availableItems) {
         if (buildItem.itemID_ == itemID) {
             return buildItem.num_;
         }
@@ -63,7 +63,7 @@ int Choam::getNumAvailable(ItemID_enum itemID) const {
 }
 
 bool Choam::setNumAvailable(ItemID_enum itemID, int newValue) {
-    for (BuildItem& buildItem : availableItems) {
+    for (auto& buildItem : availableItems) {
         if (buildItem.itemID_ == itemID) {
             buildItem.num_ = newValue;
             return (buildItem.num_ > 0);
@@ -98,7 +98,7 @@ void Choam::update(const GameContext& context) {
     }
 
     if ((game.getGameCycleCount() % CHOAM_CHANGE_PRICETIME) == 0) {
-        for (BuildItem& buildItem : availableItems) {
+        for (auto& buildItem : availableItems) {
             int price = game.objectData.data[buildItem.itemID_][static_cast<int>(house->getHouseID())].price;
 
             constexpr int min_mod = 2;
