@@ -63,13 +63,10 @@ SDL_Texture* Animation::getFrameTexture() {
         return nullptr;
     }
 
-    const unsigned int index = getCurrentFrameNumber();
+    const auto index = getCurrentFrameNumber();
 
     if (frameTextures.size() <= index) {
-        // vector<>.resize() doesn't work with unique_ptr<>
-        frameTextures.reserve(frames.size());
-        const unsigned int needed = index - frameTextures.size() + 1;
-        std::fill_n(std::back_inserter(frameTextures), needed, nullptr);
+        frameTextures.resize(index + 1);
     }
 
     if (frameTextures[index] == nullptr) {
