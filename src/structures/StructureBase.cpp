@@ -35,6 +35,8 @@
 
 #include <GUI/ObjectInterfaces/DefaultStructureInterface.h>
 
+#include <gsl/gsl>
+
 StructureBase::StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID,
                              const ObjectInitializer& initializer)
     : ObjectBase(structure_constants, objectID, initializer), degradeTimer(MILLI2CYCLES(15 * 1000)) {
@@ -50,7 +52,7 @@ StructureBase::StructureBase(const StructureBaseConstants& structure_constants, 
 
     repairing        = stream.readBool();
     fogged           = stream.readBool();
-    lastVisibleFrame = stream.readUint32();
+    lastVisibleFrame = gsl::narrow<int>(stream.readUint32());
 
     degradeTimer = stream.readSint32();
 
@@ -88,11 +90,11 @@ void StructureBase::save(OutputStream& stream) const {
 
     stream.writeBool(repairing);
     stream.writeBool(fogged);
-    stream.writeUint32(lastVisibleFrame);
+    stream.writeUint32(gsl::narrow<uint32_t>(lastVisibleFrame));
 
     stream.writeSint32(degradeTimer);
 
-    stream.writeUint32(smoke.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(smoke.size()));
     for (const auto& structureSmoke : smoke) {
         structureSmoke.save(stream);
     }

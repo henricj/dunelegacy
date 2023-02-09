@@ -26,6 +26,8 @@
 
 #include <lodepng.h>
 
+#include <gsl/gsl>
+
 #include <cstddef>
 #include <optional>
 
@@ -91,7 +93,8 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             }
 
             const auto* const colors = reinterpret_cast<SDL_Color*>(lodePNGState.info_png.color.palette);
-            SDL_SetPaletteColors(pic->format->palette, colors, 0, lodePNGState.info_png.color.palettesize);
+            SDL_SetPaletteColors(pic->format->palette, colors, 0,
+                                 gsl::narrow<int>(lodePNGState.info_png.color.palettesize));
 
             const sdl2::surface_lock pic_lock{pic.get()};
 

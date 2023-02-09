@@ -1098,7 +1098,7 @@ int XMidiFile::ExtractTracksFromXmi(IDataSource* source) {
         x_patch_bank_cur   = nullptr;
         memset(&fs, 0, sizeof(fs));
 
-        const int begin = source->getPos();
+        const auto begin = source->getPos();
 
         // Convert it
         const auto chan_mask = ConvertFiletoList(source, true, fs);
@@ -1242,7 +1242,7 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
         // Read length of
         const uint32_t len = source->read4high();
 
-        const int start = source->getPos();
+        const auto start = source->getPos();
 
         // Read 4 bytes of type
         source->read(buf, 4);

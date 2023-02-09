@@ -24,6 +24,9 @@
 #include <Definitions.h>
 
 #include <SDL2/SDL_endian.h>
+
+#include <gsl/gsl>
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdio>
@@ -168,11 +171,7 @@ void Wsafile::decodeFrames(const unsigned char* pFiledata, uint32_t* index, int 
     should be freed with free when no longer needed.
 
 */
-std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesize) const {
-    if (filesize == nullptr) {
-        THROW(std::runtime_error, "Wsafile::readfile(): filesize == nullptr!");
-    }
-
+std::tuple<std::unique_ptr<unsigned char[]>, size_t> Wsafile::readfile(SDL_RWops* rwop) const {
     if (rwop == nullptr) {
         THROW(std::runtime_error, "Wsafile::readfile(): rwop == nullptr!");
     }
@@ -193,8 +192,7 @@ std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesiz
         THROW(std::runtime_error, "Wsafile::readfile(): Reading this *.wsa-File failed!");
     }
 
-    *filesize = wsaFilesize;
-    return pFiledata;
+    return {std::move(pFiledata), gsl::narrow<int>(wsaFilesize)};
 }
 
 /// Helper method for reading and concatenating various WSA-Files.
@@ -215,8 +213,9 @@ void Wsafile::readdata(const std::initializer_list<SDL_RWops*>& rwops) {
     looped    = false;
 
     for (auto i = size_t{0}; const auto rwop : rwops) {
-        int wsaFilesize   = 0;
-        pFiledata[i]      = readfile(rwop, &wsaFilesize);
+        auto [data, wsaFilesize] = readfile(rwop);
+
+        pFiledata[i]      = std::move(data);
         numberOfFrames[i] = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[i].get()));
 
         if (i == 0) {

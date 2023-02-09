@@ -160,7 +160,7 @@ private:
     }
 
     size_t complete_partial_read(void* data, size_t size) {
-        auto partial = 0;
+        auto partial = size_t{0};
         auto output  = std::span{static_cast<char*>(data), size};
 
         if (!pending_.empty()) {

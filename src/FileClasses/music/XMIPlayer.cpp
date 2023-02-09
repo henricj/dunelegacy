@@ -28,6 +28,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
+#include <gsl/gsl>
+
 #include <filesystem>
 
 XMIPlayer::XMIPlayer()
@@ -328,10 +330,10 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
         music.reset();
 
         { // Scope
-            sdl2::RWops_ptr midi_rwops{SDL_RWFromConstMem(midi_list.data(), midi_list.size())};
+            sdl2::RWops_ptr midi_rwops{SDL_RWFromConstMem(midi_list.data(), gsl::narrow<int>(midi_list.size()))};
 
-            music = sdl2::mix_music_ptr{Mix_LoadMUSType_RW(midi_rwops.get(), MUS_MID, 0)};
-            if (music != nullptr) {
+            music.reset(Mix_LoadMUSType_RW(midi_rwops.get(), MUS_MID, 0));
+            if (music) {
                 if (Mix_PlayMusic(music.get(), 1) == 1) {
                     sdl2::log_info("XMIPlayer: Playing music failed: {}", SDL_GetError());
                 } else {

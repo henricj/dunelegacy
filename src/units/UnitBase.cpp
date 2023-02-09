@@ -38,6 +38,8 @@
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
 
+#include <gsl/gsl>
+
 inline constexpr auto SMOKEDELAY    = 30;
 inline constexpr auto UNITIDLETIMER = GAMESPEED_DEFAULT * 315; // about every 5s
 
@@ -147,7 +149,7 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeSint32(recalculatePathTimer);
     stream.writeSint32(nextSpot.x);
     stream.writeSint32(nextSpot.y);
-    stream.writeUint32(pathList.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(pathList.size()));
     for (const auto& coord : dune::reverse(pathList)) {
         stream.writeSint32(coord.x);
         stream.writeSint32(coord.y);

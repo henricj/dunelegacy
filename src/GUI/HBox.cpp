@@ -17,6 +17,8 @@
 
 #include "GUI/HBox.h"
 
+#include <gsl/gsl>
+
 HBox::HBox() = default;
 
 HBox::~HBox() = default;
@@ -53,13 +55,13 @@ Point HBox::getMinimumSize() const {
 }
 
 void HBox::resize(uint32_t width, uint32_t height) {
-    int32_t availableWidth = width;
+    auto availableWidth = gsl::narrow<int32_t>(width);
 
-    int numRemainingWidgets = containedWidgets.size();
+    auto numRemainingWidgets = containedWidgets.size();
 
     // Find objects that are not allowed to be resized or have a fixed width
     // also find the sum of all weights
-    double weightSum = 0.0;
+    auto weightSum = 0.0;
     for (const auto& widgetData : containedWidgets) {
         if (widgetData.pWidget->resizingXAllowed() == false) {
             availableWidth = availableWidth - widgetData.pWidget->getSize().x;
@@ -74,8 +76,8 @@ void HBox::resize(uint32_t width, uint32_t height) {
 
     // Under the resizeable widgets find all objects that are oversized (minimum size > availableWidth*weight)
     // also calculate the weight sum of all the resizeable widgets that are not oversized
-    int32_t neededOversizeWidth  = 0;
-    double notOversizedWeightSum = 0.0;
+    auto neededOversizeWidth  = 0;
+    auto notOversizedWeightSum = 0.0;
     for (const auto& widgetData : containedWidgets) {
         if (widgetData.pWidget->resizingXAllowed() == true && widgetData.fixedWidth <= 0) {
             if (static_cast<double>(widgetData.pWidget->getMinimumSize().x)
@@ -87,7 +89,7 @@ void HBox::resize(uint32_t width, uint32_t height) {
         }
     }
 
-    const int32_t totalAvailableWidth = availableWidth;
+    const auto totalAvailableWidth = availableWidth;
     for (const auto& widgetData : containedWidgets) {
         auto* const widget = widgetData.pWidget;
 
@@ -124,7 +126,7 @@ void HBox::resize(uint32_t width, uint32_t height) {
 }
 
 HBox* HBox::create() {
-    HBox* hbox        = new HBox();
+    auto* hbox        = new HBox();
     hbox->pAllocated_ = true;
     return hbox;
 }

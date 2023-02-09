@@ -24,10 +24,11 @@
 #include <misc/SDL2pp.h>
 
 #include <exception>
-#include <list>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <cstddef>
 
 class InputStream {
 public:
@@ -49,7 +50,7 @@ public:
 
     // Returns the number of bytes available in the stream before EOF.
     // Attempting to read more than this many bytes will throw an EOF exception.
-    virtual long bytesLeft() const = 0;
+    [[nodiscard]] virtual size_t bytesLeft() const = 0;
 
     /**
         Reads in a Sint8 value.

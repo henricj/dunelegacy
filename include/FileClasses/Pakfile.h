@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include <cstddef>
+
 class BasePakfile {
 protected:
     explicit BasePakfile(std::filesystem::path pakfilename);
@@ -97,7 +99,7 @@ public:
 
 private:
     char* writeOutData{};
-    int numWriteOutData{};
+    size_t numWriteOutData{};
 };
 
 #endif // PAKFILE_H

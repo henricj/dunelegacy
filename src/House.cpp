@@ -44,6 +44,8 @@
 
 #include <fmt/printf.h>
 
+#include <gsl/gsl>
+
 #include <algorithm>
 #include <numeric>
 #include <stdexcept>
@@ -148,12 +150,12 @@ void House::save(OutputStream& stream) const {
 
     choam_.save(stream);
 
-    stream.writeUint32(aiteams_.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(aiteams_.size()));
     for (const auto& aiteam : aiteams_) {
         aiteam.save(stream);
     }
 
-    stream.writeUint32(players_.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(players_.size()));
     for (const auto& pPlayer : players_) {
         stream.writeString(pPlayer->getPlayerclass());
         pPlayer->save(stream);

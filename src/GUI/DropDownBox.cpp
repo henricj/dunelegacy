@@ -19,6 +19,8 @@
 
 #include "misc/DrawingRectHelper.h"
 
+#include <gsl/gsl>
+
 #include <algorithm>
 
 DropDownBox::DropDownBox() {
@@ -299,9 +301,9 @@ void DropDownBox::setEnabled(bool bEnabled) {
 }
 
 void DropDownBox::resizeListBox() {
-    const int listBoxHeight =
-        std::max(1, std::min(numVisibleEntries_, getNumEntries())) * GUIStyle::getInstance().getListBoxEntryHeight()
-        + 2;
+    const int listBoxHeight = std::max(1, std::min(numVisibleEntries_, gsl::narrow<int>(getNumEntries())))
+                                * GUIStyle::getInstance().getListBoxEntryHeight()
+                            + 2;
     listBox_.resize(getSize().x - 1, listBoxHeight);
 }
 

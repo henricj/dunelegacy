@@ -40,7 +40,7 @@ public:
     bool readBool() override;
     float readFloat() override;
 
-    long bytesLeft() const override { return sizeBytes_ - bytePos_; }
+    size_t bytesLeft() const override { return sizeBytes_ - bytePos_; }
 
 private:
     FILE* fp;

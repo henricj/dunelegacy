@@ -17,6 +17,7 @@
 
 #include <GUI/dune/DigitsTextBox.h>
 
+#include <gsl/gsl>
 
 DigitsTextBox::DigitsTextBox() {
     textBox_.setText("0");
@@ -62,8 +63,9 @@ void DigitsTextBox::setMinMax(int newMinValue, int newMaxValue) {
         setValue(maxValue_, false);
     }
 
-    textBox_.setMaximumTextLength(std::to_string(maxValue_).length()
-                                  + (((minValue_ < 0) && (maxValue_ >= 0)) ? 1 : 0));
+    const auto extra = (minValue_ < 0 && maxValue_ >= 0) ? 1 : 0;
+
+    textBox_.setMaximumTextLength(gsl::narrow<int>(std::to_string(maxValue_).length() + extra));
 
     resizeAll();
 }
@@ -96,10 +98,10 @@ Point DigitsTextBox::getMinimumSize() const {
 
     const std::string testString(std::max(1, textBox_.getMaximumTextLength()), '9');
 
-    return {textBoxMinimumSize.x + buttonVBoxMinimumSize.x
-            + static_cast<int>(
-                GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox_.getTextFontSize())),
-            std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y)};
+    return {
+        textBoxMinimumSize.x + buttonVBoxMinimumSize.x
+            + static_cast<int>(GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox_.getTextFontSize())),
+        std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y)};
 }
 
 void DigitsTextBox::setValue(int newValue, bool bInteractive) {

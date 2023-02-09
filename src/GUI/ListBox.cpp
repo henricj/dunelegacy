@@ -20,7 +20,10 @@
 #include "misc/DrawingRectHelper.h"
 #include "misc/dune_clock.h"
 
+#include <gsl/gsl>
+
 #include <chrono>
+#include <utility>
 
 ListBox::ListBox() : color_(COLOR_DEFAULT) {
     ListBox::enableResizing(true, true);
@@ -224,7 +227,7 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
         }
 
         if (firstVisibleElement_ > getNumEntries() - numVisibleElements) {
-            firstVisibleElement_ = std::max(0, getNumEntries() - numVisibleElements + 1);
+            firstVisibleElement_ = std::max(0, gsl::narrow<int>(getNumEntries() - numVisibleElements + 1));
         }
 
         scrollbar_.setCurrentValue(firstVisibleElement_);
@@ -307,6 +310,10 @@ void ListBox::updateList() {
 
     const auto numVisibleElements = surfaceHeight / gui.getListBoxEntryHeight();
 
-    scrollbar_.setRange(0, std::max(0, getNumEntries() - numVisibleElements));
+    auto max_range = 0;
+    if (std::cmp_greater(getNumEntries(), numVisibleElements))
+        max_range = gsl::narrow<int>(getNumEntries() - numVisibleElements);
+
+    scrollbar_.setRange(0, max_range);
     scrollbar_.setBigStepSize(std::max(1, numVisibleElements - 1));
 }

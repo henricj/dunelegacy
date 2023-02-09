@@ -35,6 +35,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace {
@@ -49,7 +50,7 @@ inline constexpr auto VOC_CODE_LOOPEND   = 7;
 inline constexpr auto VOC_CODE_EXTENDED  = 8;
 inline constexpr auto VOC_CODE_DATA_16   = 9;
 
-inline constexpr auto NUM_SAMPLES_OF_SILENCE = 160;
+inline constexpr auto NUM_SAMPLES_OF_SILENCE = size_t{160};
 
 /**
  * Take a sample rate parameter as it occurs in a VOC sound header, and
@@ -92,7 +93,7 @@ uint32_t getSampleRateFromVOCRate(uint8_t vocSR) {
     \param  rate    The sampling rate of the voc-file
     \return A pointer to a memory block that contains the data.
 */
-sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t& rate) {
+auto read_voc(SDL_RWops* rwop) {
     using namespace std::literals;
 
     const auto buffer = std::make_unique<BufferedReader<>>(rwop);
@@ -148,14 +149,14 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
 
     sdl2::sdl_ptr<uint8_t[]> ret_sound;
 
-    decsize = 0;
+    auto decsize = size_t{0};
 
     uint8_t code = 0;
-    rate         = 0;
+    auto rate    = 0U;
 
     while (buffer->read_type(code)) {
         if (code == VOC_CODE_TERM) {
-            return ret_sound;
+            return std::make_tuple(std::move(ret_sound), decsize, rate);
         }
 
         uint8_t tmp[3];
@@ -255,7 +256,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
             default: THROW(std::runtime_error, "LoadVOC_RW(): Unsupported code in VOC file : {}", code);
         }
     }
-    return ret_sound;
+    return std::make_tuple(std::move(ret_sound), decsize, rate);
 }
 
 uint8_t Float2Uint8(float x) {
@@ -311,9 +312,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     // Read voc file
-    uint32_t RawData_Frequency            = 0;
-    uint32_t RawData_Samples              = 0;
-    sdl2::sdl_ptr<uint8_t[]> RawDataUint8 = LoadVOC_RW(rwop, RawData_Samples, RawData_Frequency);
+    auto [RawDataUint8, RawData_Samples, RawData_Frequency] = read_voc(rwop);
     if (RawDataUint8 == nullptr) {
         THROW(std::runtime_error, "LoadVOC_RW(): Cannot read raw data!");
     }
@@ -321,7 +320,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     // shift level so that the last sample is 128
     int minValue = 255;
     int maxValue = 0;
-    for (uint32_t i = 0; i < RawData_Samples; i++) {
+    for (decltype(RawData_Samples) i = 0; i < RawData_Samples; i++) {
         if (RawDataUint8[i] < minValue) {
             minValue = RawDataUint8[i];
         }
@@ -337,22 +336,22 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         levelShift = 255 - maxValue;
     }
 
-    for (uint32_t i = 0; i < RawData_Samples; i++) {
+    for (auto i = 0; i < RawData_Samples; i++) {
         RawDataUint8[i] = static_cast<uint8_t>(RawDataUint8[i] + levelShift);
     }
 
     // Convert to floats
     std::vector<float> RawDataFloat(RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE);
 
-    for (uint32_t i = 0; i < NUM_SAMPLES_OF_SILENCE; i++) {
+    for (auto i = 0; i < NUM_SAMPLES_OF_SILENCE; i++) {
         RawDataFloat[i] = 0.0;
     }
 
-    for (uint32_t i = NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + NUM_SAMPLES_OF_SILENCE; i++) {
+    for (auto i = NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + NUM_SAMPLES_OF_SILENCE; i++) {
         RawDataFloat[i] = static_cast<float>(RawDataUint8[i - NUM_SAMPLES_OF_SILENCE]) / 128.0f - 1.0f;
     }
 
-    for (uint32_t i = RawData_Samples + NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE; i++) {
+    for (auto i = RawData_Samples + NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE; i++) {
         RawDataFloat[i] = 0.0f;
     }
 
@@ -449,7 +448,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     if ((myChunk->abuf = static_cast<uint8_t*>(SDL_malloc(TargetData_Samples * SizeOfTargetSample))) == nullptr) {
         throw std::bad_alloc();
     }
-    myChunk->alen = TargetData_Samples * SizeOfTargetSample;
+    myChunk->alen = gsl::narrow<decltype(myChunk->alen)>(TargetData_Samples * SizeOfTargetSample);
 
     switch (TargetFormat) {
         case AUDIO_U8: {

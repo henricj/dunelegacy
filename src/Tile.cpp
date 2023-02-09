@@ -36,6 +36,8 @@
 #include <units/AirUnit.h>
 #include <units/InfantryBase.h>
 
+#include <gsl/gsl>
+
 namespace {
 inline constexpr auto FOGTIME = MILLI2CYCLES(10 * 1000);
 }
@@ -167,7 +169,7 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
                       !assignedNonInfantryGroundObjectList_.empty());
 
     if (!damage_.empty()) {
-        stream.writeUint32(damage_.size());
+        stream.writeUint32(gsl::narrow<uint32_t>(damage_.size()));
         for (const auto& damageItem : damage_) {
             stream.writeUint32(static_cast<uint32_t>(damageItem.damageType_));
             stream.writeSint32(damageItem.tile_);
@@ -177,7 +179,7 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
     }
 
     if (!deadUnits_.empty()) {
-        stream.writeUint32(deadUnits_.size());
+        stream.writeUint32(gsl::narrow<uint32_t>(deadUnits_.size()));
         for (const auto& deadUnit : deadUnits_) {
             stream.writeUint8(deadUnit.type);
             stream.writeUint8(static_cast<uint8_t>(deadUnit.house));

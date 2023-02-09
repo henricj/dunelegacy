@@ -24,6 +24,8 @@
 
 #include "misc/BufferedReader.h"
 
+#include <gsl/gsl>
+
 #include <utility>
 
 namespace {
@@ -324,7 +326,7 @@ OutPakfile::OutPakfile(const std::filesystem::path& pakfilename) : BasePakfile{p
 */
 OutPakfile::~OutPakfile() {
     // calculate header size
-    auto headersize = 0;
+    auto headersize = size_t{0};
     for (const auto& fileEntry : fileEntries) {
         headersize += 4;
         headersize += fileEntry.filename.length() + 1;
@@ -333,7 +335,7 @@ OutPakfile::~OutPakfile() {
 
     // write out header
     for (const auto& fileEntry : fileEntries) {
-        const auto startoffset = SDL_SwapLE32(fileEntry.startOffset + headersize);
+        const auto startoffset = SDL_SwapLE32(gsl::narrow<uint32_t>(fileEntry.startOffset + headersize));
         SDL_RWwrite(fPakFile.get(), &startoffset, sizeof(uint32_t), 1);
         SDL_RWwrite(fPakFile.get(), fileEntry.filename.data(), fileEntry.filename.length() + 1, 1);
     }
@@ -363,11 +365,16 @@ void OutPakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
         THROW(std::invalid_argument, "Pakfile::addFile(): rwop==nullptr is not allowed!");
     }
 
-    const auto filelength = static_cast<size_t>(SDL_RWsize(rwop));
+    const auto filelength1 = SDL_RWsize(rwop);
+    if (filelength1 < 0) {
+        THROW(std::runtime_error, "Pakfile::addFile(): unable to get file size!");
+    }
+
+    const auto filelength = gsl::narrow<size_t>(filelength1);
 
     char* extendedBuffer = nullptr;
     if ((extendedBuffer = static_cast<char*>(realloc(writeOutData, numWriteOutData + filelength))) == nullptr) {
-        throw std::bad_alloc();
+        THROW(std::runtime_error, "Pakfile::addFile(): realloc failed!");
     }
     writeOutData = extendedBuffer;
 
@@ -383,8 +390,8 @@ void OutPakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     }
 
     PakFileEntry newPakFileEntry;
-    newPakFileEntry.startOffset = numWriteOutData;
-    newPakFileEntry.endOffset   = numWriteOutData + filelength - 1;
+    newPakFileEntry.startOffset = gsl::narrow<uint32_t>(numWriteOutData);
+    newPakFileEntry.endOffset   = gsl::narrow<uint32_t>(numWriteOutData + filelength - 1);
     newPakFileEntry.filename    = filename;
 
     fileEntries.push_back(newPakFileEntry);

@@ -21,12 +21,15 @@
 
 #include <misc/exceptions.h>
 
+#include <gsl/gsl>
+
+
 TriggerManager::TriggerManager() = default;
 
 TriggerManager::~TriggerManager() = default;
 
 void TriggerManager::save(OutputStream& stream) const {
-    stream.writeUint32(triggers.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(triggers.size()));
     for (const auto& pTrigger : triggers) {
         saveTrigger(stream, pTrigger.get());
     }

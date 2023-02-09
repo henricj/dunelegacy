@@ -55,14 +55,14 @@ public:
         Returns the number of tiles in the icn-File.
         \return Number of tiles
     */
-    [[nodiscard]] int getNumFiles() const noexcept { return numFiles; }
+    [[nodiscard]] auto getNumFiles() const noexcept { return numFiles; }
 
     /// Returns the number of tilesets
     /**
         Returns the number of tilesets in the map-File.
         \return Number of tilesets
     */
-    [[nodiscard]] int getNumTilesets() const noexcept { return tilesets.size(); }
+    [[nodiscard]] auto getNumTilesets() const noexcept { return tilesets.size(); }
 
 private:
     std::unique_ptr<uint8_t[]> pIcnFiledata;

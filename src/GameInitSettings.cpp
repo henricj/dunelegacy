@@ -25,6 +25,8 @@
 
 #include "misc/Random.h"
 
+#include <gsl/gsl>
+
 GameInitSettings::PlayerInfo::PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
     : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) { }
 
@@ -196,7 +198,7 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeBool(gameOptions.manualCarryallDrops);
     stream.writeSint32(gameOptions.maximumNumberOfUnitsOverride);
 
-    stream.writeUint32(houseInfoList.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(houseInfoList.size()));
     for (const auto& houseInfo : houseInfoList) {
         houseInfo.save(stream);
     }

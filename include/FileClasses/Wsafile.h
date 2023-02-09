@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <initializer_list>
 #include <memory>
+#include <tuple>
 
 /// A class for loading a *.WSA-File.
 /**
@@ -81,7 +82,7 @@ public:
 private:
     void decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames,
                       unsigned char* pDecodedFrames, int x, int y) const;
-    std::unique_ptr<unsigned char[]> readfile(SDL_RWops* rwop, int* filesize) const;
+    std::tuple<std::unique_ptr<unsigned char[]>, size_t> readfile(SDL_RWops* rwop) const;
     void readdata(const std::initializer_list<SDL_RWops*>& rwops);
 
     std::vector<unsigned char> decodedFrames;

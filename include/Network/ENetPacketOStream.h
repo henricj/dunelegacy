@@ -22,6 +22,8 @@
 
 #include <enet/enet.h>
 
+#include <gsl/gsl>
+
 #include <string>
 
 class ENetPacketOStream final : public OutputStream {
@@ -78,7 +80,7 @@ public:
     void writeString(std::string_view str) override {
         ensureBufferSize(currentPos + str.length() + sizeof(uint32_t));
 
-        writeUint32(str.length());
+        writeUint32(gsl::narrow<uint32_t>(str.length()));
 
         if (!str.empty()) {
             memcpy(packet->data + currentPos, str.data(), str.length());

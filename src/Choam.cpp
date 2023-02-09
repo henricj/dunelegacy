@@ -6,6 +6,8 @@
 
 #include <FileClasses/TextManager.h>
 
+#include <gsl/gsl>
+
 #include <algorithm>
 
 // change starport prices every minute
@@ -19,7 +21,7 @@ Choam::Choam(House* pHouse) : house(pHouse) { }
 Choam::~Choam() = default;
 
 void Choam::save(OutputStream& stream) const {
-    stream.writeUint32(availableItems.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(availableItems.size()));
     for (const BuildItem& buildItem : availableItems) {
         buildItem.save(stream);
     }
@@ -86,8 +88,13 @@ void Choam::update(const GameContext& context) {
     auto& game = context.game;
 
     if ((game.getGameCycleCount() % CHOAM_CHANGE_AMOUNT) == 0) {
-        const int index            = game.randomGen.rand(0u, availableItems.size() - 1);
-        availableItems[index].num_ = std::min(availableItems[index].num_ + 1, 10u);
+        const auto size = availableItems.size();
+        if (size > 0U) {
+            const auto index = game.randomGen.rand(0U, gsl::narrow<uint32_t>(size - 1));
+
+            auto& item = availableItems[index];
+            item.num_  = std::min(item.num_ + 1, 10u);
+        }
     }
 
     if ((game.getGameCycleCount() % CHOAM_CHANGE_PRICETIME) == 0) {

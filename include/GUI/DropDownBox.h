@@ -185,7 +185,7 @@ public:
         Returns the number of entries in this dropdown box
         \return number of entries
     */
-    [[nodiscard]] int getNumEntries() const { return listBox_.getNumEntries(); }
+    [[nodiscard]] auto getNumEntries() const { return listBox_.getNumEntries(); }
 
     /**
         Returns the text of the entry specified by index.

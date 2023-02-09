@@ -29,6 +29,8 @@
 
 #include <fmt/printf.h>
 
+#include <gsl/gsl>
+
 #include <filesystem>
 #include <string>
 #include <utility>
@@ -135,7 +137,7 @@ LoadSaveWindow::~LoadSaveWindow() {
 void LoadSaveWindow::updateEntries() {
     fileList.clearAllEntries();
 
-    int preselectedFileIndex = -1;
+    auto preselectedFileIndex = -1;
     for (const auto& fileName :
          getFileNamesList(directories_[currentDirectoryIndex_], extension_, true, FileListOrder_ModifyDate_Dsc)) {
         const std::string entryName{reinterpret_cast<const char*>(fileName.stem().u8string().c_str())};
@@ -143,7 +145,7 @@ void LoadSaveWindow::updateEntries() {
         fileList.addEntry(entryName);
 
         if (entryName == preselectedFile_) {
-            preselectedFileIndex = fileList.getNumEntries() - 1;
+            preselectedFileIndex = gsl::narrow<int>(fileList.getNumEntries() - 1);
         }
     }
 
@@ -190,7 +192,7 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     if (pQstBox == nullptr || pQstBox->getPressedButtonID() != QSTBOX_BUTTON1)
         return;
 
-    const int index = fileList.getSelectedIndex();
+    const auto index = fileList.getSelectedIndex();
     if (index < 0)
         return;
 
@@ -201,9 +203,10 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
 
     // remove was successful => delete from list
     fileList.removeEntry(index);
-    if (fileList.getNumEntries() > 0) {
-        if (index >= fileList.getNumEntries()) {
-            fileList.setSelectedItem(fileList.getNumEntries() - 1);
+    const auto num_entries = fileList.getNumEntries();
+    if (num_entries > 0) {
+        if (gsl::narrow<uint32_t>(index) >= num_entries) {
+            fileList.setSelectedItem(gsl::narrow<int>(num_entries - 1));
         } else {
             fileList.setSelectedItem(index);
         }

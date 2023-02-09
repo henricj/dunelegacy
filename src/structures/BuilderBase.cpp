@@ -32,6 +32,8 @@
 
 #include <GUI/ObjectInterfaces/BuilderInterface.h>
 
+#include <gsl/gsl>
+
 constexpr ItemID_enum BuilderBase::itemOrder[] = {Structure_Slab4,
                                                   Structure_Slab1,
                                                   Structure_IX,
@@ -168,12 +170,12 @@ void BuilderBase::save(OutputStream& stream) const {
 
     stream.writeFixPoint(buildSpeedLimit_);
 
-    stream.writeUint32(currentProductionQueue_.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(currentProductionQueue_.size()));
     for (const auto& queueItem : currentProductionQueue_) {
         queueItem.save(stream);
     }
 
-    stream.writeUint32(buildList_.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(buildList_.size()));
     for (const auto& buildItem : buildList_) {
         buildItem.save(stream);
     }

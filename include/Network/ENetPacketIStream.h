@@ -39,7 +39,7 @@ public:
         }
     }
 
-    long bytesLeft() const override { return packet->dataLength - currentPos; }
+    [[nodiscard]] size_t bytesLeft() const override { return packet->dataLength - currentPos; }
 
     ENetPacketIStream& operator=(const ENetPacketIStream& p) {
         if (this != &p) {

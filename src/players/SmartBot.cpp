@@ -32,6 +32,8 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
+#include <gsl/gsl>
+
 #include <string>
 
 inline constexpr auto AIUPDATEINTERVAL = 50;
@@ -77,7 +79,7 @@ void SmartBot::save(OutputStream& stream) const {
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
 
-    stream.writeUint32(placeLocations.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(placeLocations.size()));
     for (const Coord& placeLocation : placeLocations) {
         stream.writeSint32(placeLocation.x);
         stream.writeSint32(placeLocation.y);

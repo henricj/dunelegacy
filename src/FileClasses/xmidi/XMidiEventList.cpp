@@ -96,7 +96,7 @@ uint32_t XMidiEventList::convertListToMTrk(ODataSource* dest) {
     unsigned char last_status = 0;
     uint32_t i                = 8;
     uint32_t j                = 0;
-    uint32_t size_pos         = 0;
+    size_t size_pos           = 0;
 
     if (dest) {
         dest->write1('M');
@@ -190,7 +190,7 @@ uint32_t XMidiEventList::convertListToMTrk(ODataSource* dest) {
     i += 2 + putVLQ(dest, 0);
 
     if (dest) {
-        const int cur_pos = dest->getPos();
+        const auto cur_pos = dest->getPos();
         dest->seek(size_pos);
         dest->write4high(i - 8);
         dest->seek(cur_pos);

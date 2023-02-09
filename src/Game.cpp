@@ -72,6 +72,8 @@
 
 #include <fmt/format.h>
 
+#include <gsl/gsl>
+
 #include <algorithm>
 
 Game::Game() : localPlayerName_(dune::globals::settings.general.playerName) {
@@ -546,7 +548,7 @@ void Game::drawScreen() {
         const auto rects = std::to_array<SDL_FRect>(
             {{10, renderer_height - 20 - 36, 12, 36}, {10 + 12 + 8, renderer_height - 20 - 36, 12, 36}});
 
-        SDL_RenderFillRectsF(renderer, rects.data(), rects.size());
+        SDL_RenderFillRectsF(renderer, rects.data(), static_cast<int>(rects.size()));
     } else if (gameCycleCount_ < skipToGameCycle_) {
         // Cache this texture...
         auto pTexture = gui.createText(renderer, ">>", COLOR_RGBA(0, 242, 0, 128), 48);
@@ -1866,7 +1868,7 @@ bool Game::saveGame(const std::filesystem::path& filename) {
     // write gameInitSettings
     gameInitSettings_.save(fs);
 
-    fs.writeUint32(houseInfoListSetup_.size());
+    fs.writeUint32(gsl::narrow<uint32_t>(houseInfoListSetup_.size()));
     for (const GameInitSettings::HouseInfo& houseInfo : houseInfoListSetup_) {
         houseInfo.save(fs);
     }
@@ -1911,12 +1913,12 @@ bool Game::saveGame(const std::filesystem::path& filename) {
     // save the structures and units
     objectManager_.save(fs);
 
-    fs.writeUint32(dune::globals::bulletList.size());
+    fs.writeUint32(gsl::narrow<uint32_t>(dune::globals::bulletList.size()));
     for (const auto& pBullet : dune::globals::bulletList) {
         pBullet->save(fs);
     }
 
-    fs.writeUint32(explosionList_.size());
+    fs.writeUint32(gsl::narrow<uint32_t>(explosionList_.size()));
     for (const auto& pExplosion : explosionList_) {
         pExplosion->save(fs);
     }
@@ -2242,7 +2244,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 }
 
                 if (!groupList.empty()) {
-                    averagePosition /= groupList.size();
+                    averagePosition /= gsl::narrow<uint32_t>(groupList.size());
                 }
 
                 if (SDL_GetModState() & KMOD_SHIFT) {

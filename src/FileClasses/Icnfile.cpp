@@ -96,7 +96,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
         index = tmp;
     }
     MapfileEntry newMapfileEntry;
-    newMapfileEntry.numTiles = mapFilesize / 2 - index;
+    newMapfileEntry.numTiles = gsl::narrow<uint32_t>(mapFilesize / 2 - index);
     tilesets.push_back(newMapfileEntry);
 
     for (int i = 0; i < numTilesets; i++) {

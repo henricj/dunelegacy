@@ -37,6 +37,8 @@
 #include <units/Saboteur.h>
 #include <units/UnitBase.h>
 
+#include <gsl/gsl>
+
 inline constexpr auto AIUPDATEINTERVAL = 50;
 
 /**
@@ -212,7 +214,7 @@ void QuantBot::save(OutputStream& stream) const {
     stream.writeSint32(squadRetreatLocation.x);
     stream.writeSint32(squadRetreatLocation.y);
 
-    stream.writeUint32(placeLocations.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(placeLocations.size()));
     for (const Coord& placeLocation : placeLocations) {
         stream.writeSint32(placeLocation.x);
         stream.writeSint32(placeLocation.y);
