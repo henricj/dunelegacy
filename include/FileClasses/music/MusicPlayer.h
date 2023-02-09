@@ -49,6 +49,7 @@ enum MUSICTYPE {
     MUSIC_FINALE_A,   /*!< Atreides finale cutscene background music. */
     MUSIC_FINALE_O,   /*!< Ordos finale cutscene background music. */
     MUSIC_NUM_MUSIC_TYPES [[maybe_unused]],
+    MUSIC_FIRST_MUSIC_TYPE [[maybe_unused]] = 0,
 
     MUSIC_RANDOM = 0xFF /*!< Random music (attack music or peace music) */
 };

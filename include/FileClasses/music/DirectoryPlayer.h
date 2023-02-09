@@ -71,7 +71,7 @@ private:
 
     std::array<std::vector<std::filesystem::path>, MUSIC_NUM_MUSIC_TYPES> musicFileList;
 
-    Mix_Music* music;
+    sdl2::mix_music_ptr music;
 };
 
 #endif // DIRECTORYPLAYER_H

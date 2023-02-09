@@ -23,6 +23,8 @@
 #include <misc/fnkdat.h>
 #include <mmath.h>
 
+#include <gsl/gsl>
+
 #include <filesystem>
 
 DirectoryPlayer::DirectoryPlayer()
@@ -49,8 +51,6 @@ DirectoryPlayer::DirectoryPlayer()
         musicFileList[i] = getMusicFileNames(configfilepath / musicDirectoryNames[i]);
     }
 
-    music = nullptr;
-
 #if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
     Mix_Init(MIX_INIT_MID | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
 #else
@@ -59,10 +59,7 @@ DirectoryPlayer::DirectoryPlayer()
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
-    if (music != nullptr) {
-        Mix_FreeMusic(music);
-        music = nullptr;
-    }
+    music.reset();
 
     Mix_Quit();
 }
@@ -75,23 +72,24 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
         return;
     }
 
-    if (musicType >= 0 && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
-        musicNum         = random().rand(0u, musicFileList[musicType].size() - 1u);
+    if (musicType >= MUSIC_FIRST_MUSIC_TYPE && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
+        musicNum         = random().rand(0, gsl::narrow<int32_t>(musicFileList[musicType].size() - 1u));
         filename         = musicFileList[musicType][musicNum];
         currentMusicType = musicType;
     } else {
         // MUSIC_RANDOM
-        const int maxnum = musicFileList[MUSIC_ATTACK].size() + musicFileList[MUSIC_PEACE].size();
+        const auto attack_size = musicFileList[MUSIC_ATTACK].size();
+        const auto maxnum      = attack_size + musicFileList[MUSIC_PEACE].size();
 
-        if (maxnum > 0) {
-            const unsigned int randnum = random().rand(0, maxnum - 1);
+        if (maxnum > 0U) {
+            const auto randnum = random().rand(0U, gsl::narrow<uint32_t>(maxnum - 1U));
 
-            if (randnum < musicFileList[MUSIC_ATTACK].size()) {
-                musicNum         = randnum;
+            if (randnum < attack_size) {
+                musicNum         = gsl::narrow<int>(randnum);
                 filename         = musicFileList[MUSIC_ATTACK][musicNum];
                 currentMusicType = MUSIC_ATTACK;
             } else {
-                musicNum         = randnum - musicFileList[MUSIC_ATTACK].size();
+                musicNum         = gsl::narrow<int>(randnum - attack_size);
                 filename         = musicFileList[MUSIC_PEACE][musicNum];
                 currentMusicType = MUSIC_PEACE;
             }
@@ -102,15 +100,10 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
 
         Mix_HaltMusic();
 
-        if (music != nullptr) {
-            Mix_FreeMusic(music);
-            music = nullptr;
-        }
-
-        music = Mix_LoadMUS(filename.string().c_str());
-        if (music != nullptr) {
+        music.reset(Mix_LoadMUS(filename.string().c_str()));
+        if (music) {
             sdl2::log_info("Now playing {}!", filename.string());
-            Mix_PlayMusic(music, -1);
+            Mix_PlayMusic(music.get(), -1);
             Mix_VolumeMusic(musicVolume);
         } else {
             sdl2::log_info("Unable to play {}: {}!", filename.string(), Mix_GetError());
@@ -124,10 +117,9 @@ void DirectoryPlayer::toggleSound() {
         changeMusic(MUSIC_PEACE);
     } else {
         musicOn = false;
-        if (music != nullptr) {
+        if (music) {
             Mix_HaltMusic();
-            Mix_FreeMusic(music);
-            music = nullptr;
+            music.reset();
         }
     }
 }
@@ -141,7 +133,7 @@ void DirectoryPlayer::setMusic(bool value) {
 
     if (musicOn) {
         changeMusic(MUSIC_RANDOM);
-    } else if (music != nullptr) {
+    } else if (music) {
         Mix_HaltMusic();
     }
 }
