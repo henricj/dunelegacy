@@ -69,7 +69,7 @@ public:
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
     /**
-        Handles a key stroke. This method is neccessary for controlling an application
+        Handles a key stroke. This method is necessary for controlling an application
         without a mouse.
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
