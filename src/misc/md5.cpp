@@ -210,13 +210,15 @@ void md5_update(md5_context* ctx, const uint8_t* input, size_t ilen) {
     if (ilen <= 0)
         return;
 
+    const auto u32_ilen = gsl::narrow<uint32_t>(ilen);
+
     uint32_t left   = ctx->total[0] & 0x3FU;
     const auto fill = 64U - left;
 
-    ctx->total[0] += ilen;
+    ctx->total[0] += u32_ilen;
     ctx->total[0] &= 0xFFFFFFFF;
 
-    if (ctx->total[0] < static_cast<uint32_t>(ilen))
+    if (ctx->total[0] < u32_ilen)
         ctx->total[1]++;
 
     if (left && ilen >= fill) {

@@ -42,6 +42,8 @@
 
 #include <fmt/core.h>
 
+#include <gsl/gsl>
+
 #include <utility>
 
 namespace {
@@ -88,7 +90,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
     if (gameInitSettings.getGameType() == GameType::CustomGame
         || gameInitSettings.getGameType() == GameType::CustomMultiplayer) {
         auto RWops = sdl2::RWops_ptr{
-            SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size())};
+            SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gsl::narrow<int>(gameInitSettings.getFiledata().size()))};
 
         INIFile inimap(RWops.get());
         extractMapInfo(&inimap);
@@ -118,7 +120,8 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
         }
 
         const auto file_data = tmpGameInitSettings.getFiledata();
-        auto RWops           = sdl2::RWops_ptr{SDL_RWFromConstMem(file_data.data(), file_data.size())};
+
+        auto RWops           = sdl2::RWops_ptr{SDL_RWFromConstMem(file_data.data(), gsl::narrow<int>(file_data.size()))};
 
         INIFile inimap(RWops.get());
         extractMapInfo(&inimap);
@@ -127,7 +130,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
         gameInitSettings.setMultiplePlayersPerHouse(tmpGameInitSettings.isMultiplePlayersPerHouse());
 
         // adjust numHouses to the actually used houses (which might be smaller than the houses on the map)
-        numHouses = houseInfoListSetup.size();
+        numHouses = gsl::narrow<int>(houseInfoListSetup.size());
     } else {
         INIFile inimap(gameInitSettings.getFilename());
         extractMapInfo(&inimap);
@@ -889,7 +892,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
     if(pMap->hasSection("Mercenary"))   boundHousesOnMap.push_back(HOUSETYPE::HOUSE_MERCENARY);
     // clang-format on
 
-    numHouses = boundHousesOnMap.size();
+    numHouses = gsl::narrow<int>(boundHousesOnMap.size());
     if (pMap->hasSection("Player1"))
         numHouses++;
     if (pMap->hasSection("Player2"))
@@ -975,7 +978,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
         network_manager->sendChangeEventList(changeEventList);
     }
 
-    const int numBoundHouses = boundHousesOnMap.size();
+    const int numBoundHouses = gsl::narrow<int>(boundHousesOnMap.size());
     int numUsedBoundHouses   = 0;
     int numUsedRandomHouses  = 0;
     for (int i = 0; i < numHouses; i++) {
@@ -1381,7 +1384,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
 
 void CustomGamePlayers::removeFromHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house) {
 
-    for (int i = 0; i < houseDropDownBox.getNumEntries(); i++) {
+    for (size_t i = 0; i < houseDropDownBox.getNumEntries(); i++) {
         if (houseDropDownBox.getEntryIntData(i) == static_cast<int>(house)) {
             houseDropDownBox.removeEntry(i);
             break;

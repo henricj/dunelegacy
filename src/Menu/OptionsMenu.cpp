@@ -39,6 +39,8 @@
 
 #include <fmt/printf.h>
 
+#include <gsl/gsl>
+
 #include <algorithm>
 #include <utility>
 
@@ -93,7 +95,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
     languageHBox.addWidget(Label::create(_("Language")).release(), 190);
 
     for (auto i = decltype(availLanguages.size()){0}; i < availLanguages.size(); i++) {
-        languageDropDownBox.addEntry(availLanguages[i].substr(0, availLanguages[i].size() - 6), i);
+        languageDropDownBox.addEntry(availLanguages[i].substr(0, availLanguages[i].size() - 6), gsl::narrow<int>(i));
         if (availLanguages[i].substr(availLanguages[i].size() - 5, 2) == settings.general.language) {
             languageDropDownBox.setSelectedItem(i);
         }

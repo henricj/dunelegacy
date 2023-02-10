@@ -32,6 +32,8 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
+#include <gsl/gsl>
+
 #include <algorithm>
 #include <array>
 
@@ -69,7 +71,7 @@ void AIPlayer::save(OutputStream& stream) const {
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
 
-    stream.writeUint32(placeLocations.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(placeLocations.size()));
     for (const Coord& coord : placeLocations) {
         stream.writeSint32(coord.x);
         stream.writeSint32(coord.y);

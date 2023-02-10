@@ -28,6 +28,8 @@
 #include <structures/Palace.h>
 #include <units/UnitBase.h>
 
+#include <gsl/gsl>
+
 #include <unordered_map>
 
 namespace {
@@ -97,7 +99,7 @@ CampaignAIPlayer::~CampaignAIPlayer() = default;
 void CampaignAIPlayer::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint32(structureQueue.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(structureQueue.size()));
     for (const auto& structureInfo : structureQueue) {
         structureInfo.save(stream);
     }

@@ -21,6 +21,8 @@
 
 #include <SDL2/SDL_endian.h>
 
+#include <gsl/gsl>
+
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
 #        define WIN32_LEAN_AND_MEAN
@@ -62,7 +64,7 @@ void OFileStream::flush() {
 }
 
 void OFileStream::writeString(std::string_view str) {
-    writeUint32(str.length());
+    writeUint32(gsl::narrow<uint32_t>(str.length()));
 
     if (!str.empty()) {
         if (fwrite(str.data(), str.length(), 1, fp) != 1) {

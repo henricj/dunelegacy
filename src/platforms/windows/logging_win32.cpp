@@ -73,7 +73,7 @@ std::string read_registry_string(HKEY hKey, const char* name) {
     // Now read the actual string value.
 
     value.resize(size);
-    size = value.size();
+    size = gsl::narrow<DWORD>(value.size());
 
     { // Scope
         const auto result = RegQueryValueExA(hKey, name, nullptr, &type, reinterpret_cast<LPBYTE>(value.data()), &size);

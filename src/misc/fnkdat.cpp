@@ -56,6 +56,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <gsl/gsl>
+
 /* version is automatically generated
    #define FNKDAT_VERSION "0.0.8"
  */
@@ -266,7 +268,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
         if (flags & FNKDAT_USER) {
             output_path /= L"users";
 
-            DWORD dwSize = buffer.size();
+            auto dwSize = gsl::narrow<DWORD>(buffer.size());
 
             /* Grab what windows thinks is the current user name */
             if (GetUserNameW(buffer.data(), &dwSize) == TRUE) {

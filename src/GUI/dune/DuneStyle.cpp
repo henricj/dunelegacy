@@ -521,7 +521,7 @@ void DuneStyle::RenderButton(SDL_Renderer* renderer, const SDL_FRect& dest, cons
                                       SDL_FRect{dest.x + 1, dest.y + 1, 1, dest.h - 2}};
 
             SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-            SDL_RenderFillRectsF(renderer, top_left.data(), top_left.size());
+            SDL_RenderFillRectsF(renderer, top_left.data(), static_cast<int>(top_left.size()));
         }
 
         // Draw bottom/right edge
@@ -531,7 +531,7 @@ void DuneStyle::RenderButton(SDL_Renderer* renderer, const SDL_FRect& dest, cons
                                           SDL_FRect{dest.x + dest.w - 2, dest.y + 1, 1, dest.h - 2}};
 
             SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-            SDL_RenderFillRectsF(renderer, bottom_right.data(), bottom_right.size());
+            SDL_RenderFillRectsF(renderer, bottom_right.data(), static_cast<int>(bottom_right.size()));
         }
     } else {
         // pressed button mode

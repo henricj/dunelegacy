@@ -17,6 +17,8 @@
 
 #include <Network/ChangeEventList.h>
 
+#include <gsl/gsl>
+
 #include <string>
 #include <utility>
 
@@ -65,7 +67,7 @@ ChangeEventList& ChangeEventList::operator=(const ChangeEventList&)     = defaul
 ChangeEventList& ChangeEventList::operator=(ChangeEventList&&) noexcept = default;
 
 void ChangeEventList::save(OutputStream& stream) const {
-    stream.writeUint32(changeEventList_.size());
+    stream.writeUint32(gsl::narrow<uint32_t>(changeEventList_.size()));
     for (const auto& changeEvent : changeEventList_) {
         changeEvent.save(stream);
     }

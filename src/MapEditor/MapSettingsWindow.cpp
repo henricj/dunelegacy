@@ -33,6 +33,8 @@
 
 #include <fmt/core.h>
 
+#include <gsl/gsl>
+
 MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
@@ -74,15 +76,15 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     availableWinPictures.emplace_back("WIN2.WSA");
 
     for (size_t i = 0; i < availableWinPictures.size(); ++i) {
-        winPictureDropDownBox.addEntry(availableWinPictures[i], i);
+        winPictureDropDownBox.addEntry(availableWinPictures[i], gsl::narrow<int>(i));
         if (availableWinPictures[i] == mapInfo.winPicture) {
             winPictureDropDownBox.setSelectedItem(i);
         }
     }
 
-    if (winPictureDropDownBox.getSelectedIndex() < 0) {
+    if (winPictureDropDownBox.getSelectedIndex() == DropDownBox::invalid_index) {
         availableWinPictures.push_back(mapInfo.winPicture);
-        winPictureDropDownBox.addEntry(mapInfo.winPicture, availableWinPictures.size() - 1);
+        winPictureDropDownBox.addEntry(mapInfo.winPicture, gsl::narrow<int>(availableWinPictures.size() - 1));
     }
 
     winPictureVBox.addWidget(&winPictureDropDownBox);
@@ -100,15 +102,15 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     availableLosePictures.emplace_back("LOSTVEHC.WSA");
 
     for (size_t i = 0; i < availableLosePictures.size(); ++i) {
-        losePictureDropDownBox.addEntry(availableLosePictures[i], i);
+        losePictureDropDownBox.addEntry(availableLosePictures[i], gsl::narrow<int>(i));
         if (availableLosePictures[i] == mapInfo.losePicture) {
             losePictureDropDownBox.setSelectedItem(i);
         }
     }
 
-    if (losePictureDropDownBox.getSelectedIndex() < 0) {
+    if (losePictureDropDownBox.getSelectedIndex() == DropDownBox::invalid_index) {
         availableLosePictures.push_back(mapInfo.losePicture);
-        losePictureDropDownBox.addEntry(mapInfo.losePicture, availableLosePictures.size() - 1);
+        losePictureDropDownBox.addEntry(mapInfo.losePicture, gsl::narrow<int>(availableLosePictures.size() - 1));
     }
 
     losePictureVBox.addWidget(&losePictureDropDownBox);
@@ -133,15 +135,16 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     availableBriefingPictures.emplace_back("SARDUKAR.WSA");
 
     for (size_t i = 0; i < availableBriefingPictures.size(); ++i) {
-        briefingPictureDropDownBox.addEntry(availableBriefingPictures[i], i);
+        briefingPictureDropDownBox.addEntry(availableBriefingPictures[i], gsl::narrow<int>(i));
         if (availableBriefingPictures[i] == mapInfo.briefPicture) {
             briefingPictureDropDownBox.setSelectedItem(i);
         }
     }
 
-    if (briefingPictureDropDownBox.getSelectedIndex() < 0) {
+    if (briefingPictureDropDownBox.getSelectedIndex() == DropDownBox::invalid_index) {
         availableBriefingPictures.push_back(mapInfo.briefPicture);
-        briefingPictureDropDownBox.addEntry(mapInfo.briefPicture, availableBriefingPictures.size() - 1);
+        briefingPictureDropDownBox.addEntry(mapInfo.briefPicture,
+                                            gsl::narrow<int>(availableBriefingPictures.size() - 1));
     }
 
     briefingPictureVBox.addWidget(&briefingPictureDropDownBox);
