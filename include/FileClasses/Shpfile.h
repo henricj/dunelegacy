@@ -64,16 +64,19 @@ public:
 
     sdl2::surface_ptr getPicture(uint32_t indexOfFile);
 
-    sdl2::surface_ptr
-    getPictureArray(unsigned int tilesX, unsigned int tilesY, const std::ranges::range auto&... tiles) {
+    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, const auto&... tiles) {
         constexpr auto size = (std::tuple_size_v<std::decay_t<decltype(tiles)>> + ...);
         std::array<int, size> buffer{};
 
         auto it = buffer.begin();
 
+#ifdef __cpp_lib_ranges
         auto next_out = [](auto&& v) { return v.out; };
 
         ((it = next_out(std::ranges::copy(tiles, it))), ...);
+#else
+        ((it = std::copy(tiles.begin(), tiles.end(), it)), ...);
+#endif
 
         assert(it == buffer.end());
 

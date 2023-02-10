@@ -436,9 +436,13 @@ public:
     void unregisterPlayer(Player* player) {
         playerID2Player_.erase(player->getPlayerID());
 
+#ifdef __cpp_lib_ranges
         const auto iter = std::ranges::find_if(
             playerName2Player_, [=](decltype(playerName2Player_)::reference kv) { return kv.second == player; });
-
+#else
+        const auto iter = std::find_if(playerName2Player_.begin(), playerName2Player_.end(),
+                                       [=](decltype(playerName2Player_)::reference kv) { return kv.second == player; });
+#endif
         if (iter != playerName2Player_.end())
             playerName2Player_.erase(iter);
     }

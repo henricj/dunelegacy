@@ -53,8 +53,13 @@ public:
         \param pChildWidget Widget to remove
     */
     void removeChildWidget(Widget* pChildWidget) override {
+#ifdef __cpp_lib_ranges
         auto it = std::ranges::find_if(containedWidgets,
                                        [pChildWidget](const auto& wd) { return wd.pWidget == pChildWidget; });
+#else
+        auto it = std::find_if(containedWidgets.begin(), containedWidgets.end(),
+                               [pChildWidget](const auto& wd) { return wd.pWidget == pChildWidget; });
+#endif
 
         if (it == std::end(containedWidgets))
             return;
@@ -467,9 +472,14 @@ protected:
             if (pActiveChildWidget != nullptr)
                 pActiveChildWidget->setActive(false);
 
-            // find childWidget in the widget list
+                // find childWidget in the widget list
+#ifdef __cpp_lib_ranges
             auto iter =
                 std::ranges::find_if(containedWidgets, [childWidget](auto& wd) { return wd.pWidget == childWidget; });
+#else
+            auto iter = std::find_if(containedWidgets.begin(), containedWidgets.end(),
+                                     [childWidget](auto& wd) { return wd.pWidget == childWidget; });
+#endif
 
             if (iter != std::end(containedWidgets)) {
                 ++iter;
@@ -532,7 +542,12 @@ protected:
         \return a pointer to the WidgetData, nullptr if not found
     */
     WidgetData* getWidgetDataFromWidget(const Widget* pWidget) {
+#ifdef __cpp_lib_ranges
         auto it = std::ranges::find_if(containedWidgets, [pWidget](const auto& wd) { return wd.pWidget == pWidget; });
+#else
+        auto it = std::find_if(containedWidgets.begin(), containedWidgets.end(),
+                               [pWidget](const auto& wd) { return wd.pWidget == pWidget; });
+#endif
 
         if (it == std::end(containedWidgets))
             return nullptr;
