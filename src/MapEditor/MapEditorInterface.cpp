@@ -1242,8 +1242,10 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
 
 void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 
-    for (size_t i = 0; i < pMapEditor_->getPlayers().size(); i++) {
-        if (pMapEditor_->getPlayers()[i].house_ == newHouse) {
+    const auto& players = pMapEditor_->getPlayers();
+
+    for (size_t i = 0U; i < players.size(); ++i) {
+        if (players[i].house_ == newHouse) {
             houseDropDownBox.setSelectedItem(i);
             break;
         }
