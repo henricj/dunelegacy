@@ -38,6 +38,9 @@
 class MapEditor;
 
 class ReinforcementsWindow final : public Window {
+    using reinforcements_container_type = std::vector<ReinforcementInfo>;
+    using difference_type               = reinforcements_container_type::difference_type;
+
 public:
     ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
@@ -58,6 +61,8 @@ public:
 private:
     void onCancel();
     void onOK();
+
+    void swap(ListBox::index_type selected, ListBox::index_type other);
 
     void onUp();
     void onDown();
@@ -111,7 +116,7 @@ private:
     HOUSETYPE house_;
     uint32_t color_;
 
-    std::vector<ReinforcementInfo> reinforcements;
+    reinforcements_container_type reinforcements;
 };
 
 #endif // REINFORCEMENTSWINDOW_H

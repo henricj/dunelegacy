@@ -33,10 +33,15 @@
 
 #include <misc/SDL2pp.h>
 
+#include <vector>
+
 // forward declaration
 class MapEditor;
 
 class TeamsWindow final : public Window {
+    using aiteams_container_type = std::vector<AITeamInfo>;
+    using difference_type        = aiteams_container_type::difference_type;
+
 public:
     TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
@@ -58,6 +63,8 @@ private:
     void onCancel();
     void onOK();
 
+    void swap(ListBox::index_type selected, ListBox::index_type other);
+
     void onUp();
     void onDown();
 
@@ -72,7 +79,7 @@ private:
 
     void onMaxUnitsChange(bool bInteractive);
 
-    std::string getDescribingString(const AITeamInfo& aiteamInfo);
+    std::string getDescribingString(const AITeamInfo& aiteamInfo) const;
 
     [[nodiscard]] std::string getPlayerName(HOUSETYPE house) const;
 
@@ -113,7 +120,7 @@ private:
     HOUSETYPE house_;
     uint32_t color_;
 
-    std::vector<AITeamInfo> aiteams_;
+    aiteams_container_type aiteams_;
 };
 
 #endif // TEAMSWINDOW_H

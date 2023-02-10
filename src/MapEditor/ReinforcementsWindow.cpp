@@ -236,105 +236,118 @@ void ReinforcementsWindow::onOK() {
     }
 }
 
+void ReinforcementsWindow::swap(ListBox::index_type selected, ListBox::index_type other) {
+
+    const auto it_selected = reinforcements.begin() + gsl::narrow<difference_type>(selected);
+    const auto it_other    = reinforcements.begin() + gsl::narrow<difference_type>(other);
+
+    reinforcementsListBox.removeEntry(selected);
+    reinforcementsListBox.insertEntry(other, getDescribingString(*it_selected));
+    reinforcementsListBox.setSelectedItem(other);
+
+    std::swap(*it_selected, *it_other);
+}
+
 void ReinforcementsWindow::onUp() {
-    const int index = reinforcementsListBox.getSelectedIndex();
+    const auto index = reinforcementsListBox.getSelectedIndex();
 
-    if (index >= 1) {
-        const ReinforcementInfo reinforcementInfo = reinforcements.at(index);
-        reinforcements.erase(reinforcements.begin() + index);
-        reinforcementsListBox.removeEntry(index);
+    if (!reinforcementsListBox.isValid(index) || index < 1)
+        return;
 
-        reinforcements.insert(reinforcements.begin() + index - 1, reinforcementInfo);
-        reinforcementsListBox.insertEntry(index - 1, getDescribingString(reinforcementInfo));
-        reinforcementsListBox.setSelectedItem(index - 1);
-    }
+    swap(index, index - 1);
 }
 
 void ReinforcementsWindow::onDown() {
-    const int index = reinforcementsListBox.getSelectedIndex();
+    const auto index = reinforcementsListBox.getSelectedIndex();
 
-    if ((index >= 0) && (index < reinforcementsListBox.getNumEntries() - 1)) {
-        const ReinforcementInfo reinforcementInfo = reinforcements.at(index);
-        reinforcements.erase(reinforcements.begin() + index);
-        reinforcementsListBox.removeEntry(index);
+    if (!reinforcementsListBox.isValid(index) || !reinforcementsListBox.isValid(index + 1))
+        return;
 
-        reinforcements.insert(reinforcements.begin() + index + 1, reinforcementInfo);
-        reinforcementsListBox.insertEntry(index + 1, getDescribingString(reinforcementInfo));
-        reinforcementsListBox.setSelectedItem(index + 1);
-    }
+    swap(index, index + 1);
 }
 
 void ReinforcementsWindow::onAdd() {
     if (pMapEditor_->getMapVersion() < 2 && reinforcementsListBox.getNumEntries() >= 16) {
-        MsgBox* pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
+        auto* const pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
         pMsgBox->setTextColor(color_);
         openWindow(pMsgBox);
         return;
     }
 
-    const int index = reinforcementsListBox.getSelectedIndex();
+    const auto index = reinforcementsListBox.getSelectedIndex();
+    if (!reinforcementsListBox.isValid(index))
+        return;
 
     const ReinforcementInfo reinforcementInfo(
         static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
         static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData()),
         static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData()), timeTextBox.getValue(),
         repeatCheckbox.isChecked());
-    reinforcements.insert(reinforcements.begin() + index + 1, reinforcementInfo);
-    reinforcementsListBox.insertEntry(index + 1, getDescribingString(reinforcementInfo));
-    reinforcementsListBox.setSelectedItem(index + 1);
+
+    const auto insert_index = index + 1;
+
+    const auto it = reinforcements.begin() + gsl::narrow<difference_type>(insert_index);
+    reinforcements.insert(it, reinforcementInfo);
+
+    reinforcementsListBox.insertEntry(insert_index, getDescribingString(reinforcementInfo));
+    reinforcementsListBox.setSelectedItem(insert_index);
 }
 
 void ReinforcementsWindow::onRemove() {
-    const int index = reinforcementsListBox.getSelectedIndex();
+    const auto index = reinforcementsListBox.getSelectedIndex();
+    if (!reinforcementsListBox.isValid(index))
+        return;
 
-    if (index >= 0) {
-        reinforcements.erase(reinforcements.begin() + index);
-        reinforcementsListBox.removeEntry(index);
-        reinforcementsListBox.setSelectedItem(
-            index < reinforcementsListBox.getNumEntries() ? index : (reinforcementsListBox.getNumEntries() - 1));
-    }
+    const auto it = reinforcements.begin() + gsl::narrow<difference_type>(index);
+    reinforcements.erase(it);
+
+    const auto num_entries = reinforcementsListBox.getNumEntries();
+
+    reinforcementsListBox.removeEntry(index);
+
+    if (num_entries > 0)
+        reinforcementsListBox.setSelectedItem(index < num_entries ? index : (num_entries - 1));
 }
 
 void ReinforcementsWindow::onSelectionChange([[maybe_unused]] bool bInteractive) {
-    const int index = reinforcementsListBox.getSelectedIndex();
+    const auto index = reinforcementsListBox.getSelectedIndex();
+    if (!reinforcementsListBox.isValid(index))
+        return;
 
-    if (index >= 0) {
-        ReinforcementInfo& reinforcementInfo = reinforcements.at(index);
+    const auto& reinforcementInfo = reinforcements.at(index);
 
-        for (int i = 0; i < playerDropDownBox.getNumEntries(); i++) {
-            if (playerDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.houseID)) {
-                playerDropDownBox.setSelectedItem(i);
-                break;
-            }
+    for (size_t i = 0; i < playerDropDownBox.getNumEntries(); i++) {
+        if (playerDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.houseID)) {
+            playerDropDownBox.setSelectedItem(i);
+            break;
         }
-
-        for (int i = 0; i < unitDropDownBox.getNumEntries(); i++) {
-            if (unitDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.unitID)) {
-                unitDropDownBox.setSelectedItem(i);
-                break;
-            }
-        }
-
-        for (int i = 0; i < dropLocationDropDownBox.getNumEntries(); i++) {
-            if (dropLocationDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.dropLocation)) {
-                dropLocationDropDownBox.setSelectedItem(i);
-                break;
-            }
-        }
-
-        timeTextBox.setValue(reinforcementInfo.droptime);
-
-        repeatCheckbox.setChecked(reinforcementInfo.bRepeat);
     }
+
+    for (size_t i = 0; i < unitDropDownBox.getNumEntries(); i++) {
+        if (unitDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.unitID)) {
+            unitDropDownBox.setSelectedItem(i);
+            break;
+        }
+    }
+
+    for (size_t i = 0; i < dropLocationDropDownBox.getNumEntries(); i++) {
+        if (dropLocationDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.dropLocation)) {
+            dropLocationDropDownBox.setSelectedItem(i);
+            break;
+        }
+    }
+
+    timeTextBox.setValue(reinforcementInfo.droptime);
+
+    repeatCheckbox.setChecked(reinforcementInfo.bRepeat);
 }
 
 void ReinforcementsWindow::onEntryChange(bool bInteractive) {
     if (!bInteractive)
         return;
 
-    const int index = reinforcementsListBox.getSelectedIndex();
-
-    if (index < 0)
+    const auto index = reinforcementsListBox.getSelectedIndex();
+    if (!reinforcementsListBox.isValid(index))
         return;
 
     auto& reinforcementInfo        = reinforcements.at(index);
@@ -347,7 +360,6 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
 }
 
 std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& reinforcementInfo) {
-
     return fmt::format("{}, {}, {}, {} min{}", getPlayerName(reinforcementInfo.houseID),
                        resolveItemName(reinforcementInfo.unitID),
                        resolveDropLocationName(reinforcementInfo.dropLocation),

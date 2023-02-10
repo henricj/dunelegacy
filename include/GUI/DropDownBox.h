@@ -25,12 +25,16 @@
 
 #include <functional>
 #include <string>
+#include <utility>
 
 /// A class for a dropdown box widget
 class DropDownBox final : public Widget {
     using parent = Widget;
 
 public:
+    using index_type                    = ListBox::index_type;
+    static constexpr auto invalid_index = std::numeric_limits<index_type>::max();
+
     /// default constructor
     DropDownBox();
 
@@ -171,7 +175,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void insertEntry(int index, std::string text, int data = 0);
+    void insertEntry(index_type index, std::string text, int data = 0);
 
     /**
         Insert a new entry to this list box at the specified index
@@ -179,7 +183,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void insertEntry(int index, std::string text, void* data);
+    void insertEntry(index_type index, std::string text, void* data);
 
     /**
         Returns the number of entries in this dropdown box
@@ -192,42 +196,42 @@ public:
         \param  index   the zero-based index of the entry
         \return the text of the entry
     */
-    [[nodiscard]] std::string getEntry(unsigned int index) const { return listBox_.getEntry(index); }
+    [[nodiscard]] std::string getEntry(index_type index) const { return listBox_.getEntry(index); }
 
     /**
         Sets the text of the entry specified by index.
         \param  index   the zero-based index of the entry
         \param  text    the text to set
     */
-    void setEntry(unsigned int index, const std::string& text);
+    void setEntry(index_type index, const std::string& text);
 
     /**
         Returns the data assigned to the entry specified by index.
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    [[nodiscard]] int getEntryIntData(unsigned int index) const { return listBox_.getEntryIntData(index); }
+    [[nodiscard]] int getEntryIntData(index_type index) const { return listBox_.getEntryIntData(index); }
 
     /**
         Sets the data assigned to the entry specified by index.
         \param  index   the zero-based index of the entry
         \param  value    the value to set
     */
-    void setEntryIntData(unsigned int index, int value) { listBox_.setEntryIntData(index, value); }
+    void setEntryIntData(index_type index, int value) { listBox_.setEntryIntData(index, value); }
 
     /**
         Returns the data assigned to the entry specified by index.
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    [[nodiscard]] void* getEntryPtrData(unsigned int index) const { return listBox_.getEntryPtrData(index); }
+    [[nodiscard]] void* getEntryPtrData(index_type index) const { return listBox_.getEntryPtrData(index); }
 
     /**
         Sets the data assigned to the entry specified by index.
         \param  index   the zero-based index of the entry
         \param  data    the data to set
     */
-    void setEntryPtrData(unsigned int index, void* data) { listBox_.setEntryPtrData(index, data); }
+    void setEntryPtrData(index_type index, void* data) { listBox_.setEntryPtrData(index, data); }
 
     /**
         Returns the text of the selected entry.
@@ -249,28 +253,28 @@ public:
 
     /**
         Returns the zero-based index of the current selected entry.
-        \return the index of the selected element (-1 if none is selected)
+        \return the index of the selected element (invalid_index if none is selected)
     */
-    [[nodiscard]] int getSelectedIndex() const { return listBox_.getSelectedIndex(); }
+    [[nodiscard]] index_type getSelectedIndex() const { return listBox_.getSelectedIndex(); }
 
     /**
         Sets the selected item. The user is informed about this switch
         by calling pOnSelectionChange(false)
         \param index    the new index (-1 == select nothing)
     */
-    void setSelectedItem(int index) { setSelectedItem(index, false); }
+    void setSelectedItem(index_type index) { setSelectedItem(index, false); }
 
     /**
         Sets the number of visible entries when the list is opened
         \param  newNumVisibleEntries    the number of entries (default=7)
     */
-    void setNumVisibleEntries(int newNumVisibleEntries) { numVisibleEntries_ = newNumVisibleEntries; }
+    void setNumVisibleEntries(index_type newNumVisibleEntries) { numVisibleEntries_ = newNumVisibleEntries; }
 
     /**
         Removes the entry which is specified by index
         \param  index   the zero-based index of the element to remove
     */
-    void removeEntry(int index);
+    void removeEntry(index_type index);
 
     /**
             Deletes all entries in the list.
@@ -282,7 +286,7 @@ public:
         \param  pOnSelectionChange  A function this is called on selection change
     */
     void setOnSelectionChange(std::function<void(bool)> pOnSelectionChange) {
-        this->pOnSelectionChange_ = pOnSelectionChange;
+        this->pOnSelectionChange_ = std::move(pOnSelectionChange);
     }
 
     /**
@@ -292,7 +296,7 @@ public:
         a on mouse hover effect is only active if a OnClick function is set.
         \param  pOnClick    A function to be called on click
     */
-    void setOnClick(std::function<void()> pOnClick) { this->pOnClick_ = pOnClick; }
+    void setOnClick(std::function<void()> pOnClick) { this->pOnClick_ = std::move(pOnClick); }
 
     /**
         Sets this widget active. The parent widgets are also activated and the
@@ -338,7 +342,7 @@ protected:
         This method is called by containers to enable a widget or disable a widget explicitly.
         It is the responsibility of the container to take care that there is only one active
         widget.
-        \param  bActive true = activate this widget, false = deactiviate this widget
+        \param  bActive true = activate this widget, false = deactivate this widget
     */
     void setActive(bool bActive) override;
 
@@ -348,7 +352,7 @@ protected:
         \param index    the new index (-1 == select nothing)
         \param bInteractive true = interactive change of the selection, false = changed by calling setSelectedEntry()
     */
-    void setSelectedItem(int index, bool bInteractive) { listBox_.setSelectedItem(index, bInteractive); }
+    void setSelectedItem(index_type index, bool bInteractive) { listBox_.setSelectedItem(index, bInteractive); }
 
 private:
     void onSelectionChange(bool bInteractive);
@@ -383,7 +387,7 @@ private:
     std::function<void(bool)> pOnSelectionChange_; ///< this function is called when the selection changes
     std::function<void()> pOnClick_;               ///< function that is called when this drop down box is clicked
 
-    int numVisibleEntries_ = 7; ///< the number of entries visible when the list is opened (default=7)
+    index_type numVisibleEntries_ = 7; ///< the number of entries visible when the list is opened (default=7)
 
     uint32_t color_{COLOR_DEFAULT}; ///< the color
     bool bHover_ = false;           ///< true = currently mouse hover, false = currently no mouse hover

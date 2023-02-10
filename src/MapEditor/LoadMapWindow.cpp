@@ -35,6 +35,8 @@
 
 #include <globals.h>
 
+#include <gsl/gsl>
+
 #include <string_view>
 
 LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) {
@@ -149,24 +151,17 @@ bool LoadMapWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
             return true;
         }
         if (key.keysym.sym == SDLK_DELETE) {
+            const auto index = mapList.getSelectedIndex();
+            if (!mapList.isValid(index))
+                return true;
 
-            const int index = mapList.getSelectedIndex();
+            auto* const pQstBox =
+                QstBox::create(fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index)),
+                               _("Yes"), _("No"), QSTBOX_BUTTON1);
 
-            if (index >= 0) {
+            pQstBox->setTextColor(color);
 
-                QstBox* pQstBox = QstBox::create(
-                    fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
-
-                    _("Yes"),
-
-                    _("No"),
-
-                    QSTBOX_BUTTON1);
-
-                pQstBox->setTextColor(color);
-
-                openWindow(pQstBox);
-            }
+            openWindow(pQstBox);
 
             return true;
         }
@@ -183,8 +178,8 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
     if (pQstBox->getPressedButtonID() != QSTBOX_BUTTON1)
         return;
 
-    const int index = mapList.getSelectedIndex();
-    if (index < 0)
+    const auto index = mapList.getSelectedIndex();
+    if (index == ListBox::invalid_index)
         return;
 
     const auto file2delete = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
@@ -197,7 +192,7 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
     mapList.removeEntry(index);
     if (mapList.getNumEntries() > 0) {
         if (index >= mapList.getNumEntries()) {
-            mapList.setSelectedItem(mapList.getNumEntries() - 1);
+            mapList.setSelectedItem(gsl::narrow<int>(mapList.getNumEntries() - 1));
         } else {
             mapList.setSelectedItem(index);
         }
@@ -212,9 +207,8 @@ void LoadMapWindow::onCancel() {
 }
 
 void LoadMapWindow::onLoad() {
-    if (mapList.getSelectedIndex() < 0) {
+    if (!mapList.isSelected())
         return;
-    }
 
     loadMapname         = mapList.getSelectedEntry();
     loadMapFilepath     = currentMapDirectory / (loadMapname + ".ini");
@@ -265,9 +259,8 @@ void LoadMapWindow::onMapTypeChange(int buttonID) {
 void LoadMapWindow::onMapListSelectionChange([[maybe_unused]] bool bInteractive) {
     loadButton.setEnabled(true);
 
-    if (mapList.getSelectedIndex() < 0) {
+    if (!mapList.isSelected())
         return;
-    }
 
     auto mapFilename = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
     getCaseInsensitiveFilename(mapFilename);

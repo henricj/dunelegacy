@@ -76,23 +76,20 @@ bool DropDownBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         setActive();
         return true;
     }
-    if ((x >= 0) && (x < getSize().x - openListBoxButton_.getSize().x - 1)
 
-        && (y >= 0) && (y < getSize().y) && (pressed)) {
+    if ((x >= 0) && (x < getSize().x - openListBoxButton_.getSize().x - 1) && (y >= 0) && (y < getSize().y)
+        && (pressed)) {
 
         if (bOnClickEnabled_ && pOnClick_) {
-
             pOnClick_();
-
         } else {
-
             setActive();
-
             onOpenListBoxButton();
         }
 
         return true;
     }
+
     return false;
 }
 
@@ -122,23 +119,12 @@ bool DropDownBox::handleMouseWheel(int32_t x, int32_t y, bool up) {
     }
 
     // forward mouse wheel event to list box
-    if (x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
-        if (up) {
-            if (listBox_.getSelectedIndex() < 0) {
-                listBox_.setSelectedItem(0, true);
-            } else if (listBox_.getSelectedIndex() > 0) {
-                listBox_.setSelectedItem(listBox_.getSelectedIndex() - 1, true);
-            }
-        } else {
-            if (listBox_.getSelectedIndex() < 0) {
-                listBox_.setSelectedItem(0, true);
-            } else if (listBox_.getSelectedIndex() < listBox_.getNumEntries() - 1) {
-                listBox_.setSelectedItem(listBox_.getSelectedIndex() + 1, true);
-            }
-        }
-        return true;
-    }
-    return false;
+    if (x < 0 || x >= getSize().x || y < 0 || y >= getSize().y)
+        return false;
+
+    listBox_.nudgeSelectedItem(!up);
+
+    return true;
 }
 
 bool DropDownBox::handleMouseWheelOverlay(int32_t x, int32_t y, bool up) {
@@ -168,19 +154,11 @@ bool DropDownBox::handleKeyPress(const SDL_KeyboardEvent& key) {
 
         switch (key.keysym.sym) {
             case SDLK_UP: {
-                if (listBox_.getSelectedIndex() < 0) {
-                    listBox_.setSelectedItem(0, true);
-                } else if (listBox_.getSelectedIndex() > 0) {
-                    listBox_.setSelectedItem(listBox_.getSelectedIndex() - 1, true);
-                }
+                listBox_.nudgeSelectedItem(false);
             } break;
 
             case SDLK_DOWN: {
-                if (listBox_.getSelectedIndex() < 0) {
-                    listBox_.setSelectedItem(0, true);
-                } else if (listBox_.getSelectedIndex() < listBox_.getNumEntries() - 1) {
-                    listBox_.setSelectedItem(listBox_.getSelectedIndex() + 1, true);
-                }
+                listBox_.nudgeSelectedItem(true);
             } break;
 
             case SDLK_SPACE: {
@@ -252,27 +230,27 @@ void DropDownBox::addEntry(std::string text, void* data) {
     resizeListBox();
 }
 
-void DropDownBox::insertEntry(int index, std::string text, int data) {
+void DropDownBox::insertEntry(index_type index, std::string text, int data) {
     listBox_.insertEntry(index, std::move(text), data);
     resizeListBox();
 }
 
-void DropDownBox::insertEntry(int index, std::string text, void* data) {
+void DropDownBox::insertEntry(index_type index, std::string text, void* data) {
     listBox_.insertEntry(index, std::move(text), data);
     resizeListBox();
 }
 
-void DropDownBox::setEntry(unsigned index, const std::string& text) {
+void DropDownBox::setEntry(index_type index, const std::string& text) {
     listBox_.setEntry(index, text);
     invalidateForeground();
     resizeListBox();
 }
 
-void DropDownBox::removeEntry(int index) {
+void DropDownBox::removeEntry(index_type index) {
     listBox_.removeEntry(index);
-    if (listBox_.getSelectedIndex() < 0) {
+    if (!listBox_.isSelected())
         invalidateForeground();
-    }
+
     resizeListBox();
 }
 
@@ -301,9 +279,9 @@ void DropDownBox::setEnabled(bool bEnabled) {
 }
 
 void DropDownBox::resizeListBox() {
-    const int listBoxHeight = std::max(1, std::min(numVisibleEntries_, gsl::narrow<int>(getNumEntries())))
-                                * GUIStyle::getInstance().getListBoxEntryHeight()
-                            + 2;
+    const auto listBoxHeight = std::max(1, gsl::narrow<int>(std::min(numVisibleEntries_, getNumEntries())))
+                                 * GUIStyle::getInstance().getListBoxEntryHeight()
+                             + 2;
     listBox_.resize(getSize().x - 1, listBoxHeight);
 }
 
@@ -354,13 +332,13 @@ void DropDownBox::updateForeground() {
     if (pForeground_ || pActiveForeground_)
         return;
 
-    if (listBox_.getSelectedIndex() < 0)
+    if (!listBox_.isSelected())
         return;
 
     const auto& gui = GUIStyle::getInstance();
 
     const auto width = getSize().x - 17;
-    const auto text  = listBox_.getEntry(listBox_.getSelectedIndex());
+    const auto text  = listBox_.getSelectedEntry();
 
     auto* const renderer = dune::globals::renderer.get();
 

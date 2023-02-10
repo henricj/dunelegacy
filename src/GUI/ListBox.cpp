@@ -46,8 +46,8 @@ bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     if (x >= 0 && x < getSize().x - scrollbarWidth && y >= 0 && y < getSize().y) {
 
         if (pressed) {
-            const int index = (y - 1) / GUIStyle::getInstance().getListBoxEntryHeight() + firstVisibleElement_;
-            if (index >= 0 && index < getNumEntries()) {
+            const index_type index = (y - 1) / GUIStyle::getInstance().getListBoxEntryHeight() + firstVisibleElement_;
+            if (index != invalid_index && index < getNumEntries()) {
                 selectedElement_ = index;
 
                 if (dune::dune_clock::now() - lastClickTime_ < 200ms) {
@@ -84,13 +84,17 @@ bool ListBox::handleKeyPress(const SDL_KeyboardEvent& key) {
     if (isActive()) {
         switch (key.keysym.sym) {
             case SDLK_UP: {
-                if (selectedElement_ > 0) {
+                if (selectedElement_ == invalid_index)
+                    setSelectedItem(0, true);
+                else if (selectedElement_ > 0) {
                     setSelectedItem(selectedElement_ - 1, true);
                 }
             } break;
 
             case SDLK_DOWN: {
-                if (selectedElement_ < getNumEntries() - 1) {
+                if (selectedElement_ == invalid_index)
+                    setSelectedItem(0, true);
+                else if (selectedElement_ < getNumEntries() - 1) {
                     setSelectedItem(selectedElement_ + 1, true);
                 }
             } break;
@@ -106,9 +110,8 @@ bool ListBox::handleKeyPress(const SDL_KeyboardEvent& key) {
 }
 
 void ListBox::draw(Point position) {
-    if (!isVisible()) {
+    if (!isVisible())
         return;
-    }
 
     updateTextures();
 
@@ -120,11 +123,11 @@ void ListBox::draw(Point position) {
     if (pForeground_)
         pForeground_.draw(renderer, position.x + 2, position.y + 1);
 
-    Point ScrollBarPos = position;
-    ScrollBarPos.x += getSize().x - scrollbar_.getSize().x;
-
     if (isScrollbarVisible()) {
-        scrollbar_.draw(ScrollBarPos);
+        auto scroll_bar_position = position;
+        scroll_bar_position.x += getSize().x - scrollbar_.getSize().x;
+
+        scrollbar_.draw(scroll_bar_position);
     }
 }
 
@@ -139,13 +142,13 @@ void ListBox::resize(uint32_t width, uint32_t height) {
 void ListBox::setActive() {
     parent::setActive();
 
-    if (selectedElement_ == -1 && getNumEntries() > 0) {
-        selectedElement_ = 0;
-        updateList();
-        if (pOnSelectionChange_) {
-            pOnSelectionChange_(false);
-        }
-    }
+    if (selectedElement_ == invalid_index && getNumEntries() > 0)
+        setSelectedItem(0);
+}
+
+void ListBox::addEntry(std::string text, int data) {
+    entries_.emplace_back(std::move(text), data);
+    updateList();
 }
 
 void ListBox::addEntry(std::string text, void* data) {
@@ -153,67 +156,159 @@ void ListBox::addEntry(std::string text, void* data) {
     updateList();
 }
 
-void ListBox::insertEntry(int index, std::string text, int data) {
-    if (index <= selectedElement_)
-        selectedElement_++;
-
-    entries_.emplace(entries_.begin() + index, std::move(text), data);
-    updateList();
-}
-
-void ListBox::insertEntry(int index, std::string text, void* data) {
-    if (index <= selectedElement_)
-        selectedElement_++;
-
-    entries_.emplace(entries_.begin() + index, std::move(text), data);
-    updateList();
-}
-
-void ListBox::setEntry(unsigned index, std::string_view text) {
+void ListBox::insertEntry(index_type index, std::string text, int data) {
     if (index >= entries_.size()) {
+        addEntry(std::move(text), data);
         return;
     }
 
-    entries_.at(index).text = text;
+    const auto it = entries_.begin() + static_cast<difference_type>(index);
+
+    entries_.emplace(it, std::move(text), data);
+
+    if (index <= selectedElement_)
+        selectedElement_++;
+
     updateList();
 }
 
-void ListBox::setEntryPtrData(unsigned index, void* data) {
+void ListBox::insertEntry(index_type index, std::string text, void* data) {
     if (index >= entries_.size()) {
+        addEntry(std::move(text), data);
         return;
     }
+
+    const auto it = entries_.begin() + static_cast<difference_type>(index);
+
+    entries_.emplace(it, std::move(text), data);
+
+    if (index <= selectedElement_)
+        selectedElement_++;
+
+    updateList();
+}
+
+std::string ListBox::getEntry(index_type index) const {
+    if (isValid(index)) {
+        return entries_.at(index).text;
+    }
+    return {};
+}
+
+void ListBox::setEntry(index_type index, std::string text) {
+    if (!isValid(index))
+        return;
+
+    entries_.at(index).text = std::move(text);
+    updateList();
+}
+
+int ListBox::getEntryIntData(index_type index) const {
+    if (isValid(index))
+        return entries_.at(index).data.intData;
+
+    return 0;
+}
+
+void ListBox::setEntryIntData(index_type index, int value) {
+    if (!isValid(index))
+        return;
+
+    entries_.at(index).data.intData = value;
+}
+
+void* ListBox::getEntryPtrData(index_type index) const {
+    if (isValid(index))
+        return entries_.at(index).data.ptrData;
+
+    return nullptr;
+}
+
+void ListBox::setEntryPtrData(index_type index, void* data) {
+    if (!isValid(index))
+        return;
 
     entries_.at(index).data.ptrData = data;
 }
 
-void ListBox::removeEntry(int index) {
-    const auto iter = entries_.begin() + index;
-    entries_.erase(iter);
-    if (index == selectedElement_) {
-        selectedElement_ = -1;
-    } else if (index < selectedElement_) {
-        selectedElement_--;
+std::string ListBox::getSelectedEntry() const {
+    return isSelected() ? getEntry(selectedElement_) : "";
+}
+
+int ListBox::getSelectedEntryIntData() const {
+    return isSelected() ? getEntryIntData(selectedElement_) : -1;
+}
+
+void* ListBox::getSelectedEntryPtrData() const {
+    return isSelected() ? getEntryPtrData(selectedElement_) : nullptr;
+}
+
+void ListBox::nudgeSelectedItem(bool increment) {
+    auto selected    = getSelectedIndex();
+    const auto count = getNumEntries();
+
+    if (selected == invalid_index) {
+        if (count > 0)
+            setSelectedItem(0);
+
+        return;
     }
+
+    if (increment) {
+        if (++selected >= count)
+            return;
+    } else {
+        if (0 == selected)
+            return;
+
+        --selected;
+    }
+
+    setSelectedItem(selected);
+}
+
+void ListBox::removeEntry(index_type index) {
+    if (!isValid(index))
+        return;
+
+    const auto it = entries_.begin() + static_cast<difference_type>(index);
+    entries_.erase(it);
 
     if (index < firstVisibleElement_)
         firstVisibleElement_--;
+
+    if (index == selectedElement_) {
+        setSelectedItem(invalid_index); // Make sure the event fires.
+    } else if (index < selectedElement_)
+        --selectedElement_;
 
     updateList();
 }
 
 void ListBox::clearAllEntries() {
     entries_.clear();
-    selectedElement_ = -1;
+    updateList();
+
+    // Make sure the event fires.
+    setSelectedItem(invalid_index);
+}
+
+void ListBox::setColor(uint32_t color) {
+    color_ = color;
+    updateList();
+    scrollbar_.setColor(color_);
+}
+
+void ListBox::setHighlightSelectedElement(bool bHighlightSelectedElement) {
+    bHighlightSelectedElement_ = bHighlightSelectedElement;
     updateList();
 }
 
-void ListBox::setSelectedItem(int index, bool bInteractive) {
-    const bool bChanged = index != selectedElement_;
+void ListBox::setSelectedItem(index_type index, bool bInteractive) {
+    const auto bChanged = index != selectedElement_;
+    auto update         = false;
 
-    if (index <= -1) {
-        selectedElement_ = -1;
-        updateList();
-    } else if (index >= 0 && index < getNumEntries()) {
+    if (isValid(index)) {
         selectedElement_ = index;
 
         const auto& gui = GUIStyle::getInstance();
@@ -230,14 +325,25 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
             firstVisibleElement_ = std::max(0, gsl::narrow<int>(getNumEntries() - numVisibleElements + 1));
         }
 
-        scrollbar_.setCurrentValue(firstVisibleElement_);
+        scrollbar_.setCurrentValue(gsl::narrow<int>(firstVisibleElement_));
 
+        update = true;
+    } else if (index == invalid_index && bChanged) {
+        selectedElement_ = invalid_index;
+        update           = true;
+    }
+
+    // The first visible element should never be past the end...
+    if (firstVisibleElement_ >= getNumEntries()) {
+        firstVisibleElement_ = 0;
+        update               = true;
+    }
+
+    if (update)
         updateList();
-    }
 
-    if (bChanged && pOnSelectionChange_) {
+    if (bChanged && pOnSelectionChange_)
         pOnSelectionChange_(bInteractive);
-    }
 }
 
 void ListBox::updateTextures() {
@@ -245,9 +351,10 @@ void ListBox::updateTextures() {
 
     const auto& gui = GUIStyle::getInstance();
 
-    if (!pBackground_)
+    if (!pBackground_) {
         pBackground_ =
             gui.createWidgetBackground(getSize().x, getSize().y).createTexture(dune::globals::renderer.get());
+    }
 
     if (!pForeground_) {
         const auto scale = gui.getActualScale();
@@ -272,14 +379,15 @@ void ListBox::updateTextures() {
         const auto scaled_entry_height = static_cast<int>(std::ceil(static_cast<float>(entry_height) * scale));
 
         const auto numVisibleElements = surfaceHeight / static_cast<int>(entry_height);
-        for (int i = firstVisibleElement_; i < firstVisibleElement_ + numVisibleElements; ++i) {
+        for (auto i = firstVisibleElement_; i < firstVisibleElement_ + numVisibleElements; ++i) {
             if (i >= getNumEntries())
                 break;
 
             auto pSurface = gui.createListBoxEntry(scaled_width, getEntry(i),
                                                    bHighlightSelectedElement_ && i == selectedElement_, color_);
 
-            SDL_Rect dest = calcDrawingRect(pSurface.get(), 0, (i - firstVisibleElement_) * scaled_entry_height);
+            auto dest =
+                calcDrawingRect(pSurface.get(), 0, gsl::narrow<int>((i - firstVisibleElement_) * scaled_entry_height));
             SDL_BlitSurface(pSurface.get(), nullptr, pForegroundSurface.get(), &dest);
         }
 
@@ -316,4 +424,12 @@ void ListBox::updateList() {
 
     scrollbar_.setRange(0, max_range);
     scrollbar_.setBigStepSize(std::max(1, numVisibleElements - 1));
+}
+
+ListBox::ListEntry::ListEntry(std::string text, int intData) : text(std::move(text)) {
+    data.intData = intData;
+}
+
+ListBox::ListEntry::ListEntry(std::string text, void* ptrData) : text(std::move(text)) {
+    data.ptrData = ptrData;
 }

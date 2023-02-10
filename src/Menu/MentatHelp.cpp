@@ -145,17 +145,16 @@ void MentatHelp::onExit() {
 }
 
 void MentatHelp::onListBoxClick() {
-    const int index = mentatTopicsList.getSelectedIndex();
-
-    if (index < 0) {
+    const auto index = mentatTopicsList.getSelectedIndex();
+    if (!mentatTopicsList.isValid(index))
         return;
-    }
 
-    const MentatTextFile::MentatEntry& mentatEntry = mentatEntries[index];
+    assert(mentatEntries.size() == mentatTopicsList.getNumEntries());
 
-    if (mentatEntry.menuLevel != 1) {
+    const auto& mentatEntry = mentatEntries[index];
+
+    if (mentatEntry.menuLevel != 1)
         return;
-    }
 
     int animID = 0;
     std::string text;

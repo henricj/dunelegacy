@@ -122,7 +122,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std:
         updateEntries();
     }
 
-    if (bSaveWindow_ && (fileList.getSelectedIndex() < 0)) {
+    if (bSaveWindow_ && !fileList.isSelected()) {
         saveName.setText(preselectedFile);
         saveName.setActive();
     }
@@ -137,19 +137,19 @@ LoadSaveWindow::~LoadSaveWindow() {
 void LoadSaveWindow::updateEntries() {
     fileList.clearAllEntries();
 
-    auto preselectedFileIndex = -1;
+    auto preselectedFileIndex = ListBox::invalid_index;
     for (const auto& fileName :
          getFileNamesList(directories_[currentDirectoryIndex_], extension_, true, FileListOrder_ModifyDate_Dsc)) {
-        const std::string entryName{reinterpret_cast<const char*>(fileName.stem().u8string().c_str())};
+        const auto entryName{(fileName.stem().string())};
 
         fileList.addEntry(entryName);
 
         if (entryName == preselectedFile_) {
-            preselectedFileIndex = gsl::narrow<int>(fileList.getNumEntries() - 1);
+            preselectedFileIndex = fileList.getNumEntries() - 1;
         }
     }
 
-    if (preselectedFileIndex >= 0) {
+    if (preselectedFileIndex != ListBox::invalid_index) {
         fileList.setSelectedItem(preselectedFileIndex);
     }
 }
@@ -166,19 +166,16 @@ bool LoadSaveWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
             return true;
         }
         if (key.keysym.sym == SDLK_DELETE) {
+            if (!fileList.isSelected())
+                return true;
 
-            const auto index = fileList.getSelectedIndex();
+            auto* const pQstBox =
+                QstBox::create(fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getSelectedEntry()),
+                               _("Yes"), _("No"), QSTBOX_BUTTON1);
 
-            if (index >= 0) {
+            pQstBox->setTextColor(color_);
 
-                auto* pQstBox = QstBox::create(
-                    fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()), _("Yes"),
-                    _("No"), QSTBOX_BUTTON1);
-
-                pQstBox->setTextColor(color_);
-
-                openWindow(pQstBox);
-            }
+            openWindow(pQstBox);
 
             return true;
         }
@@ -193,7 +190,7 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
         return;
 
     const auto index = fileList.getSelectedIndex();
-    if (index < 0)
+    if (!fileList.isValid(index))
         return;
 
     const auto file2delete = directories_[currentDirectoryIndex_] / (fileList.getEntry(index) + "." + extension_);
@@ -205,8 +202,8 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     fileList.removeEntry(index);
     const auto num_entries = fileList.getNumEntries();
     if (num_entries > 0) {
-        if (gsl::narrow<uint32_t>(index) >= num_entries) {
-            fileList.setSelectedItem(gsl::narrow<int>(num_entries - 1));
+        if (index >= num_entries) {
+            fileList.setSelectedItem(num_entries - 1);
         } else {
             fileList.setSelectedItem(index);
         }
@@ -217,7 +214,7 @@ std::unique_ptr<LoadSaveWindow>
 LoadSaveWindow::create(bool bSave, std::string caption, std::filesystem::path directory, std::string extension,
                        std::string preselectedFile, Uint32 color) {
     std::vector<std::filesystem::path> directories;
-    directories.push_back(directory);
+    directories.push_back(std::move(directory));
     std::vector<std::string> directoryTitles;
     directoryTitles.emplace_back();
 
@@ -239,15 +236,15 @@ LoadSaveWindow::create(bool bSave, std::string caption, std::vector<std::filesys
 void LoadSaveWindow::onOK() {
     if (!bSaveWindow_) {
         const auto index = fileList.getSelectedIndex();
-        if (index >= 0) {
-            filename_ = directories_[currentDirectoryIndex_] / (fileList.getEntry(index) + "." + extension_);
-            filename_ = filename_.lexically_normal().native();
+        if (!fileList.isValid(index))
+            return;
 
-            auto* const pParentWindow = dynamic_cast<Window*>(getParent());
-            if (pParentWindow != nullptr) {
-                pParentWindow->closeChildWindow();
-            }
-        }
+        filename_ = directories_[currentDirectoryIndex_] / (fileList.getEntry(index) + "." + extension_);
+        filename_ = filename_.lexically_normal().native();
+
+        auto* const pParentWindow = dynamic_cast<Window*>(getParent());
+        if (pParentWindow != nullptr)
+            pParentWindow->closeChildWindow();
     } else {
         const auto savename = saveName.getText();
 
@@ -285,8 +282,9 @@ void LoadSaveWindow::onSelectionChange([[maybe_unused]] bool bInteractive) {
     if (!bSaveWindow_)
         return;
 
-    const int index = fileList.getSelectedIndex();
-    if (index >= 0) {
-        saveName.setText(fileList.getEntry(index));
-    }
+    const auto index = fileList.getSelectedIndex();
+    if (!fileList.isValid(index))
+        return;
+
+    saveName.setText(fileList.getEntry(index));
 }

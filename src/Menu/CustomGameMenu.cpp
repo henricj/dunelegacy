@@ -184,9 +184,8 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
 }
 
 void CustomGameMenu::onNext() {
-    if (mapList.getSelectedIndex() < 0) {
+    if (!mapList.isSelected())
         return;
-    }
 
     auto mapFilename = currentMapDirectory / mapList.getSelectedEntry();
     mapFilename += ".ini";
@@ -273,9 +272,8 @@ void CustomGameMenu::onMapTypeChange(int buttonID) {
 void CustomGameMenu::onMapListSelectionChange([[maybe_unused]] bool bInteractive) {
     nextButton.setEnabled(true);
 
-    if (mapList.getSelectedIndex() < 0) {
+    if (!mapList.isSelected())
         return;
-    }
 
     auto mapFilename = currentMapDirectory / mapList.getSelectedEntry();
     mapFilename += ".ini";

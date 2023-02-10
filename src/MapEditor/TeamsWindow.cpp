@@ -32,6 +32,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <gsl/gsl>
+
 TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house_(currentHouse), aiteams_(pMapEditor->getAITeams()) {
 
@@ -226,93 +228,107 @@ void TeamsWindow::onOK() {
     }
 }
 
+void TeamsWindow::swap(ListBox::index_type selected, ListBox::index_type other) {
+
+    const auto it_selected = aiteams_.begin() + gsl::narrow<difference_type>(selected);
+    const auto it_other    = aiteams_.begin() + gsl::narrow<difference_type>(other);
+
+    teamsListBox.removeEntry(selected);
+    teamsListBox.insertEntry(other, getDescribingString(*it_selected));
+    teamsListBox.setSelectedItem(other);
+
+    std::swap(*it_selected, *it_other);
+}
+
 void TeamsWindow::onUp() {
-    const int index = teamsListBox.getSelectedIndex();
+    const auto index = teamsListBox.getSelectedIndex();
 
-    if (index >= 1) {
-        const AITeamInfo aiteamInfo = aiteams_.at(index);
-        aiteams_.erase(aiteams_.begin() + index);
-        teamsListBox.removeEntry(index);
+    if (!teamsListBox.isValid(index) || index < 1)
+        return;
 
-        aiteams_.insert(aiteams_.begin() + index - 1, aiteamInfo);
-        teamsListBox.insertEntry(index - 1, getDescribingString(aiteamInfo));
-        teamsListBox.setSelectedItem(index - 1);
-    }
+    swap(index, index - 1);
 }
 
 void TeamsWindow::onDown() {
-    const int index = teamsListBox.getSelectedIndex();
+    const auto index = teamsListBox.getSelectedIndex();
 
-    if ((index >= 0) && (index < teamsListBox.getNumEntries() - 1)) {
-        const AITeamInfo aiteamInfo = aiteams_.at(index);
-        aiteams_.erase(aiteams_.begin() + index);
-        teamsListBox.removeEntry(index);
+    if (!teamsListBox.isValid(index) || !teamsListBox.isValid(index + 1))
+        return;
 
-        aiteams_.insert(aiteams_.begin() + index + 1, aiteamInfo);
-        teamsListBox.insertEntry(index + 1, getDescribingString(aiteamInfo));
-        teamsListBox.setSelectedItem(index + 1);
-    }
+    swap(index, index + 1);
 }
 
 void TeamsWindow::onAdd() {
     if (pMapEditor->getMapVersion() < 2 && teamsListBox.getNumEntries() >= 16) {
-        MsgBox* pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
+        auto* const pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
         pMsgBox->setTextColor(color_);
         openWindow(pMsgBox);
         return;
     }
 
-    const int index = teamsListBox.getSelectedIndex();
+    AITeamInfo aiteamInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
+                          static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData()),
+                          static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData()),
+                          minUnitsTextBox.getValue(), maxUnitsTextBox.getValue());
 
-    const AITeamInfo aiteamInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
-                                static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData()),
-                                static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData()),
-                                minUnitsTextBox.getValue(), maxUnitsTextBox.getValue());
-    aiteams_.insert(aiteams_.begin() + index + 1, aiteamInfo);
-    teamsListBox.insertEntry(index + 1, getDescribingString(aiteamInfo));
-    teamsListBox.setSelectedItem(index + 1);
+    auto description = getDescribingString(aiteamInfo);
+
+    const auto index = teamsListBox.getSelectedIndex();
+
+    if (teamsListBox.isValid(index)) {
+        aiteams_.insert(aiteams_.begin() + gsl::narrow<difference_type>(index + 1), aiteamInfo);
+        teamsListBox.insertEntry(index + 1, std::move(description));
+        teamsListBox.setSelectedItem(index + 1);
+    } else {
+        aiteams_.push_back(aiteamInfo);
+        teamsListBox.addEntry(std::move(description));
+        teamsListBox.setSelectedItem(teamsListBox.getNumEntries() - 1);
+    }
 }
 
 void TeamsWindow::onRemove() {
-    const int index = teamsListBox.getSelectedIndex();
+    const auto index = teamsListBox.getSelectedIndex();
 
-    if (index >= 0) {
-        aiteams_.erase(aiteams_.begin() + index);
-        teamsListBox.removeEntry(index);
-        teamsListBox.setSelectedItem(index < teamsListBox.getNumEntries() ? index : (teamsListBox.getNumEntries() - 1));
-    }
+    if (!teamsListBox.isValid(index))
+        return;
+
+    aiteams_.erase(aiteams_.begin() + gsl::narrow<difference_type>(index));
+    teamsListBox.removeEntry(index);
 }
 
 void TeamsWindow::onSelectionChange([[maybe_unused]] bool bInteractive) {
-    const int index = teamsListBox.getSelectedIndex();
+    const auto index = teamsListBox.getSelectedIndex();
 
-    if (index >= 0) {
-        AITeamInfo& aiteamInfo = aiteams_.at(index);
+    if (!teamsListBox.isValid(index))
+        return;
 
-        for (int i = 0; i < playerDropDownBox.getNumEntries(); i++) {
-            if (playerDropDownBox.getEntryIntData(i) == static_cast<int>(aiteamInfo.houseID)) {
-                playerDropDownBox.setSelectedItem(i);
-                break;
-            }
+    assert(teamsListBox.getNumEntries() == aiteams_.size());
+
+    const auto& aiteamInfo = aiteams_.at(index);
+
+    for (size_t i = 0; i < playerDropDownBox.getNumEntries(); i++) {
+        if (playerDropDownBox.getEntryIntData(i) == static_cast<int>(aiteamInfo.houseID)) {
+            playerDropDownBox.setSelectedItem(i);
+            break;
         }
-
-        for (int i = 0; i < aiTeamBehaviorDropDownBox.getNumEntries(); i++) {
-            if (aiTeamBehaviorDropDownBox.getEntryIntData(i) == static_cast<int>(aiteamInfo.aiTeamBehavior)) {
-                aiTeamBehaviorDropDownBox.setSelectedItem(i);
-                break;
-            }
-        }
-
-        for (int i = 0; i < aiTeamTypeDropDownBox.getNumEntries(); i++) {
-            if (aiTeamTypeDropDownBox.getEntryIntData(i) == static_cast<int>(aiteamInfo.aiTeamType)) {
-                aiTeamTypeDropDownBox.setSelectedItem(i);
-                break;
-            }
-        }
-
-        minUnitsTextBox.setValue(aiteamInfo.minUnits);
-        maxUnitsTextBox.setValue(aiteamInfo.maxUnits);
     }
+
+    for (size_t i = 0; i < aiTeamBehaviorDropDownBox.getNumEntries(); i++) {
+        if (aiTeamBehaviorDropDownBox.getEntryIntData(i) == static_cast<int>(aiteamInfo.aiTeamBehavior)) {
+            aiTeamBehaviorDropDownBox.setSelectedItem(i);
+            break;
+        }
+    }
+
+    for (size_t i = 0; i < aiTeamTypeDropDownBox.getNumEntries(); i++) {
+        if (aiTeamTypeDropDownBox.getEntryIntData(i) == static_cast<int>(aiteamInfo.aiTeamType)) {
+            aiTeamTypeDropDownBox.setSelectedItem(i);
+            break;
+        }
+    }
+
+    minUnitsTextBox.setValue(aiteamInfo.minUnits);
+    maxUnitsTextBox.setValue(aiteamInfo.maxUnits);
 }
 
 void TeamsWindow::onMinUnitsChange(bool bInteractive) {
@@ -342,27 +358,31 @@ void TeamsWindow::onMaxUnitsChange(bool bInteractive) {
 }
 
 void TeamsWindow::onEntryChange(bool bInteractive) {
-    if (bInteractive) {
-        const int index = teamsListBox.getSelectedIndex();
+    if (!bInteractive)
+        return;
 
-        if (index >= 0) {
-            AITeamInfo& aiteamInfo = aiteams_.at(index);
-            aiteamInfo.houseID     = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
-            aiteamInfo.aiTeamBehavior =
-                static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData());
-            aiteamInfo.aiTeamType = static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData());
-            aiteamInfo.minUnits   = minUnitsTextBox.getValue();
-            aiteamInfo.maxUnits   = maxUnitsTextBox.getValue();
-            teamsListBox.setEntry(index, getDescribingString(aiteamInfo));
-        }
-    }
+    const auto index = teamsListBox.getSelectedIndex();
+
+    if (!teamsListBox.isValid(index))
+        return;
+
+    assert(teamsListBox.getNumEntries() == aiteams_.size());
+
+    auto& aiteamInfo = aiteams_.at(index);
+
+    aiteamInfo.houseID        = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
+    aiteamInfo.aiTeamBehavior = static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData());
+    aiteamInfo.aiTeamType     = static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData());
+    aiteamInfo.minUnits       = minUnitsTextBox.getValue();
+    aiteamInfo.maxUnits       = maxUnitsTextBox.getValue();
+
+    teamsListBox.setEntry(index, getDescribingString(aiteamInfo));
 }
 
-std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) {
-
-    return getPlayerName(aiteamInfo.houseID) + ", " + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + ", "
-         + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + ", " + std::to_string(aiteamInfo.minUnits) + ", "
-         + std::to_string(aiteamInfo.maxUnits);
+std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) const {
+    return fmt::format("{}, {}, {}, {}, {}", getPlayerName(aiteamInfo.houseID),
+                       getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior),
+                       getAITeamTypeNameByID(aiteamInfo.aiTeamType), aiteamInfo.minUnits, aiteamInfo.maxUnits);
 }
 
 std::string TeamsWindow::getPlayerName(HOUSETYPE house) const {
