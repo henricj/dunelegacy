@@ -336,22 +336,22 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         levelShift = 255 - maxValue;
     }
 
-    for (auto i = 0; i < RawData_Samples; i++) {
+    for (size_t i = 0; i < RawData_Samples; i++) {
         RawDataUint8[i] = static_cast<uint8_t>(RawDataUint8[i] + levelShift);
     }
 
     // Convert to floats
     std::vector<float> RawDataFloat(RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE);
 
-    for (auto i = 0; i < NUM_SAMPLES_OF_SILENCE; i++) {
+    for (size_t i = 0; i < NUM_SAMPLES_OF_SILENCE; i++) {
         RawDataFloat[i] = 0.0;
     }
 
-    for (auto i = NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + NUM_SAMPLES_OF_SILENCE; i++) {
+    for (size_t i = NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + NUM_SAMPLES_OF_SILENCE; i++) {
         RawDataFloat[i] = static_cast<float>(RawDataUint8[i - NUM_SAMPLES_OF_SILENCE]) / 128.0f - 1.0f;
     }
 
-    for (auto i = RawData_Samples + NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE; i++) {
+    for (size_t i = RawData_Samples + NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE; i++) {
         RawDataFloat[i] = 0.0f;
     }
 

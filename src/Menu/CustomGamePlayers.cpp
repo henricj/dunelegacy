@@ -503,7 +503,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot_];
 
-                for (int i = 0; i < curHouseInfo.houseDropDown.getNumEntries(); i++) {
+                for (size_t i = 0; i < curHouseInfo.houseDropDown.getNumEntries(); i++) {
                     if (curHouseInfo.houseDropDown.getEntryIntData(i) == static_cast<int>(houseType)) {
                         curHouseInfo.houseDropDown.setSelectedItem(i);
                         break;
@@ -516,7 +516,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot_];
 
-                for (int i = 0; i < curHouseInfo.teamDropDown.getNumEntries(); i++) {
+                for (size_t i = 0; i < curHouseInfo.teamDropDown.getNumEntries(); i++) {
                     if (curHouseInfo.teamDropDown.getEntryIntData(i) == newTeam) {
                         curHouseInfo.teamDropDown.setSelectedItem(i);
                         break;
@@ -530,14 +530,14 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot_ / 2];
 
                 if (changeEvent.slot_ % 2 == 0) {
-                    for (int i = 0; i < curHouseInfo.player1DropDown.getNumEntries(); i++) {
+                    for (size_t i = 0; i < curHouseInfo.player1DropDown.getNumEntries(); i++) {
                         if (curHouseInfo.player1DropDown.getEntryIntData(i) == newPlayer) {
                             curHouseInfo.player1DropDown.setSelectedItem(i);
                             break;
                         }
                     }
                 } else {
-                    for (int i = 0; i < curHouseInfo.player2DropDown.getNumEntries(); i++) {
+                    for (size_t i = 0; i < curHouseInfo.player2DropDown.getNumEntries(); i++) {
                         if (curHouseInfo.player2DropDown.getEntryIntData(i) == newPlayer) {
                             curHouseInfo.player2DropDown.setSelectedItem(i);
                             break;
@@ -1224,7 +1224,7 @@ void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) 
                     }
                 }
 
-                for (int j = 0; j < curDropDownBox.getNumEntries(); j++) {
+                for (size_t j = 0; j < curDropDownBox.getNumEntries(); j++) {
                     if (curDropDownBox.getEntryIntData(j) == oldPlayerType) {
                         curDropDownBox.setSelectedItem(j);
                         break;
@@ -1352,7 +1352,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
             }
         } else {
 
-            int currentItemIndex =
+            size_t currentItemIndex =
                 houseDropDownBox.getEntryIntData(0) == static_cast<int>(HOUSETYPE::HOUSE_INVALID) ? 1 : 0;
 
             for (int h = 0; h < NUM_HOUSES; h++) {
