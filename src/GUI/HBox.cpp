@@ -76,7 +76,7 @@ void HBox::resize(uint32_t width, uint32_t height) {
 
     // Under the resizeable widgets find all objects that are oversized (minimum size > availableWidth*weight)
     // also calculate the weight sum of all the resizeable widgets that are not oversized
-    auto neededOversizeWidth  = 0;
+    auto neededOversizeWidth   = 0;
     auto notOversizedWeightSum = 0.0;
     for (const auto& widgetData : containedWidgets) {
         if (widgetData.pWidget->resizingXAllowed() == true && widgetData.fixedWidth <= 0) {

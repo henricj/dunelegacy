@@ -99,9 +99,7 @@ public:
         Sets the set of forbidden characters for this text box.
         \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
     */
-    void setForbiddenChars(std::string forbiddenChars = {}) {
-        this->forbiddenChars_ = std::move(forbiddenChars);
-    }
+    void setForbiddenChars(std::string forbiddenChars = {}) { this->forbiddenChars_ = std::move(forbiddenChars); }
 
     /**
         Sets the function that should be called when the text of this text box changes.

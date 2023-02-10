@@ -23,7 +23,6 @@
 
 #include <gsl/gsl>
 
-
 TriggerManager::TriggerManager() = default;
 
 TriggerManager::~TriggerManager() = default;

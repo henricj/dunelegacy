@@ -89,8 +89,8 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
 
     if (gameInitSettings.getGameType() == GameType::CustomGame
         || gameInitSettings.getGameType() == GameType::CustomMultiplayer) {
-        auto RWops = sdl2::RWops_ptr{
-            SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gsl::narrow<int>(gameInitSettings.getFiledata().size()))};
+        auto RWops = sdl2::RWops_ptr{SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(),
+                                                        gsl::narrow<int>(gameInitSettings.getFiledata().size()))};
 
         INIFile inimap(RWops.get());
         extractMapInfo(&inimap);
@@ -121,7 +121,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
 
         const auto file_data = tmpGameInitSettings.getFiledata();
 
-        auto RWops           = sdl2::RWops_ptr{SDL_RWFromConstMem(file_data.data(), gsl::narrow<int>(file_data.size()))};
+        auto RWops = sdl2::RWops_ptr{SDL_RWFromConstMem(file_data.data(), gsl::narrow<int>(file_data.size()))};
 
         INIFile inimap(RWops.get());
         extractMapInfo(&inimap);
