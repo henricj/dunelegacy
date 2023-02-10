@@ -169,7 +169,7 @@ private:
             partial = pending_.size();
         }
 
-        assert(partial < size);
+        assert(size_t(partial) < size);
 
         const auto read_length = size - partial;
 
