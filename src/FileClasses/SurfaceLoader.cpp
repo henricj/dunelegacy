@@ -299,17 +299,17 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
     constexpr auto harkIdx = static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN);
 
     // load object pics in the original resolution
-    objPic[ObjPic_Tank_Base][static_cast<int>(harkIdx)][0] = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(0));
-    objPic[ObjPic_Tank_Gun][harkIdx][0]                    = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(5));
-    objPic[ObjPic_Siegetank_Base][harkIdx][0]              = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(10));
-    objPic[ObjPic_Siegetank_Gun][harkIdx][0]               = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(15));
-    objPic[ObjPic_Devastator_Base][harkIdx][0]             = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(20));
-    objPic[ObjPic_Devastator_Gun][harkIdx][0]              = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(25));
-    objPic[ObjPic_Sonictank_Gun][harkIdx][0]               = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(30));
-    objPic[ObjPic_Launcher_Gun][harkIdx][0]                = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(35));
-    objPic[ObjPic_Quad][harkIdx][0]                        = units->getPictureArray(8, 1, GROUNDUNIT_ROW(0));
-    objPic[ObjPic_Trike][harkIdx][0]                       = units->getPictureArray(8, 1, GROUNDUNIT_ROW(5));
-    objPic[ObjPic_Harvester][harkIdx][0]                   = units->getPictureArray(8, 1, GROUNDUNIT_ROW(10));
+    objPic[ObjPic_Tank_Base][harkIdx][0]       = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(0));
+    objPic[ObjPic_Tank_Gun][harkIdx][0]        = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(5));
+    objPic[ObjPic_Siegetank_Base][harkIdx][0]  = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(10));
+    objPic[ObjPic_Siegetank_Gun][harkIdx][0]   = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(15));
+    objPic[ObjPic_Devastator_Base][harkIdx][0] = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(20));
+    objPic[ObjPic_Devastator_Gun][harkIdx][0]  = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(25));
+    objPic[ObjPic_Sonictank_Gun][harkIdx][0]   = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(30));
+    objPic[ObjPic_Launcher_Gun][harkIdx][0]    = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(35));
+    objPic[ObjPic_Quad][harkIdx][0]            = units->getPictureArray(8, 1, GROUNDUNIT_ROW(0));
+    objPic[ObjPic_Trike][harkIdx][0]           = units->getPictureArray(8, 1, GROUNDUNIT_ROW(5));
+    objPic[ObjPic_Harvester][harkIdx][0]       = units->getPictureArray(8, 1, GROUNDUNIT_ROW(10));
     { // Scope
         static constexpr SDL_Color shadowTransparent{0, 0, 0, 96};
         SDL_SetPaletteColors(objPic[ObjPic_Harvester][harkIdx][0]->format->palette, &shadowTransparent, PALCOLOR_SHADOW,
