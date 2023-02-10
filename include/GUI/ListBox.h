@@ -155,7 +155,7 @@ public:
         Returns the number of entries in this list box
         \return number of entries
     */
-    [[nodiscard]] constexpr auto getNumEntries() const noexcept { return entries_.size(); }
+    [[nodiscard]] auto getNumEntries() const noexcept { return entries_.size(); }
 
     /**
         Returns the text of the entry specified by index.
