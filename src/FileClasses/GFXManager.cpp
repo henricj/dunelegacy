@@ -89,7 +89,7 @@ const DuneTexture* GFXManager::getZoomedObjPic(ObjPic_enum id, HOUSETYPE house, 
 
 zoomable_texture GFXManager::getObjPic(ObjPic_enum id, HOUSETYPE house) const {
     if (id >= NUM_OBJPICS) {
-        THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID {} is not available!", id);
+        THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID {} is not available!", static_cast<int>(id));
     }
 
     return {&duneTextures.get_object_picture(id, house, 0), &duneTextures.get_object_picture(id, house, 1),
@@ -104,7 +104,7 @@ const DuneTexture* GFXManager::getSmallDetailPic(SmallDetailPics_Enum id) const 
     const auto& texture = duneTextures.get_small_object(id);
 
     if (!texture)
-        sdl2::log_info("Unable to get small detail picture {}", id);
+        sdl2::log_info("Unable to get small detail picture {}", static_cast<int>(id));
 
     return texture ? &texture : nullptr;
 }
@@ -117,7 +117,7 @@ const DuneTexture* GFXManager::getTinyPicture(TinyPicture_Enum id) const {
     const auto& texture = duneTextures.get_tiny_picture(id);
 
     if (!texture)
-        sdl2::log_info("Unable to get tiny picture {}", id);
+        sdl2::log_info("Unable to get tiny picture {}", static_cast<int>(id));
 
     return texture ? &texture : nullptr;
 }
@@ -140,7 +140,7 @@ const DuneTexture* GFXManager::getGeneratedPicture(GeneratedPicture id) const {
 SDL_Cursor* GFXManager::getCursor(UIGraphics_Enum id) const {
     const auto it = cursors_.find(id);
     if (it == cursors_.end()) {
-        sdl2::log_info("Unable to get cursor {}", id);
+        sdl2::log_info("Unable to get cursor {}", static_cast<int>(id));
         return nullptr;
     }
 
@@ -149,13 +149,13 @@ SDL_Cursor* GFXManager::getCursor(UIGraphics_Enum id) const {
 
 const DuneTexture* GFXManager::getUIGraphic(UIGraphics_Enum id, HOUSETYPE house) const {
     if (id >= NUM_UIGRAPHICS) {
-        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID {} is not available!", id);
+        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID {} is not available!", static_cast<int>(id));
     }
 
     const auto& texture = duneTextures.get_ui_graphic(id, house);
 
     if (!texture)
-        sdl2::log_info("Unable to get ui graphic {} for house {}", id, static_cast<int>(house));
+        sdl2::log_info("Unable to get ui graphic {} for house {}", static_cast<int>(id), static_cast<int>(house));
 
     return texture ? &texture : nullptr;
 }
@@ -163,13 +163,13 @@ const DuneTexture* GFXManager::getUIGraphic(UIGraphics_Enum id, HOUSETYPE house)
 const DuneTexture* GFXManager::getMapChoicePiece(UIGraphics_Enum num, HOUSETYPE house) const {
     if (num >= NUM_MAPCHOICEPIECES) {
         THROW(std::invalid_argument, "GFXManager::getMapChoicePiece(): Map Piece with number {} is not available!",
-              num);
+              static_cast<int>(num));
     }
 
     const auto& texture = duneTextures.get_map_choice(num, house);
 
     if (!texture)
-        sdl2::log_info("Unable to get map choice piece {} for house {}", num, static_cast<int>(house));
+        sdl2::log_info("Unable to get map choice piece {} for house {}", static_cast<int>(num), static_cast<int>(house));
 
     return texture ? &texture : nullptr;
 }

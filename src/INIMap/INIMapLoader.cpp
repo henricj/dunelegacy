@@ -632,7 +632,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
 
 #if defined(DEBUG)
                     sdl2::log_info("Placed unit {} of type {} at {}x{} ({}/{}) after parsing {}",
-                                   newUnit->getObjectID(), itemID, newUnit->getLocation().x, newUnit->getLocation().y,
+                                   newUnit->getObjectID(), static_cast<int>(itemID), newUnit->getLocation().x, newUnit->getLocation().y,
                                    pos, PosStr, keyView);
 #endif // defined(DEBUG)
 

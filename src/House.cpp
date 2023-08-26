@@ -354,7 +354,7 @@ void House::incrementUnits(ItemID_enum itemID) {
 
 void House::decrementUnits(ItemID_enum itemID) {
     if (numUnits_ < 1)
-        THROW(std::runtime_error, "Cannot decrement number of units {} (itemId {})", numUnits_, itemID);
+        THROW(std::runtime_error, "Cannot decrement number of units {} (itemId {})", numUnits_, static_cast<int>(itemID));
 
     numUnits_--;
     numItemLosses_[itemID]++;
@@ -407,7 +407,7 @@ void House::incrementStructures(ItemID_enum itemID) {
 
 void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
     if (numStructures_ < 1)
-        THROW(std::runtime_error, "Cannot decrement number of structures {} (itemId {})", numStructures_, itemID);
+        THROW(std::runtime_error, "Cannot decrement number of structures {} (itemId {})", numStructures_, static_cast<int>(itemID));
 
     numStructures_--;
     numItem_[itemID]--;
@@ -676,7 +676,7 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
         default: {
             auto* newStructure = createStructure(itemID, byScenario);
             if (newStructure == nullptr) {
-                THROW(std::runtime_error, "Cannot create structure with itemID {}!", itemID);
+                THROW(std::runtime_error, "Cannot create structure with itemID {}!", static_cast<int>(itemID));
             }
 
             auto cleanup = gsl::finally([&] {

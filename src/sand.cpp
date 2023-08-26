@@ -118,7 +118,7 @@ const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
         } break;
 
         default:
-            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID {}!", itemID);
+            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID {}!", static_cast<int>(itemID));
     }
     // clang-format on
 
