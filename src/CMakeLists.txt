@@ -51,9 +51,9 @@ else()
 endif()
 
 set(LIBS
-	SDL2::SDL2
 	SDL2_mixer::SDL2_mixer${DUNE_LIBRARY_POSTFIX}
 	SDL2_ttf::SDL2_ttf${DUNE_LIBRARY_POSTFIX}
+	SDL2::SDL2
 	fmt::fmt
 	lodepng
 	Microsoft.GSL::GSL
