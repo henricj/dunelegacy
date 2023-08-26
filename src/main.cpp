@@ -209,7 +209,7 @@ void setVideoMode(int displayIndex) {
 
     // Prefer DX11 on Windows
     if (video.renderer == "default" || nullptr == SDL_GetHint(SDL_HINT_RENDER_DRIVER))
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d12");
 #    if defined(_DEBUG)
     SDL_SetHint(SDL_HINT_RENDER_DIRECT3D11_DEBUG, "1");
 #    endif
