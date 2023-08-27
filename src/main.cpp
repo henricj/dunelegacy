@@ -540,7 +540,7 @@ void update_display_scale(SDL_Window* sdl_window) {
     const auto displayIndex = SDL_GetWindowDisplayIndex(sdl_window);
     float dpi               = NAN;
     if (0 != SDL_GetDisplayDPI(displayIndex, nullptr, &dpi, nullptr)) {
-        dpi = 1;
+        dpi = 96;
     }
 
     gui.setDisplayDpi((dpi * actual_dpi) / (default_dpi * dune_dpi));
