@@ -35,9 +35,15 @@ Palette::Palette(const SDL_Palette* pSDLPalette) {
     setSDLPalette(pSDLPalette);
 }
 
+Palette::Palette(sdl2::palette_ptr&& palette) {
+    pSDLPalette_ = std::move(palette);
+}
+
 Palette::Palette(const Palette& palette) {
     *this = palette;
 }
+
+Palette::Palette(Palette&& palette) noexcept = default;
 
 Palette::~Palette() = default;
 
@@ -50,6 +56,8 @@ Palette& Palette::operator=(const Palette& palette) {
 
     return *this;
 }
+
+Palette& Palette::operator=(Palette&& palette) noexcept = default;
 
 SDL_Color& Palette::operator[](const int i) {
     if (pSDLPalette_ == nullptr || i < 0 || i >= pSDLPalette_->ncolors) {

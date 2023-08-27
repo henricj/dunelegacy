@@ -67,9 +67,9 @@ Palette LoadPalette_RW(SDL_RWops* rwop) {
         }
     }
 
-    const sdl2::palette_ptr sdl_palette{SDL_AllocPalette(static_cast<int>(numColors))};
+    sdl2::palette_ptr sdl_palette{SDL_AllocPalette(static_cast<int>(numColors))};
 
     SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, static_cast<int>(numColors));
 
-    return Palette{sdl_palette.get()};
+    return Palette{std::move(sdl_palette)};
 }

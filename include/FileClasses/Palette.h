@@ -28,15 +28,18 @@ public:
 
     explicit Palette(const SDL_Palette* pSDLPalette);
 
-    Palette(const Palette& palette);
+    explicit Palette(sdl2::palette_ptr&& palette);
+
+    explicit Palette(const Palette& palette);
+    explicit Palette(Palette&& palette) noexcept;
 
     ~Palette();
 
     Palette& operator=(const Palette& palette);
+    Palette& operator=(Palette&& palette) noexcept;
 
-    SDL_Color& operator[](const int i);
-
-    SDL_Color operator[](const int i) const;
+    SDL_Color& operator[](int i);
+    SDL_Color operator[](int i) const;
 
     [[nodiscard]] SDL_Palette* getSDLPalette() const;
 
