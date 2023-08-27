@@ -35,6 +35,7 @@
 #include <functional>
 #include <list>
 #include <string>
+#include <utility>
 
 inline constexpr auto NETWORKDISCONNECT_QUIT          = 1;
 inline constexpr auto NETWORKDISCONNECT_TIMEOUT       = 2;
@@ -95,16 +96,16 @@ public:
 
     [[nodiscard]] int getMaxPeerRoundTripTime() const;
 
-    LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() { return pLANGameFinderAndAnnouncer_.get(); }
+    LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() const { return pLANGameFinderAndAnnouncer_.get(); }
 
-    MetaServerClient* getMetaServerClient() { return pMetaServerClient_.get(); }
+    MetaServerClient* getMetaServerClient() const { return pMetaServerClient_.get(); }
 
     /**
         Sets the function that should be called when a chat message is received
         \param  pOnReceiveChatMessage   function to call on new chat message
     */
     void setOnReceiveChatMessage(std::function<void(const std::string&, const std::string&)> pOnReceiveChatMessage) {
-        this->pOnReceiveChatMessage_ = pOnReceiveChatMessage;
+        this->pOnReceiveChatMessage_ = std::move(pOnReceiveChatMessage);
     }
 
     /**
@@ -112,7 +113,7 @@ public:
         \param  pOnReceiveGameInfo  function to call on receive
     */
     void setOnReceiveGameInfo(std::function<void(const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo) {
-        this->pOnReceiveGameInfo_ = pOnReceiveGameInfo;
+        this->pOnReceiveGameInfo_ = std::move(pOnReceiveGameInfo);
     }
 
     /**
@@ -120,14 +121,14 @@ public:
         \param  pOnReceiveChangeEventList   function to call on receive
     */
     void setOnReceiveChangeEventList(std::function<void(const ChangeEventList&)> pOnReceiveChangeEventList) {
-        this->pOnReceiveChangeEventList_ = pOnReceiveChangeEventList;
+        this->pOnReceiveChangeEventList_ = std::move(pOnReceiveChangeEventList);
     }
 
     /**
         Sets the function that should be called when a peer disconnects.
         \param  pOnPeerDisconnected function to call on disconnect
     */
-    void setOnPeerDisconnected(std::function<void(const std::string&, bool, int)> pOnPeerDisconnected) {
+    void setOnPeerDisconnected(const std::function<void(const std::string&, bool, int)>& pOnPeerDisconnected) {
         this->pOnPeerDisconnected_ = pOnPeerDisconnected;
     }
 
@@ -137,7 +138,7 @@ public:
     */
     void setGetChangeEventListForNewPlayerCallback(
         std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback) {
-        this->pGetChangeEventListForNewPlayerCallback_ = pGetChangeEventListForNewPlayerCallback;
+        this->pGetChangeEventListForNewPlayerCallback_ = std::move(pGetChangeEventListForNewPlayerCallback);
     }
 
     /**
@@ -145,7 +146,7 @@ public:
         \param  pOnStartGame    function to call on receive
     */
     void setOnStartGame(std::function<void(dune::dune_clock::duration)> pOnStartGame) {
-        this->pOnStartGame_ = pOnStartGame;
+        this->pOnStartGame_ = std::move(pOnStartGame);
     }
 
     /**
@@ -153,7 +154,7 @@ public:
         \param  pOnReceiveCommandList   function to call on receive
     */
     void setOnReceiveCommandList(std::function<void(const std::string&, const CommandList&)> pOnReceiveCommandList) {
-        this->pOnReceiveCommandList_ = pOnReceiveCommandList;
+        this->pOnReceiveCommandList_ = std::move(pOnReceiveCommandList);
     }
 
     /**
@@ -162,7 +163,7 @@ public:
     */
     void setOnReceiveSelectionList(
         std::function<void(const std::string&, const dune::selected_set_type&, int)> pOnReceiveSelectionList) {
-        this->pOnReceiveSelectionList_ = pOnReceiveSelectionList;
+        this->pOnReceiveSelectionList_ = std::move(pOnReceiveSelectionList);
     }
 
 private:

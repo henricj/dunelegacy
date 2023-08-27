@@ -26,6 +26,7 @@
 #include <functional>
 #include <list>
 #include <string>
+#include <utility>
 
 inline constexpr auto LANGAME_ANNOUNCER_PORT               = 28746;
 inline constexpr auto LANGAME_ANNOUNCER_INTERVAL           = dune::as_dune_clock_duration(3000);
@@ -63,14 +64,14 @@ public:
         Sets the function that should be called when a new server is found
         \param  pOnNewServer    Function to call on new server found
     */
-    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) { this->pOnNewServer_ = pOnNewServer; }
+    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) { this->pOnNewServer_ = std::move(pOnNewServer); }
 
     /**
         Sets the function that should be called when a server is updated
         \param  pOnUpdateServer Function to call on server update
     */
     void setOnUpdateServer(std::function<void(GameServerInfo)> pOnUpdateServer) {
-        this->pOnUpdateServer_ = pOnUpdateServer;
+        this->pOnUpdateServer_ = std::move(pOnUpdateServer);
     }
 
     /**
@@ -78,7 +79,7 @@ public:
         \param  pOnRemoveServer function to call on server remove
     */
     void setOnRemoveServer(std::function<void(GameServerInfo)> pOnRemoveServer) {
-        this->pOnRemoveServer_ = pOnRemoveServer;
+        this->pOnRemoveServer_ = std::move(pOnRemoveServer);
     }
 
 private:

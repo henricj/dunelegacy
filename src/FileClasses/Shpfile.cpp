@@ -395,7 +395,7 @@ void Shpfile::readIndex() {
 
             // now fill Index with start and end-offsets
             for (int i = 0; i < NumFiles; i++) {
-                ShpfileEntry newShpfileEntry;
+                ShpfileEntry newShpfileEntry{};
                 newShpfileEntry.startOffset = SDL_SwapLE16(reinterpret_cast<const Uint16*>(pFiledata.get() + 2)[i]);
 
                 if (!shpfileEntries.empty()) {

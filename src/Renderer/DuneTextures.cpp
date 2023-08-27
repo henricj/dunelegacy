@@ -41,7 +41,7 @@ DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pic
                  decoration_border_type&& decoration_border, border_style_type&& border_style)
     : object_pictures_{object_pictures}, small_details_{small_details}, tiny_pictures_{tiny_pictures},
       ui_graphics_{ui_graphics}, map_choice_{map_choice}, generated_pictures_{generated_pictures},
-      decoration_border_{decoration_border}, border_style_{border_style},
+      decoration_border_{decoration_border}, border_style_{std::move(border_style)},
       textures_{std::move(textures)} { }
 
 // clang-format on
@@ -183,7 +183,7 @@ class PackableSet {
 public:
     using packer_set_type = std::vector<std::tuple<int, int, SDL_Surface*>>;
 
-    PackableSet(packer_set_type&& set) : set_{set} { }
+    PackableSet(packer_set_type&& set) : set_{std::move(set)} { }
 
     template<typename F>
     void for_each(const Packer& packer, F&& f) {

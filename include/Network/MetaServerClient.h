@@ -28,6 +28,7 @@
 
 #include <list>
 #include <string>
+#include <utility>
 
 inline constexpr auto SERVERLIST_UPDATE_INTERVAL = dune::as_dune_clock_duration(8 * 1000);
 inline constexpr auto GAMESERVER_UPDATE_INTERVAL = dune::as_dune_clock_duration(10 * 1000);
@@ -48,7 +49,7 @@ public:
         \param  pOnGameServerInfoList   Function to call on an update to the server list
     */
     void setOnGameServerInfoList(std::function<void(std::list<GameServerInfo>&)> pOnGameServerInfoList) {
-        this->pOnGameServerInfoList_ = pOnGameServerInfoList;
+        this->pOnGameServerInfoList_ = std::move(pOnGameServerInfoList);
         lastServerInfoListUpdate_    = dune::dune_clock::time_point{};
     }
 
@@ -56,7 +57,7 @@ public:
         Sets the function that shall be called if the metaserver reports an error
         \param  pOnMetaServerError  Function to call on metaserver error
     */
-    void setOnMetaServerError(std::function<void(int, const std::string&)> pOnMetaServerError) {
+    void setOnMetaServerError(const std::function<void(int, const std::string&)>& pOnMetaServerError) {
         this->pOnMetaServerError_ = pOnMetaServerError;
     }
 

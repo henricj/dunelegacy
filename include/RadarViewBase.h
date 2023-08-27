@@ -129,7 +129,7 @@ public:
         Sets the function that should be called when the radar view is clicked.
         \param  pOnRadarClick   A function to be called on click
     */
-    void setOnRadarClick(std::function<bool(Coord, bool, bool)> pOnRadarClick) { this->pOnRadarClick = pOnRadarClick; }
+    void setOnRadarClick(std::function<bool(Coord, bool, bool)> pOnRadarClick) { this->pOnRadarClick = std::move(pOnRadarClick); }
 
 protected:
     std::function<bool(Coord, bool, bool)>

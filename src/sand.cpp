@@ -37,6 +37,7 @@
 #include <misc/exceptions.h>
 
 #include <algorithm>
+#include <utility>
 
 /**
     This function draws the cursor to the screen. The coordinate is read from
@@ -618,6 +619,7 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
 /**
     Starts a game replay
     \param  filename    the filename of the replay file
+    \param handler
 */
 void startReplay(const std::filesystem::path& filename, MenuBase::event_handler_type handler) {
     sdl2::log_info("Initializing replay...");
@@ -631,7 +633,7 @@ void startReplay(const std::filesystem::path& filename, MenuBase::event_handler_
     dune::globals::currentGame->initReplay(filename);
 
     const GameContext context{*game, *game->getMap(), game->getObjectManager()};
-    game->runMainLoop(context, handler);
+    game->runMainLoop(context, std::move(handler));
 
     // Change music to menu music
     dune::globals::musicPlayer->changeMusic(MUSIC_MENU);
@@ -641,6 +643,7 @@ void startReplay(const std::filesystem::path& filename, MenuBase::event_handler_
     Starts a new game. If this game is quit it might start another game. This other game is also started from
     this function. This is done until there is no more game to be started.
     \param init contains all the information to start the game
+    \param handler
 */
 void startSinglePlayerGame(const GameInitSettings& init, MenuBase::event_handler_type handler) {
     auto currentGameInitInfo = init;

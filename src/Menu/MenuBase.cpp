@@ -32,6 +32,7 @@
 #include <sand.h>
 
 #include <gsl/gsl>
+#include <utility>
 
 MenuBase::MenuBase() : Window(0, 0, 0, 0) { }
 
@@ -69,7 +70,7 @@ bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
 }
 
 int MenuBase::showMenu(event_handler_type handler) {
-    sdl_handler_         = handler;
+    sdl_handler_         = std::move(handler);
     auto cleanup_handler = gsl::finally([&] { sdl_handler_ = {}; });
 
     return showMenuImpl();

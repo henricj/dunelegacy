@@ -82,7 +82,7 @@ public:
         Sets the function that should be called when this button is clicked on.
         \param  pOnClick    A function to call on click
     */
-    void setOnClick(std::function<void()> pOnClick) noexcept { this->pOnClick_ = pOnClick; }
+    void setOnClick(std::function<void()> pOnClick) noexcept { this->pOnClick_ = std::move(pOnClick); }
 
     /**
         Sets whether this button is a toggle button.

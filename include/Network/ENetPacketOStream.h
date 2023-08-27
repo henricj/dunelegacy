@@ -120,7 +120,7 @@ public:
         writeUint32(tmp);
     }
 
-    void ensureBufferSize(size_t minBufferSize) {
+    void ensureBufferSize(size_t minBufferSize) const {
         if (minBufferSize < packet->dataLength) {
             return;
         }
