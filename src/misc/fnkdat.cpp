@@ -301,8 +301,9 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
 
             getMacApplicationSupportFolder(&buffer[0], buffer.size());
 
-            output_path = buffer;
+            output_path = buffer.data();
             output_path /= "Dune Legacy";
+        }
 #    else
         {
             const char* xdg_config = getenv("XDG_CONFIG_HOME");
