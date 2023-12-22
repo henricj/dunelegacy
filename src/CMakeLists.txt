@@ -29,7 +29,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(lodepng CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
 endif()
 
@@ -73,7 +73,7 @@ if(WIN32)
 	list(APPEND EXE_SOURCES ../Windows/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
 	list(APPEND LIBS ${X11_LIBRARIES})
 endif()
 
@@ -141,6 +141,11 @@ endif()
 add_executable(dunelegacy ${EXE_SOURCES} ${EXE_HEADERS})
 target_compile_options(dunelegacy PRIVATE ${dune_flags})
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main harden_interface)
+
+if(APPLE)
+    target_sources(dunelegacy PRIVATE ../MacOSX/MacFunctions.m)
+    set_source_files_properties(../MacOSX/MacFunctions.m PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+endif()
 
 if(TARGET dune_gitversion)
   target_link_libraries(dunelegacy PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")

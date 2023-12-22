@@ -294,7 +294,14 @@
       "hidden": true,
       "inherits": "default",
       "displayName": "Linux default",
-      "description": "Default Linux build"
+      "description": "Default Linux build",
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "Linux"
+          ]
+        }
+      }
     },
     {
       "name": "linux-debug",
@@ -352,17 +359,40 @@
       }
     },
     {
-      "name": "macos-x64-release",
-      "inherits": "linux-base",
-      "displayName": "macOS x64 Release",
+      "name": "macos-base",
+      "hidden": true,
+      "inherits": "default",
+      "displayName": "macOS default",
+      "description": "Default macOS build",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "VCPKG_TARGET_TRIPLET": "x64-osx-release"
+        "VCPKG_MANIFEST_DIR": "${sourceDir}/external/vcpkg/config-macos"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "macOS"
+          ]
+        }
+      }
+    },
+    {
+      "name": "macos-xcode",
+      "inherits": "macos-base",
+      "displayName": "macOS Xcode",
+      "generator": "Xcode"
+    },
+    {
+      "name": "macos-arm64-debug",
+      "inherits": "macos-base",
+      "displayName": "macOS arm64 Debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "VCPKG_TARGET_TRIPLET": "arm64-osx"
       }
     },
     {
       "name": "macos-arm64-release",
-      "inherits": "linux-base",
+      "inherits": "macos-base",
       "displayName": "macOS arm64 Release",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
@@ -378,10 +408,6 @@
     {
       "name": "linux-release",
       "configurePreset": "linux-release"
-    },
-    {
-      "name": "macos-x64-release",
-      "configurePreset": "macos-x64-release"
     },
     {
       "name": "macos-arm64-release",
@@ -403,17 +429,6 @@
     {
       "name": "linux-release",
       "configurePreset": "linux-release",
-      "output": {
-        "outputOnFailure": true
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "stopOnFailure": true
-      }
-    },
-    {
-      "name": "macos-x64-release",
-      "configurePreset": "macos-x64-release",
       "output": {
         "outputOnFailure": true
       },

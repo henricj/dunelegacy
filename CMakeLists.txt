@@ -12,6 +12,9 @@ project(dunelegacy
 	VERSION 0.96.4
 	LANGUAGES CXX C
 )
+if(APPLE)
+    enable_language(OBJC)
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -51,6 +54,10 @@ endif()
 
 if(MSVC)
     include(setup/msvc-setup)
+endif()
+
+if(APPLE)
+    include(setup/macos-setup)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

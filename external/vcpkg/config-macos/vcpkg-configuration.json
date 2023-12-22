@@ -1,0 +1,8 @@
+{
+  "overlay-ports": [
+    "../config/ports/sdl2"
+  ],
+  "overlay-triplets": [
+    "../config/triplets"
+  ]
+}

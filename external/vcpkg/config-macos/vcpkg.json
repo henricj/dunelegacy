@@ -1,0 +1,13 @@
+{
+  "dependencies": [
+    "fmt",
+    "gtest",
+    "lodepng",
+    "ms-gsl",
+    "sdl2",
+    "sdl2-mixer",
+    "sdl2-ttf",
+    "soxr",
+    "openssl"
+  ]
+}
