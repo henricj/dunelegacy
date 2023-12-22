@@ -29,7 +29,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(lodepng CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
 endif()
 
@@ -48,6 +48,10 @@ if(WIN32)
 	endif()
 else()
 	set(DUNE_LIBRARY_POSTFIX "-static")
+endif()
+
+if(APPLE)
+    add_subdirectory(macOS)
 endif()
 
 set(LIBS
@@ -73,8 +77,12 @@ if(WIN32)
 	list(APPEND EXE_SOURCES ../Windows/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
 	list(APPEND LIBS ${X11_LIBRARIES})
+endif()
+
+if(APPLE)
+	list(APPEND LIBS dunelegacyObjc)
 endif()
 
 set(dune_flags ${DUNE_TARGET_COMPILE_FLAGS})
