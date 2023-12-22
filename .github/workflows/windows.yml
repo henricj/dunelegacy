@@ -44,7 +44,7 @@ jobs:
             preset: windows-arm64-release
     steps:
       - name: Fetch repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
@@ -63,7 +63,7 @@ jobs:
         run: .\.github\scripts\windows-environment.ps1 '${{matrix.platform}}${{matrix.name_postfix}}'
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: external/vcpkg/vcpkg
           vcpkgJsonGlob: external/vcpkg/config/vcpkg.json
