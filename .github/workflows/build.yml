@@ -23,35 +23,25 @@ jobs:
           - name: Linux
             os: ubuntu-latest
             preset: linux-release
-        #- name: macOS
-        #  os: macos-12
-        #  preset: macos-x64-release
+          - name: macOS
+            os: macos-14
+            preset: macos-arm64-release
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Get cmake and ninja
-        uses: lukka/get-cmake@latest
-
       - name: Find MSVC (Windows)
+        if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
 
-      #- name: Setup gcc (macOS)
-      #  if: runner.os == 'macOS'
-      #  run: |
-      #    echo CC=gcc-11 >> $GITHUB_ENV
-      #    echo CXX=g++-11 >> $GITHUB_ENV
-
-      - name: Setup clang (macOS)
+      - name: Choose the latest XCode (macOS)
         if: runner.os == 'macOS'
-        run: |
-          brew install llvm@15
-          base=$(brew --prefix llvm@15)
-          echo "Found LLVM: ${base}"
-          echo CC=${base}/bin/clang >> $GITHUB_ENV
-          echo CXX=${base}/bin/clang++ >> $GITHUB_ENV
-          echo CPPFLAGS="-I${base}/include" >> $GITHUB_ENV
-          echo LDFLAGS="-L${base}/lib/c++ -Wl,-rpath,${base}/lib/c++" >> $GITHUB_ENV
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest
+
+      - name: Get cmake and ninja
+        uses: lukka/get-cmake@latest
 
       - name: Fetch repo
         uses: actions/checkout@v4
