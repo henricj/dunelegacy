@@ -38,10 +38,10 @@ jobs:
             platform: x86
             arch: amd64_x86
             preset: windows-x86-release
-          - name: Windows ARM64
-            platform: arm64
-            arch: amd64_arm64
-            preset: windows-arm64-release
+          #  - name: Windows ARM64
+          #  platform: arm64
+          #  arch: amd64_arm64
+          #  preset: windows-arm64-release
     steps:
       - name: Fetch repo
         uses: actions/checkout@v4
