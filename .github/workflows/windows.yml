@@ -99,13 +99,13 @@ jobs:
           cpack -G ZIP -v
 
       - name: Upload Binaries Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{env.PROJECT_ZIP_NAME}}
           path: ${{env.PROJECT_ZIP}}
 
       #- name: Upload Installer Artifact
-      #uses: actions/upload-artifact@v3
+      #uses: actions/upload-artifact@v4
       #with:
       #name: Setup ${{env.PROJECT_OUTPUT_NAME}}
       #path: ${{env.PROJECT_INSTALLER}}
@@ -120,7 +120,7 @@ jobs:
 
     steps:
       - name: Collect artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: .
 
