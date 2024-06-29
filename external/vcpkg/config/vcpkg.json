@@ -4,9 +4,21 @@
     "gtest",
     "lodepng",
     "ms-gsl",
-    "sdl2",
-    "sdl2-mixer",
-    "sdl2-ttf",
-    "soxr"
+    {
+      "name": "sdl2",
+      "default-features": false
+    },
+    {
+      "name": "sdl2-mixer",
+      "default-features": false
+    },
+    {
+      "name": "sdl2-ttf",
+      "default-features": false
+    },
+    {
+      "name": "soxr",
+      "default-features": false
+    }
   ]
 }

@@ -1,7 +1,6 @@
 {
   "overlay-ports": [
-    "./ports/sdl2",
-    "./ports/sdl2-mixer"
+    "./ports/sdl2"
   ],
   "overlay-triplets": [
     "./triplets"
