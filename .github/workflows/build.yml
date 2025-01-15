@@ -43,6 +43,10 @@ jobs:
       - name: Get cmake and ninja
         uses: lukka/get-cmake@latest
 
+      - name: Install packages
+        if: runner.os == 'Linux'
+        run: sudo apt update && sudo apt install -y libx11-dev
+
       - name: Fetch repo
         uses: actions/checkout@v4
         with:
