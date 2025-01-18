@@ -368,7 +368,10 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     int channels          = 0;
     uint16_t TargetFormat = 0;
     if (Mix_QuerySpec(&TargetFrequency, &TargetFormat, &channels) == 0) {
-        THROW(std::runtime_error, "LoadVOC_RW(): Mix_QuerySpec failed!");
+        // THROW(std::runtime_error, "LoadVOC_RW(): Mix_QuerySpec failed!");
+        channels        = 2;
+        TargetFrequency = 11025;
+        TargetFormat    = AUDIO_U8;
     }
 
     // Convert to audio device frequency

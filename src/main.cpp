@@ -573,6 +573,7 @@ bool run_game(int argc, char* argv[]) {
     bool bExitGame       = false;
     bool bFirstInit      = true;
     bool bFirstGamestart = false;
+    bool bAudioEnabled   = false;
 
     dune::globals::debug       = false;
     dune::globals::cursorFrame = UI_CursorNormal;
@@ -587,20 +588,26 @@ bool run_game(int argc, char* argv[]) {
 
             if (bFirstInit) {
                 sdl2::log_info("Initializing audio...");
+
+                SDL_version compiledVersion{};
+                SDL_MIXER_VERSION(&compiledVersion)
+                const auto* const linkedVersion = Mix_Linked_Version();
+                sdl2::log_info("SDL Mixer runtime v{}.{}.{}", linkedVersion->major, linkedVersion->minor,
+                               linkedVersion->patch);
+                sdl2::log_info("SDL Mixer compile-time v{}.{}.{}", compiledVersion.major, compiledVersion.minor,
+                               compiledVersion.patch);
+
                 if (Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0) {
                     // SDL_Quit();
                     // THROW(sdl_error, "Couldn't set {} Hz 16-bit audio. Reason: {}!", AUDIO_FREQUENCY,
                     // SDL_GetError());
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning",
+                                             "No audio device was detected.", nullptr);
+                    sdl2::log_warn("No audio device was detected.");
                 } else {
                     sdl2::log_info("{} audio channels were allocated.", Mix_AllocateChannels(28));
 
-                    SDL_version compiledVersion{};
-                    SDL_MIXER_VERSION(&compiledVersion)
-                    const auto* const linkedVersion = Mix_Linked_Version();
-                    sdl2::log_info("SDL Mixer runtime v{}.{}.{}", linkedVersion->major, linkedVersion->minor,
-                                   linkedVersion->patch);
-                    sdl2::log_info("SDL Mixer compile-time v{}.{}.{}", compiledVersion.major, compiledVersion.minor,
-                                   compiledVersion.patch);
+                    bAudioEnabled = true;
                 }
             }
 
@@ -651,15 +658,19 @@ bool run_game(int argc, char* argv[]) {
             GlobalCleanup sfx_cleanup{dune::globals::pSFXManager};
 #ifdef HAVE_STD_ASYNC
             // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
-            auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
-                const auto start   = std::chrono::steady_clock::now();
-                auto ret           = std::make_unique<SFXManager>();
-                const auto elapsed = std::chrono::steady_clock::now() - start;
-                return std::make_pair(std::move(ret), elapsed);
-            });
+            std::future<std::pair<std::unique_ptr<SFXManager>, std::chrono::nanoseconds>> sfxManagerFut;
+
+            if (bAudioEnabled) {
+                sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
+                    const auto start   = std::chrono::steady_clock::now();
+                    auto ret           = std::make_unique<SFXManager>();
+                    const auto elapsed = std::chrono::steady_clock::now() - start;
+                    return std::make_pair(std::move(ret), elapsed);
+                });
+            }
 #else
-            // g++ does not provide std::launch::async on all platforms
-            dune::globals::pSFXManager = std::make_unique<SFXManager>();
+            if (bAudioEnabled)
+                dune::globals::pSFXManager = std::make_unique<SFXManager>();
 #endif
 
             GlobalCleanup gfx_cleanup{dune::globals::pGFXManager};
@@ -678,16 +689,18 @@ bool run_game(int argc, char* argv[]) {
                 SDL_SetCursor(cursor);
 
 #ifdef HAVE_STD_ASYNC
-            try {
-                auto sfxResult             = sfxManagerFut.get();
-                dune::globals::pSFXManager = std::move(sfxResult.first);
-                sdl2::log_info("SFXManager time: {}", std::chrono::duration<double>(sfxResult.second).count());
-            } catch (const std::exception& e) {
-                dune::globals::pSFXManager.reset();
-                const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
-                                                  "thrown:\n\n%s\n\nDune Legacy is unable to play sound!",
-                                                  demangleSymbol(typeid(e).name()), e.what());
-                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
+            if (sfxManagerFut.valid()) {
+                try {
+                    auto sfxResult             = sfxManagerFut.get();
+                    dune::globals::pSFXManager = std::move(sfxResult.first);
+                    sdl2::log_info("SFXManager time: {}", std::chrono::duration<double>(sfxResult.second).count());
+                } catch (const std::exception& e) {
+                    dune::globals::pSFXManager.reset();
+                    const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
+                                                      "thrown:\n\n%s\n\nDune Legacy is unable to play sound!",
+                                                      demangleSymbol(typeid(e).name()), e.what());
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
+                }
             }
 #endif
 
@@ -739,7 +752,8 @@ bool run_game(int argc, char* argv[]) {
                 dune::globals::musicPlayer.reset();
                 dune::globals::soundPlayer.reset();
                 Mix_HaltMusic();
-                Mix_CloseAudio();
+                if (bAudioEnabled)
+                    Mix_CloseAudio();
             } else {
                 // save the current display index for later reuse
                 currentDisplayIndex = SDL_GetWindowDisplayIndex(dune::globals::window.get());
