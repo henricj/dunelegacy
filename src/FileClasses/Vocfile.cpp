@@ -321,12 +321,8 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     int minValue = 255;
     int maxValue = 0;
     for (decltype(RawData_Samples) i = 0; i < RawData_Samples; i++) {
-        if (RawDataUint8[i] < minValue) {
-            minValue = RawDataUint8[i];
-        }
-        if (RawDataUint8[i] > maxValue) {
-            maxValue = RawDataUint8[i];
-        }
+        minValue = std::min<int>(RawDataUint8[i], minValue);
+        maxValue = std::max<int>(RawDataUint8[i], maxValue);
     }
 
     auto levelShift = 128 - static_cast<int>(RawDataUint8[RawData_Samples - 1]);
@@ -375,8 +371,9 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     // Convert to audio device frequency
-    const auto ConversionRatio   = TargetFrequency / static_cast<double>(RawData_Frequency);
-    auto TargetDataFloat_Samples = static_cast<size_t>(std::ceil(RawData_Samples * ConversionRatio));
+    const auto ConversionRatio = TargetFrequency / static_cast<double>(RawData_Frequency);
+    auto TargetDataFloat_Samples =
+        static_cast<size_t>(std::ceil(static_cast<double>(RawData_Samples) * ConversionRatio));
     std::vector<float> TargetDataFloat(TargetDataFloat_Samples);
 
     size_t odone = 0;
@@ -408,9 +405,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     auto distance = 0.0f;
     for (const auto s : TargetDataFloat) {
         auto abs_s = std::abs(s);
-        if (abs_s > distance) {
-            distance = abs_s;
-        }
+        distance   = std::max(abs_s, distance);
     }
 
     if (distance > 1.0f) {
@@ -509,7 +504,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
                 const auto v = SDL_SwapBE16(Float2Sint16(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
                 for (int j = 0; j < channels; j++) {
-                    TargetData[i + j] = v;
+                    TargetData[i + j] = static_cast<uint16_t>(v);
                 }
             }
         } break;
