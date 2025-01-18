@@ -321,6 +321,25 @@
       }
     },
     {
+      "name": "linux-x64-release-clang-libcpp",
+      "inherits": "linux-base",
+      "displayName": "Linux x64 Release clang/libc++",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_LINKER_TYPE": "LLD",
+        "CMAKE_BUILD_TYPE": "Release",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-lto-libcpp"
+      },
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang++",
+        "CXXFLAGS": "-stdlib=libc++"
+      }
+    },
+    {
       "name": "linux-asan-debug",
       "inherits": "linux-debug",
       "displayName": "Linux ASAN Debug",
