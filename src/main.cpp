@@ -87,13 +87,6 @@
 #    include <MacFunctions.h>
 #endif
 
-#if !defined(__GNUG__)                                                                                                 \
-    || (defined(_GLIBCXX_HAS_GTHREADS) && defined(_GLIBCXX_USE_C99_STDINT_TR1) && (ATOMIC_INT_LOCK_FREE > 1)           \
-        && !defined(_GLIBCXX_HAS_GTHREADS))
-// g++ does not provide std::async on all platforms
-#    define HAS_ASYNC
-#endif
-
 #if HAVE_CXXBI_H
 #    include <cxxabi.h>
 inline std::string demangleSymbol(const char* symbolname) {
@@ -656,7 +649,7 @@ bool run_game(int argc, char* argv[]) {
             sdl2::log_info("Loading graphics and sounds...");
 
             GlobalCleanup sfx_cleanup{dune::globals::pSFXManager};
-#ifdef HAS_ASYNC
+#ifdef HAVE_STD_ASYNC
             // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
             auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
                 const auto start   = std::chrono::steady_clock::now();
@@ -684,7 +677,7 @@ bool run_game(int argc, char* argv[]) {
             if (auto* cursor = pGFXManager->getCursor(UI_CursorNormal))
                 SDL_SetCursor(cursor);
 
-#ifdef HAS_ASYNC
+#ifdef HAVE_STD_ASYNC
             try {
                 auto sfxResult             = sfxManagerFut.get();
                 dune::globals::pSFXManager = std::move(sfxResult.first);

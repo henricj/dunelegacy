@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16...3.25)
+cmake_minimum_required(VERSION 3.16...3.29)
 
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)   # Respect CMAKE_MSVC_RUNTIME_LIBRARY
 
@@ -158,6 +158,13 @@ check_cxx_source_compiles(
     }"
     HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
 
+check_cxx_source_compiles(
+    "#include <future>
+    int main(int argc, char* argv[]) {
+        auto fut = std::async(std::launch::async | std::launch::deferred, [] { return 42; });
+        return fut.get();
+    }"
+    HAVE_STD_ASYNC)
 
 if(DUNE_TARGET_ARCHITECTURE)
     if (DUNE_TARGET_ARCHITECTURE STREQUAL "x64" OR DUNE_TARGET_ARCHITECTURE STREQUAL "x86_64")

@@ -142,6 +142,10 @@ if(HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
 	target_compile_definitions(dune PUBLIC HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
 endif()
 
+if(HAVE_STD_ASYNC)
+	target_compile_definitions(dune PUBLIC HAVE_STD_ASYNC)
+endif()
+
 if(DUNE_PRECOMPILED_HEADERS)
 	target_precompile_headers(dune PRIVATE stdafx.h)
 endif()
