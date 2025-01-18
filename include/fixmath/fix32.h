@@ -104,7 +104,7 @@ static inline fix32_t fix32_from_dbl(double a) {
    you should only use this for constant values. For runtime-conversions,
    use the functions above.
 */
-#define F32(x) ((fix32_t)(((x) >= 0) ? ((x)*4294967296.0 + 0.5) : ((x)*4294967296.0 - 0.5)))
+#define F32(x) ((fix32_t)(((x) >= 0) ? ((x) * 4294967296.0 + 0.5) : ((x) * 4294967296.0 - 0.5)))
 
 static inline fix32_t fix32_abs(fix32_t x) {
     return (x < 0 ? -x : x);

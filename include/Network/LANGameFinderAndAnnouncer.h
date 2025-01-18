@@ -64,7 +64,9 @@ public:
         Sets the function that should be called when a new server is found
         \param  pOnNewServer    Function to call on new server found
     */
-    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) { this->pOnNewServer_ = std::move(pOnNewServer); }
+    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) {
+        this->pOnNewServer_ = std::move(pOnNewServer);
+    }
 
     /**
         Sets the function that should be called when a server is updated

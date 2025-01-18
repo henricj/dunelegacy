@@ -103,7 +103,7 @@ DuneEventWatcher::~DuneEventWatcher() {
 }
 
 #else  // defined(_WIN32)
-DuneEventWatcher::DuneEventWatcher() = default;
+DuneEventWatcher::DuneEventWatcher()  = default;
 DuneEventWatcher::~DuneEventWatcher() = default;
 #endif // defined(_WIN32)
 

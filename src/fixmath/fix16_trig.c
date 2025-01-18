@@ -80,8 +80,8 @@ fix16_t fix16_sin(fix16_t inAngle) {
     const fix16_t tempAngleSq = fix16_mul(tempAngle, tempAngle);
 
 #    ifndef FIXMATH_FAST_SIN // Most accurate version, accurate to ~2.1%
-    fix16_t tempOut           = tempAngle;
-    tempAngle                 = fix16_mul(tempAngle, tempAngleSq);
+    fix16_t tempOut = tempAngle;
+    tempAngle       = fix16_mul(tempAngle, tempAngleSq);
     tempOut -= (tempAngle / 6);
     tempAngle = fix16_mul(tempAngle, tempAngleSq);
     tempOut += (tempAngle / 120);

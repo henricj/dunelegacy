@@ -35,8 +35,8 @@
 #include <stack>
 
 Map::Map(Game& game, int xSize, int ySize)
-    : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr),
-      pathfinder_(this), random_{game.randomFactory.create("Map")} {
+    : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr), pathfinder_(this),
+      random_{game.randomFactory.create("Map")} {
 
     tiles.resize(static_cast<size_t>(sizeX) * sizeY);
 
@@ -654,9 +654,7 @@ void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRan
 void Map::createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice) {
     for_each_filter(
         location.x - radius, location.y - radius, location.x + radius, location.y + radius,
-        [&](int x, int y) {
-            return distanceFrom(location, {x, y}) <= radius;
-        },
+        [&](int x, int y) { return distanceFrom(location, {x, y}) <= radius; },
         [&](Tile& t) {
             if (t.isSand()) {
                 const auto terrain = centerIsThickSpice && (t.location_ == location) ? TERRAINTYPE::Terrain_ThickSpice

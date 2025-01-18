@@ -87,7 +87,7 @@ static inline fix16_t fix16_from_dbl(double a) {
    you should only use this for constant values. For runtime-conversions,
    use the functions above.
 */
-#define F16(x) ((fix16_t)(((x) >= 0) ? ((x)*65536.0 + 0.5) : ((x)*65536.0 - 0.5)))
+#define F16(x) ((fix16_t)(((x) >= 0) ? ((x) * 65536.0 + 0.5) : ((x) * 65536.0 - 0.5)))
 
 static inline fix16_t fix16_abs(fix16_t x) {
     return (x < 0 ? -x : x);

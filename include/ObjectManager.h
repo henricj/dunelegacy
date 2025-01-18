@@ -119,7 +119,8 @@ public:
 
         auto* const pObject = dune_cast<ObjectType>(object.get());
         if (!pObject) {
-            sdl2::log_error("createObjectFromItemId() created the wrong type of object for build item type {}", static_cast<int>(itemID));
+            sdl2::log_error("createObjectFromItemId() created the wrong type of object for build item type {}",
+                            static_cast<int>(itemID));
             return nullptr;
         }
 
