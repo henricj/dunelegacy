@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dunelegacy 0.96.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-30 23:16-0700\n"
+"POT-Creation-Date: 2025-01-19 06:38-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Choam.cpp:109
+#: src/Choam.cpp:116
 msgid "New Starport prices"
 msgstr ""
 
@@ -29,461 +29,461 @@ msgstr ""
 #: src/FileClasses/SurfaceLoader.cpp:269 src/FileClasses/SurfaceLoader.cpp:270
 #: src/FileClasses/SurfaceLoader.cpp:277 src/FileClasses/SurfaceLoader.cpp:278
 #: src/FileClasses/SurfaceLoader.cpp:761 src/FileClasses/SurfaceLoader.cpp:763
-#: src/FileClasses/TextManager.cpp:65 src/Menu/MapChoice.cpp:527
-#: src/Menu/MapChoice.cpp:531 src/main.cpp:406
+#: src/FileClasses/TextManager.cpp:63 src/Menu/MapChoice.cpp:527
+#: src/Menu/MapChoice.cpp:531 src/main.cpp:399
 #, c-format
 msgid "LanguageFileExtension"
 msgstr ""
 
-#: src/FileClasses/FileManager.cpp:135
+#: src/FileClasses/FileManager.cpp:133
 msgid "LanguagePakFiles"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:91
+#: src/FileClasses/TextManager.cpp:89
 msgid "@TEXTH.ENG|0#Description of House Harkonnen"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:92
+#: src/FileClasses/TextManager.cpp:90
 msgid "@TEXTH.ENG|4#Description of Harkonnen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:93
+#: src/FileClasses/TextManager.cpp:91
 msgid "@TEXTH.ENG|8#Description of Harkonnen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:94
+#: src/FileClasses/TextManager.cpp:92
 msgid "@TEXTH.ENG|12#Description of Harkonnen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:95
+#: src/FileClasses/TextManager.cpp:93
 msgid "@TEXTH.ENG|16#Description of Harkonnen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:96
+#: src/FileClasses/TextManager.cpp:94
 msgid "@TEXTH.ENG|20#Description of Harkonnen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:97
+#: src/FileClasses/TextManager.cpp:95
 msgid "@TEXTH.ENG|24#Description of Harkonnen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:98
+#: src/FileClasses/TextManager.cpp:96
 msgid "@TEXTH.ENG|28#Description of Harkonnen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:99
+#: src/FileClasses/TextManager.cpp:97
 msgid "@TEXTH.ENG|32#Description of Harkonnen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:100
+#: src/FileClasses/TextManager.cpp:98
 msgid "@TEXTH.ENG|36#Description of Harkonnen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:107
+#: src/FileClasses/TextManager.cpp:105
 msgid "@TEXTH.ENG|5#Winning text of Harkonnen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:108
+#: src/FileClasses/TextManager.cpp:106
 msgid "@TEXTH.ENG|9#Winning text of Harkonnen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:109
+#: src/FileClasses/TextManager.cpp:107
 msgid "@TEXTH.ENG|13#Winning text of Harkonnen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:110
+#: src/FileClasses/TextManager.cpp:108
 msgid "@TEXTH.ENG|17#Winning text of Harkonnen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:111
+#: src/FileClasses/TextManager.cpp:109
 msgid "@TEXTH.ENG|21#Winning text of Harkonnen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:112
+#: src/FileClasses/TextManager.cpp:110
 msgid "@TEXTH.ENG|25#Winning text of Harkonnen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:113
+#: src/FileClasses/TextManager.cpp:111
 msgid "@TEXTH.ENG|29#Winning text of Harkonnen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:114
+#: src/FileClasses/TextManager.cpp:112
 msgid "@TEXTH.ENG|33#Winning text of Harkonnen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:115
+#: src/FileClasses/TextManager.cpp:113
 msgid "@TEXTH.ENG|37#Winning text of Harkonnen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:122
+#: src/FileClasses/TextManager.cpp:120
 msgid "@TEXTH.ENG|6#Losing text of Harkonnen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:123
+#: src/FileClasses/TextManager.cpp:121
 msgid "@TEXTH.ENG|10#Losing text of Harkonnen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:124
+#: src/FileClasses/TextManager.cpp:122
 msgid "@TEXTH.ENG|14#Losing text of Harkonnen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:125
+#: src/FileClasses/TextManager.cpp:123
 msgid "@TEXTH.ENG|18#Losing text of Harkonnen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:126
+#: src/FileClasses/TextManager.cpp:124
 msgid "@TEXTH.ENG|22#Losing text of Harkonnen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:127
+#: src/FileClasses/TextManager.cpp:125
 msgid "@TEXTH.ENG|26#Losing text of Harkonnen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:128
+#: src/FileClasses/TextManager.cpp:126
 msgid "@TEXTH.ENG|30#Losing text of Harkonnen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:129
+#: src/FileClasses/TextManager.cpp:127
 msgid "@TEXTH.ENG|34#Losing text of Harkonnen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:130
+#: src/FileClasses/TextManager.cpp:128
 msgid "@TEXTH.ENG|38#Losing text of Harkonnen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:137
+#: src/FileClasses/TextManager.cpp:135
 msgid "@TEXTH.ENG|7#Advice text for Harkonnen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:138
+#: src/FileClasses/TextManager.cpp:136
 msgid "@TEXTH.ENG|11#Advice text for Harkonnen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:139
+#: src/FileClasses/TextManager.cpp:137
 msgid "@TEXTH.ENG|15#Advice text for Harkonnen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:140
+#: src/FileClasses/TextManager.cpp:138
 msgid "@TEXTH.ENG|19#Advice text for Harkonnen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:141
+#: src/FileClasses/TextManager.cpp:139
 msgid "@TEXTH.ENG|23#Advice text for Harkonnen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:142
+#: src/FileClasses/TextManager.cpp:140
 msgid "@TEXTH.ENG|27#Advice text for Harkonnen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:143
+#: src/FileClasses/TextManager.cpp:141
 msgid "@TEXTH.ENG|31#Advice text for Harkonnen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:144
+#: src/FileClasses/TextManager.cpp:142
 msgid "@TEXTH.ENG|35#Advice text for Harkonnen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:145
+#: src/FileClasses/TextManager.cpp:143
 msgid "@TEXTH.ENG|39#Advice text for Harkonnen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:160
+#: src/FileClasses/TextManager.cpp:158
 msgid "@TEXTA.ENG|0#Description of House Atreides"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:161
+#: src/FileClasses/TextManager.cpp:159
 msgid "@TEXTA.ENG|4#Description of Atreides mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:162
+#: src/FileClasses/TextManager.cpp:160
 msgid "@TEXTA.ENG|8#Description of Atreides mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:163
+#: src/FileClasses/TextManager.cpp:161
 msgid "@TEXTA.ENG|12#Description of Atreides mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:164
+#: src/FileClasses/TextManager.cpp:162
 msgid "@TEXTA.ENG|16#Description of Atreides mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:165
+#: src/FileClasses/TextManager.cpp:163
 msgid "@TEXTA.ENG|20#Description of Atreides mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:166
+#: src/FileClasses/TextManager.cpp:164
 msgid "@TEXTA.ENG|24#Description of Atreides mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:167
+#: src/FileClasses/TextManager.cpp:165
 msgid "@TEXTA.ENG|28#Description of Atreides mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:168
+#: src/FileClasses/TextManager.cpp:166
 msgid "@TEXTA.ENG|32#Description of Atreides mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:169
+#: src/FileClasses/TextManager.cpp:167
 msgid "@TEXTA.ENG|36#Description of Atreides mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:176
+#: src/FileClasses/TextManager.cpp:174
 msgid "@TEXTA.ENG|5#Winning text of Atreides mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:177
+#: src/FileClasses/TextManager.cpp:175
 msgid "@TEXTA.ENG|9#Winning text of Atreides mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:178
+#: src/FileClasses/TextManager.cpp:176
 msgid "@TEXTA.ENG|13#Winning text of Atreides mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:179
+#: src/FileClasses/TextManager.cpp:177
 msgid "@TEXTA.ENG|17#Winning text of Atreides mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:180
+#: src/FileClasses/TextManager.cpp:178
 msgid "@TEXTA.ENG|21#Winning text of Atreides mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:181
+#: src/FileClasses/TextManager.cpp:179
 msgid "@TEXTA.ENG|25#Winning text of Atreides mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:182
+#: src/FileClasses/TextManager.cpp:180
 msgid "@TEXTA.ENG|29#Winning text of Atreides mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:183
+#: src/FileClasses/TextManager.cpp:181
 msgid "@TEXTA.ENG|33#Winning text of Atreides mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:184
+#: src/FileClasses/TextManager.cpp:182
 msgid "@TEXTA.ENG|37#Winning text of Atreides mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:191
+#: src/FileClasses/TextManager.cpp:189
 msgid "@TEXTA.ENG|6#Losing text of Atreides mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:192
+#: src/FileClasses/TextManager.cpp:190
 msgid "@TEXTA.ENG|10#Losing text of Atreides mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:193
+#: src/FileClasses/TextManager.cpp:191
 msgid "@TEXTA.ENG|14#Losing text of Atreides mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:194
+#: src/FileClasses/TextManager.cpp:192
 msgid "@TEXTA.ENG|18#Losing text of Atreides mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:195
+#: src/FileClasses/TextManager.cpp:193
 msgid "@TEXTA.ENG|22#Losing text of Atreides mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:196
+#: src/FileClasses/TextManager.cpp:194
 msgid "@TEXTA.ENG|26#Losing text of Atreides mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:197
+#: src/FileClasses/TextManager.cpp:195
 msgid "@TEXTA.ENG|30#Losing text of Atreides mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:198
+#: src/FileClasses/TextManager.cpp:196
 msgid "@TEXTA.ENG|34#Losing text of Atreides mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:199
+#: src/FileClasses/TextManager.cpp:197
 msgid "@TEXTA.ENG|38#Losing text of Atreides mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:206
+#: src/FileClasses/TextManager.cpp:204
 msgid "@TEXTA.ENG|7#Advice text for Atreides mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:207
+#: src/FileClasses/TextManager.cpp:205
 msgid "@TEXTA.ENG|11#Advice text for Atreides mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:208
+#: src/FileClasses/TextManager.cpp:206
 msgid "@TEXTA.ENG|15#Advice text for Atreides mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:209
+#: src/FileClasses/TextManager.cpp:207
 msgid "@TEXTA.ENG|19#Advice text for Atreides mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:210
+#: src/FileClasses/TextManager.cpp:208
 msgid "@TEXTA.ENG|23#Advice text for Atreides mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:211
+#: src/FileClasses/TextManager.cpp:209
 msgid "@TEXTA.ENG|27#Advice text for Atreides mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:212
+#: src/FileClasses/TextManager.cpp:210
 msgid "@TEXTA.ENG|31#Advice text for Atreides mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:213
+#: src/FileClasses/TextManager.cpp:211
 msgid "@TEXTA.ENG|35#Advice text for Atreides mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:214
+#: src/FileClasses/TextManager.cpp:212
 msgid "@TEXTA.ENG|39#Advice text for Atreides mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:229
+#: src/FileClasses/TextManager.cpp:227
 msgid "@TEXTO.ENG|0#Description of House Ordos"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:230
+#: src/FileClasses/TextManager.cpp:228
 msgid "@TEXTO.ENG|4#Description of Ordos mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:231
+#: src/FileClasses/TextManager.cpp:229
 msgid "@TEXTO.ENG|8#Description of Ordos mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:232
+#: src/FileClasses/TextManager.cpp:230
 msgid "@TEXTO.ENG|12#Description of Ordos mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:233
+#: src/FileClasses/TextManager.cpp:231
 msgid "@TEXTO.ENG|16#Description of Ordos mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:234
+#: src/FileClasses/TextManager.cpp:232
 msgid "@TEXTO.ENG|20#Description of Ordos mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:235
+#: src/FileClasses/TextManager.cpp:233
 msgid "@TEXTO.ENG|24#Description of Ordos mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:236
+#: src/FileClasses/TextManager.cpp:234
 msgid "@TEXTO.ENG|28#Description of Ordos mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:237
+#: src/FileClasses/TextManager.cpp:235
 msgid "@TEXTO.ENG|32#Description of Ordos mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:238
+#: src/FileClasses/TextManager.cpp:236
 msgid "@TEXTO.ENG|36#Description of Ordos mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:245
+#: src/FileClasses/TextManager.cpp:243
 msgid "@TEXTO.ENG|5#Winning text of Ordos mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:246
+#: src/FileClasses/TextManager.cpp:244
 msgid "@TEXTO.ENG|9#Winning text of Ordos mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:247
+#: src/FileClasses/TextManager.cpp:245
 msgid "@TEXTO.ENG|13#Winning text of Ordos mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:248
+#: src/FileClasses/TextManager.cpp:246
 msgid "@TEXTO.ENG|17#Winning text of Ordos mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:249
+#: src/FileClasses/TextManager.cpp:247
 msgid "@TEXTO.ENG|21#Winning text of Ordos mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:250
+#: src/FileClasses/TextManager.cpp:248
 msgid "@TEXTO.ENG|25#Winning text of Ordos mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:251
+#: src/FileClasses/TextManager.cpp:249
 msgid "@TEXTO.ENG|29#Winning text of Ordos mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:252
+#: src/FileClasses/TextManager.cpp:250
 msgid "@TEXTO.ENG|33#Winning text of Ordos mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:253
+#: src/FileClasses/TextManager.cpp:251
 msgid "@TEXTO.ENG|37#Winning text of Ordos mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:260
+#: src/FileClasses/TextManager.cpp:258
 msgid "@TEXTO.ENG|6#Losing text of Ordos mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:261
+#: src/FileClasses/TextManager.cpp:259
 msgid "@TEXTO.ENG|10#Losing text of Ordos mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:262
+#: src/FileClasses/TextManager.cpp:260
 msgid "@TEXTO.ENG|14#Losing text of Ordos mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:263
+#: src/FileClasses/TextManager.cpp:261
 msgid "@TEXTO.ENG|18#Losing text of Ordos mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:264
+#: src/FileClasses/TextManager.cpp:262
 msgid "@TEXTO.ENG|22#Losing text of Ordos mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:265
+#: src/FileClasses/TextManager.cpp:263
 msgid "@TEXTO.ENG|26#Losing text of Ordos mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:266
+#: src/FileClasses/TextManager.cpp:264
 msgid "@TEXTO.ENG|30#Losing text of Ordos mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:267
+#: src/FileClasses/TextManager.cpp:265
 msgid "@TEXTO.ENG|34#Losing text of Ordos mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:268
+#: src/FileClasses/TextManager.cpp:266
 msgid "@TEXTO.ENG|38#Losing text of Ordos mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:275
+#: src/FileClasses/TextManager.cpp:273
 msgid "@TEXTO.ENG|7#Advice text for Ordos mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:276
+#: src/FileClasses/TextManager.cpp:274
 msgid "@TEXTO.ENG|11#Advice text for Ordos mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:277
+#: src/FileClasses/TextManager.cpp:275
 msgid "@TEXTO.ENG|15#Advice text for Ordos mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:278
+#: src/FileClasses/TextManager.cpp:276
 msgid "@TEXTO.ENG|19#Advice text for Ordos mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:279
+#: src/FileClasses/TextManager.cpp:277
 msgid "@TEXTO.ENG|23#Advice text for Ordos mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:280
+#: src/FileClasses/TextManager.cpp:278
 msgid "@TEXTO.ENG|27#Advice text for Ordos mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:281
+#: src/FileClasses/TextManager.cpp:279
 msgid "@TEXTO.ENG|31#Advice text for Ordos mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:282
+#: src/FileClasses/TextManager.cpp:280
 msgid "@TEXTO.ENG|35#Advice text for Ordos mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:283
+#: src/FileClasses/TextManager.cpp:281
 msgid "@TEXTO.ENG|39#Advice text for Ordos mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:298
+#: src/FileClasses/TextManager.cpp:296
 msgid ""
 "House Fremen\n"
 "Arrakis, the home planet of House Fremen, is one giant sand desert. "
@@ -491,224 +491,224 @@ msgid ""
 "in defending their planet."
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:299
+#: src/FileClasses/TextManager.cpp:297
 msgid ""
 "@TEXTA.ENG|4|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:300
+#: src/FileClasses/TextManager.cpp:298
 msgid ""
 "@TEXTA.ENG|8|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:301
+#: src/FileClasses/TextManager.cpp:299
 msgid ""
 "@TEXTA.ENG|12|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:302
+#: src/FileClasses/TextManager.cpp:300
 msgid ""
 "@TEXTA.ENG|16|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:303
+#: src/FileClasses/TextManager.cpp:301
 msgid ""
 "@TEXTA.ENG|20|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:304
+#: src/FileClasses/TextManager.cpp:302
 msgid ""
 "@TEXTA.ENG|24|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:305
+#: src/FileClasses/TextManager.cpp:303
 msgid ""
 "@TEXTA.ENG|28|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:306
+#: src/FileClasses/TextManager.cpp:304
 msgid ""
 "@TEXTA.ENG|32|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
 ">Mercenary#Description of Fremen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:307
+#: src/FileClasses/TextManager.cpp:305
 msgid ""
 "@TEXTA.ENG|36|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary|"
 "remaining Ordos and Harkonnen troops->remaining Ordos, Mercenary and "
 "Harkonnen troops#Description of Fremen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:314
+#: src/FileClasses/TextManager.cpp:312
 msgid ""
 "@TEXTA.ENG|5|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:315
+#: src/FileClasses/TextManager.cpp:313
 msgid ""
 "@TEXTA.ENG|9|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:316
+#: src/FileClasses/TextManager.cpp:314
 msgid ""
 "@TEXTA.ENG|13|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:317
+#: src/FileClasses/TextManager.cpp:315
 msgid ""
 "@TEXTA.ENG|17|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:318
+#: src/FileClasses/TextManager.cpp:316
 msgid ""
 "@TEXTA.ENG|21|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:319
+#: src/FileClasses/TextManager.cpp:317
 msgid ""
 "@TEXTA.ENG|25|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:320
+#: src/FileClasses/TextManager.cpp:318
 msgid ""
 "@TEXTA.ENG|29|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:321
+#: src/FileClasses/TextManager.cpp:319
 msgid ""
 "@TEXTA.ENG|33|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:322
+#: src/FileClasses/TextManager.cpp:320
 msgid ""
 "@TEXTA.ENG|37|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
 "text of Fremen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:329
+#: src/FileClasses/TextManager.cpp:327
 msgid ""
 "@TEXTA.ENG|6|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:330
+#: src/FileClasses/TextManager.cpp:328
 msgid ""
 "@TEXTA.ENG|10|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:331
+#: src/FileClasses/TextManager.cpp:329
 msgid ""
 "@TEXTA.ENG|14|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:332
+#: src/FileClasses/TextManager.cpp:330
 msgid ""
 "@TEXTA.ENG|18|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:333
+#: src/FileClasses/TextManager.cpp:331
 msgid ""
 "@TEXTA.ENG|22|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:334
+#: src/FileClasses/TextManager.cpp:332
 msgid ""
 "@TEXTA.ENG|26|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:335
+#: src/FileClasses/TextManager.cpp:333
 msgid ""
 "@TEXTA.ENG|30|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:336
+#: src/FileClasses/TextManager.cpp:334
 msgid ""
 "@TEXTA.ENG|34|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:337
+#: src/FileClasses/TextManager.cpp:335
 msgid ""
 "@TEXTA.ENG|38|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
 "text of Fremen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:344
+#: src/FileClasses/TextManager.cpp:342
 msgid ""
 "@TEXTA.ENG|7|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:345
+#: src/FileClasses/TextManager.cpp:343
 msgid ""
 "@TEXTA.ENG|11|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:346
+#: src/FileClasses/TextManager.cpp:344
 msgid ""
 "@TEXTA.ENG|15|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:347
+#: src/FileClasses/TextManager.cpp:345
 msgid ""
 "@TEXTA.ENG|19|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:348
+#: src/FileClasses/TextManager.cpp:346
 msgid ""
 "@TEXTA.ENG|23|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:349
+#: src/FileClasses/TextManager.cpp:347
 msgid ""
 "@TEXTA.ENG|27|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:350
+#: src/FileClasses/TextManager.cpp:348
 msgid ""
 "@TEXTA.ENG|31|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:351
+#: src/FileClasses/TextManager.cpp:349
 msgid ""
 "@TEXTA.ENG|35|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:352
+#: src/FileClasses/TextManager.cpp:350
 msgid ""
 "@TEXTA.ENG|39|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
 "text for Fremen mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:367
+#: src/FileClasses/TextManager.cpp:365
 msgid ""
 "House Sardaukar\n"
 "Originating from an forgotten planet, House Sardaukar has moved from planet "
@@ -716,223 +716,223 @@ msgid ""
 "combat skills which got them a reputation of being cruel."
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:368
+#: src/FileClasses/TextManager.cpp:366
 msgid ""
 "@TEXTH.ENG|4|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
 ">Sardaukar#Description of Sardaukar mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:369
+#: src/FileClasses/TextManager.cpp:367
 msgid ""
 "@TEXTH.ENG|8|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
 ">Sardaukar#Description of Sardaukar mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:370
+#: src/FileClasses/TextManager.cpp:368
 msgid ""
 "@TEXTH.ENG|12|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
 ">Sardaukar#Description of Sardaukar mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:371
+#: src/FileClasses/TextManager.cpp:369
 msgid ""
 "@TEXTH.ENG|16|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
 ">Sardaukar#Description of Sardaukar mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:372
+#: src/FileClasses/TextManager.cpp:370
 msgid ""
 "@TEXTH.ENG|20|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
 "Emperor was->the Atreides were#Description of Sardaukar mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:373
+#: src/FileClasses/TextManager.cpp:371
 msgid ""
 "@TEXTH.ENG|24|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
 ">Sardaukar#Description of Sardaukar mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:374
+#: src/FileClasses/TextManager.cpp:372
 msgid ""
 "@TEXTH.ENG|28|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
 ">Sardaukar#Description of Sardaukar mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:375
+#: src/FileClasses/TextManager.cpp:373
 msgid ""
 "@TEXTH.ENG|32|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
 ">Sardaukar#Description of Sardaukar mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:376
+#: src/FileClasses/TextManager.cpp:374
 msgid ""
 "@TEXTH.ENG|36|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
 "Emperor's->their leader's#Description of Sardaukar mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:383
+#: src/FileClasses/TextManager.cpp:381
 msgid ""
 "@TEXTH.ENG|5|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:384
+#: src/FileClasses/TextManager.cpp:382
 msgid ""
 "@TEXTH.ENG|9|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:385
+#: src/FileClasses/TextManager.cpp:383
 msgid ""
 "@TEXTH.ENG|13|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:386
+#: src/FileClasses/TextManager.cpp:384
 msgid ""
 "@TEXTH.ENG|17|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:387
+#: src/FileClasses/TextManager.cpp:385
 msgid ""
 "@TEXTH.ENG|21|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:388
+#: src/FileClasses/TextManager.cpp:386
 msgid ""
 "@TEXTH.ENG|25|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:389
+#: src/FileClasses/TextManager.cpp:387
 msgid ""
 "@TEXTH.ENG|29|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:390
+#: src/FileClasses/TextManager.cpp:388
 msgid ""
 "@TEXTH.ENG|33|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
 "text of Sardaukar mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:391
+#: src/FileClasses/TextManager.cpp:389
 msgid ""
 "@TEXTH.ENG|37|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
 "Emperor->the leader#Winning text of Sardaukar mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:398
+#: src/FileClasses/TextManager.cpp:396
 msgid ""
 "@TEXTH.ENG|6|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:399
+#: src/FileClasses/TextManager.cpp:397
 msgid ""
 "@TEXTH.ENG|10|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:400
+#: src/FileClasses/TextManager.cpp:398
 msgid ""
 "@TEXTH.ENG|14|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:401
+#: src/FileClasses/TextManager.cpp:399
 msgid ""
 "@TEXTH.ENG|18|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:402
+#: src/FileClasses/TextManager.cpp:400
 msgid ""
 "@TEXTH.ENG|22|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:403
+#: src/FileClasses/TextManager.cpp:401
 msgid ""
 "@TEXTH.ENG|26|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:404
+#: src/FileClasses/TextManager.cpp:402
 msgid ""
 "@TEXTH.ENG|30|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:405
+#: src/FileClasses/TextManager.cpp:403
 msgid ""
 "@TEXTH.ENG|34|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:406
+#: src/FileClasses/TextManager.cpp:404
 msgid ""
 "@TEXTH.ENG|38|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
 "text of Sardaukar mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:413
+#: src/FileClasses/TextManager.cpp:411
 msgid ""
 "@TEXTH.ENG|7|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:414
+#: src/FileClasses/TextManager.cpp:412
 msgid ""
 "@TEXTH.ENG|11|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:415
+#: src/FileClasses/TextManager.cpp:413
 msgid ""
 "@TEXTH.ENG|15|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:416
+#: src/FileClasses/TextManager.cpp:414
 msgid ""
 "@TEXTH.ENG|19|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:417
+#: src/FileClasses/TextManager.cpp:415
 msgid ""
 "@TEXTH.ENG|23|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:418
+#: src/FileClasses/TextManager.cpp:416
 msgid ""
 "@TEXTH.ENG|27|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:419
+#: src/FileClasses/TextManager.cpp:417
 msgid ""
 "@TEXTH.ENG|31|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:420
+#: src/FileClasses/TextManager.cpp:418
 msgid ""
 "@TEXTH.ENG|35|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:421
+#: src/FileClasses/TextManager.cpp:419
 msgid ""
 "@TEXTH.ENG|39|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
 "text for Sardaukar mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:437
+#: src/FileClasses/TextManager.cpp:435
 msgid ""
 "House Mercenary\n"
 "The home planet of the Mercenary consists of huge oceans and large deserts. "
@@ -941,228 +941,228 @@ msgid ""
 "military force."
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:438
+#: src/FileClasses/TextManager.cpp:436
 msgid ""
 "@TEXTO.ENG|4|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:439
+#: src/FileClasses/TextManager.cpp:437
 msgid ""
 "@TEXTO.ENG|8|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:440
+#: src/FileClasses/TextManager.cpp:438
 msgid ""
 "@TEXTO.ENG|12|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:441
+#: src/FileClasses/TextManager.cpp:439
 msgid ""
 "@TEXTO.ENG|16|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:442
+#: src/FileClasses/TextManager.cpp:440
 msgid ""
 "@TEXTO.ENG|20|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:443
+#: src/FileClasses/TextManager.cpp:441
 msgid ""
 "@TEXTO.ENG|24|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:444
+#: src/FileClasses/TextManager.cpp:442
 msgid ""
 "@TEXTO.ENG|28|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:445
+#: src/FileClasses/TextManager.cpp:443
 msgid ""
 "@TEXTO.ENG|32|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:446
+#: src/FileClasses/TextManager.cpp:444
 msgid ""
 "@TEXTO.ENG|36|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
 ">Fremen#Description of Mercenary mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:453
+#: src/FileClasses/TextManager.cpp:451
 msgid ""
 "@TEXTO.ENG|5|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:454
+#: src/FileClasses/TextManager.cpp:452
 msgid ""
 "@TEXTO.ENG|9|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:455
+#: src/FileClasses/TextManager.cpp:453
 msgid ""
 "@TEXTO.ENG|13|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:456
+#: src/FileClasses/TextManager.cpp:454
 msgid ""
 "@TEXTO.ENG|17|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:457
+#: src/FileClasses/TextManager.cpp:455
 msgid ""
 "@TEXTO.ENG|21|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:458
+#: src/FileClasses/TextManager.cpp:456
 msgid ""
 "@TEXTO.ENG|25|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:459
+#: src/FileClasses/TextManager.cpp:457
 msgid ""
 "@TEXTO.ENG|29|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:460
+#: src/FileClasses/TextManager.cpp:458
 msgid ""
 "@TEXTO.ENG|33|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:461
+#: src/FileClasses/TextManager.cpp:459
 msgid ""
 "@TEXTO.ENG|37|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
 "text of Mercenary mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:468
+#: src/FileClasses/TextManager.cpp:466
 msgid ""
 "@TEXTO.ENG|6|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:469
+#: src/FileClasses/TextManager.cpp:467
 msgid ""
 "@TEXTO.ENG|10|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:470
+#: src/FileClasses/TextManager.cpp:468
 msgid ""
 "@TEXTO.ENG|14|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:471
+#: src/FileClasses/TextManager.cpp:469
 msgid ""
 "@TEXTO.ENG|18|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:472
+#: src/FileClasses/TextManager.cpp:470
 msgid ""
 "@TEXTO.ENG|22|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:473
+#: src/FileClasses/TextManager.cpp:471
 msgid ""
 "@TEXTO.ENG|26|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:474
+#: src/FileClasses/TextManager.cpp:472
 msgid ""
 "@TEXTO.ENG|30|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:475
+#: src/FileClasses/TextManager.cpp:473
 msgid ""
 "@TEXTO.ENG|34|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:476
+#: src/FileClasses/TextManager.cpp:474
 msgid ""
 "@TEXTO.ENG|38|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
 "text of Mercenary mission 9"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:483
+#: src/FileClasses/TextManager.cpp:481
 msgid ""
 "@TEXTO.ENG|7|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 1"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:484
+#: src/FileClasses/TextManager.cpp:482
 msgid ""
 "@TEXTO.ENG|11|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 2"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:485
+#: src/FileClasses/TextManager.cpp:483
 msgid ""
 "@TEXTO.ENG|15|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 3"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:486
+#: src/FileClasses/TextManager.cpp:484
 msgid ""
 "@TEXTO.ENG|19|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 4"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:487
+#: src/FileClasses/TextManager.cpp:485
 msgid ""
 "@TEXTO.ENG|23|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 5"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:488
+#: src/FileClasses/TextManager.cpp:486
 msgid ""
 "@TEXTO.ENG|27|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 6"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:489
+#: src/FileClasses/TextManager.cpp:487
 msgid ""
 "@TEXTO.ENG|31|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 7"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:490
+#: src/FileClasses/TextManager.cpp:488
 msgid ""
 "@TEXTO.ENG|35|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 8"
 msgstr ""
 
-#: src/FileClasses/TextManager.cpp:491
+#: src/FileClasses/TextManager.cpp:489
 msgid ""
 "@TEXTO.ENG|39|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
 "text for Mercenary mission 9"
 msgstr ""
 
-#: src/GUI/ObjectInterfaces/BuilderInterface.cpp:34
-#: src/GUI/ObjectInterfaces/BuilderInterface.cpp:40
+#: src/GUI/ObjectInterfaces/BuilderInterface.cpp:35
+#: src/GUI/ObjectInterfaces/BuilderInterface.cpp:41
 msgid "Upgrade"
 msgstr ""
 
-#: src/GUI/ObjectInterfaces/BuilderInterface.cpp:37
+#: src/GUI/ObjectInterfaces/BuilderInterface.cpp:38
 msgid "Upgrade this structure (Hotkey: U)"
 msgstr ""
 
@@ -1426,15 +1426,15 @@ msgstr ""
 msgid "If checked only one palace can be build per house."
 msgstr ""
 
-#: src/GUI/dune/GameOptionsWindow.cpp:134 src/Game.cpp:2290 src/Game.cpp:2308
+#: src/GUI/dune/GameOptionsWindow.cpp:134 src/Game.cpp:2287 src/Game.cpp:2304
 msgid "Game speed"
 msgstr ""
 
 #: src/GUI/dune/GameOptionsWindow.cpp:150
 #: src/GUI/dune/InGameSettingsMenu.cpp:88 src/MapEditor/ChoamWindow.cpp:129
-#: src/MapEditor/MapSettingsWindow.cpp:279
+#: src/MapEditor/MapSettingsWindow.cpp:282
 #: src/MapEditor/PlayerSettingsWindow.cpp:196
-#: src/MapEditor/ReinforcementsWindow.cpp:200 src/MapEditor/TeamsWindow.cpp:190
+#: src/MapEditor/ReinforcementsWindow.cpp:200 src/MapEditor/TeamsWindow.cpp:192
 #: src/Menu/CustomGameStatsMenu.cpp:177
 msgid "OK"
 msgstr ""
@@ -1448,7 +1448,7 @@ msgid "Save Game"
 msgstr ""
 
 #: src/GUI/dune/InGameMenu.cpp:63 src/GUI/dune/InGameMenu.cpp:186
-#: src/Menu/CustomGameMenu.cpp:218 src/Menu/SinglePlayerMenu.cpp:143
+#: src/Menu/CustomGameMenu.cpp:217 src/Menu/SinglePlayerMenu.cpp:143
 msgid "Load Game"
 msgstr ""
 
@@ -1473,30 +1473,30 @@ msgid "Do you really want to restart this game?"
 msgstr ""
 
 #: src/GUI/dune/InGameMenu.cpp:190 src/GUI/dune/InGameMenu.cpp:198
-#: src/GUI/dune/LoadSaveWindow.cpp:173 src/MapEditor/LoadMapWindow.cpp:160
+#: src/GUI/dune/LoadSaveWindow.cpp:174 src/MapEditor/LoadMapWindow.cpp:160
 #: src/MapEditor/MapEditorInterface.cpp:861
 msgid "Yes"
 msgstr ""
 
 #: src/GUI/dune/InGameMenu.cpp:190 src/GUI/dune/InGameMenu.cpp:198
-#: src/GUI/dune/LoadSaveWindow.cpp:174 src/MapEditor/LoadMapWindow.cpp:162
+#: src/GUI/dune/LoadSaveWindow.cpp:174 src/MapEditor/LoadMapWindow.cpp:160
 #: src/MapEditor/MapEditorInterface.cpp:861
 msgid "No"
 msgstr ""
 
-#: src/GUI/dune/InGameSettingsMenu.cpp:93 src/GUI/dune/LoadSaveWindow.cpp:109
-#: src/MapEditor/ChoamWindow.cpp:117 src/MapEditor/LoadMapWindow.cpp:117
-#: src/MapEditor/MapSettingsWindow.cpp:267 src/MapEditor/NewMapWindow.cpp:210
+#: src/GUI/dune/InGameSettingsMenu.cpp:93 src/GUI/dune/LoadSaveWindow.cpp:111
+#: src/MapEditor/ChoamWindow.cpp:117 src/MapEditor/LoadMapWindow.cpp:119
+#: src/MapEditor/MapSettingsWindow.cpp:270 src/MapEditor/NewMapWindow.cpp:210
 #: src/MapEditor/PlayerSettingsWindow.cpp:180
-#: src/MapEditor/ReinforcementsWindow.cpp:188 src/MapEditor/TeamsWindow.cpp:178
+#: src/MapEditor/ReinforcementsWindow.cpp:188 src/MapEditor/TeamsWindow.cpp:180
 msgid "Cancel"
 msgstr ""
 
-#: src/GUI/dune/LoadSaveWindow.cpp:101
+#: src/GUI/dune/LoadSaveWindow.cpp:103
 msgid "Save"
 msgstr ""
 
-#: src/GUI/dune/LoadSaveWindow.cpp:173 src/MapEditor/LoadMapWindow.cpp:158
+#: src/GUI/dune/LoadSaveWindow.cpp:173 src/MapEditor/LoadMapWindow.cpp:159
 #, c-format
 msgid "Do you really want to delete '%s' ?"
 msgstr ""
@@ -1507,7 +1507,7 @@ msgid ""
 msgstr ""
 
 #: src/GUI/dune/WaitingForOtherPlayers.cpp:40
-#: src/MapEditor/ReinforcementsWindow.cpp:103 src/MapEditor/TeamsWindow.cpp:93
+#: src/MapEditor/ReinforcementsWindow.cpp:103 src/MapEditor/TeamsWindow.cpp:95
 msgid "Remove"
 msgstr ""
 
@@ -1515,47 +1515,47 @@ msgstr ""
 msgid "Waiting for other players... "
 msgstr ""
 
-#: src/Game.cpp:563
+#: src/Game.cpp:565
 msgid "You Have Completed Your Mission."
 msgstr ""
 
-#: src/Game.cpp:565
+#: src/Game.cpp:567
 msgid "You Have Failed Your Mission."
 msgstr ""
 
-#: src/Game.cpp:827
+#: src/Game.cpp:829
 msgid "@DUNE.ENG|226#Harvester"
 msgstr ""
 
-#: src/Game.cpp:833
+#: src/Game.cpp:835
 msgid "@DUNE.ENG|124#full and awaiting pickup"
 msgstr ""
 
-#: src/Game.cpp:835
+#: src/Game.cpp:837
 msgid "@DUNE.ENG|123#full and returning"
 msgstr ""
 
-#: src/Game.cpp:837
+#: src/Game.cpp:839
 msgid "@DUNE.ENG|122#full and harvesting"
 msgstr ""
 
-#: src/Game.cpp:839
+#: src/Game.cpp:841
 msgid "@DUNE.ENG|121#full"
 msgstr ""
 
-#: src/Game.cpp:844
+#: src/Game.cpp:846
 msgid "@DUNE.ENG|128#empty and awaiting pickup"
 msgstr ""
 
-#: src/Game.cpp:846
+#: src/Game.cpp:848
 msgid "@DUNE.ENG|127#empty and returning"
 msgstr ""
 
-#: src/Game.cpp:848
+#: src/Game.cpp:850
 msgid "@DUNE.ENG|126#empty and harvesting"
 msgstr ""
 
-#: src/Game.cpp:850
+#: src/Game.cpp:852
 msgid "@DUNE.ENG|125#empty"
 msgstr ""
 
@@ -1567,29 +1567,29 @@ msgstr ""
 msgid "Unable to open the replay log file."
 msgstr ""
 
-#: src/Game.cpp:2570
+#: src/Game.cpp:2566
 msgid "There is no item to place."
 msgstr ""
 
-#: src/Game.cpp:2590 src/Game.cpp:2615
+#: src/Game.cpp:2586 src/Game.cpp:2611
 msgid "@DUNE.ENG|135#Cannot place slab here."
 msgstr ""
 
-#: src/Game.cpp:2628
+#: src/Game.cpp:2624
 #, c-format
 msgid "@DUNE.ENG|134#Cannot place %%s here."
 msgstr ""
 
-#: src/Game.cpp:2815
+#: src/Game.cpp:2811
 msgid "Screenshot saved"
 msgstr ""
 
-#: src/House.cpp:323
+#: src/House.cpp:325
 msgid ""
 "@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."
 msgstr ""
 
-#: src/House.cpp:511
+#: src/House.cpp:515
 #, c-format
 msgid "House '%s' has been defeated."
 msgstr ""
@@ -1604,49 +1604,49 @@ msgid ""
 "is available at the start of the game and every 30s one unit is added."
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:56 src/MapEditor/MapEditorInterface.cpp:112
+#: src/MapEditor/LoadMapWindow.cpp:58 src/MapEditor/MapEditorInterface.cpp:112
 #: src/MapEditor/NewMapWindow.cpp:218
 msgid "Load Map"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:67 src/Menu/CustomGameMenu.cpp:70
+#: src/MapEditor/LoadMapWindow.cpp:69 src/Menu/CustomGameMenu.cpp:70
 msgid "SP User Maps"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:73 src/Menu/CustomGameMenu.cpp:80
+#: src/MapEditor/LoadMapWindow.cpp:75 src/Menu/CustomGameMenu.cpp:80
 msgid "MP User Maps"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:92 src/Menu/CustomGameMenu.cpp:110
-#: src/Menu/CustomGamePlayers.cpp:85
+#: src/MapEditor/LoadMapWindow.cpp:94 src/Menu/CustomGameMenu.cpp:110
+#: src/Menu/CustomGamePlayers.cpp:87
 msgid "Choose map"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:99 src/Menu/CustomGameMenu.cpp:117
-#: src/Menu/CustomGamePlayers.cpp:140
+#: src/MapEditor/LoadMapWindow.cpp:101 src/Menu/CustomGameMenu.cpp:117
+#: src/Menu/CustomGamePlayers.cpp:143
 msgid "Size"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:102 src/Menu/CustomGameMenu.cpp:119
-#: src/Menu/CustomGamePlayers.cpp:142
+#: src/MapEditor/LoadMapWindow.cpp:104 src/Menu/CustomGameMenu.cpp:119
+#: src/Menu/CustomGamePlayers.cpp:145
 msgid "Players"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:105 src/Menu/CustomGameMenu.cpp:121
-#: src/Menu/CustomGamePlayers.cpp:144
+#: src/MapEditor/LoadMapWindow.cpp:107 src/Menu/CustomGameMenu.cpp:121
+#: src/Menu/CustomGamePlayers.cpp:147
 msgid "Author"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:108 src/Menu/CustomGameMenu.cpp:123
-#: src/Menu/CustomGamePlayers.cpp:146
+#: src/MapEditor/LoadMapWindow.cpp:110 src/Menu/CustomGameMenu.cpp:123
+#: src/Menu/CustomGamePlayers.cpp:149
 msgid "License"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:129 src/Menu/CustomGameMenu.cpp:141
+#: src/MapEditor/LoadMapWindow.cpp:131 src/Menu/CustomGameMenu.cpp:141
 msgid "Load"
 msgstr ""
 
-#: src/MapEditor/LoadMapWindow.cpp:257 src/Menu/CustomGameMenu.cpp:265
+#: src/MapEditor/LoadMapWindow.cpp:251 src/Menu/CustomGameMenu.cpp:264
 msgid "No map available"
 msgstr ""
 
@@ -1678,7 +1678,7 @@ msgid "Player Settings"
 msgstr ""
 
 #: src/MapEditor/MapEditorInterface.cpp:147
-#: src/MapEditor/MapSettingsWindow.cpp:57
+#: src/MapEditor/MapSettingsWindow.cpp:59
 msgid "Map Settings"
 msgstr ""
 
@@ -1687,7 +1687,7 @@ msgstr ""
 msgid "Reinforcements"
 msgstr ""
 
-#: src/MapEditor/MapEditorInterface.cpp:168 src/MapEditor/TeamsWindow.cpp:56
+#: src/MapEditor/MapEditorInterface.cpp:168 src/MapEditor/TeamsWindow.cpp:58
 msgid "Teams"
 msgstr ""
 
@@ -1740,8 +1740,8 @@ msgid "Rotate right"
 msgstr ""
 
 #: src/MapEditor/MapEditorInterface.cpp:742
-#: src/MapEditor/ReinforcementsWindow.cpp:113 src/MapEditor/TeamsWindow.cpp:103
-#: src/Menu/CustomGamePlayers.cpp:266 src/Menu/CustomGamePlayers.cpp:324
+#: src/MapEditor/ReinforcementsWindow.cpp:113 src/MapEditor/TeamsWindow.cpp:105
+#: src/Menu/CustomGamePlayers.cpp:269 src/Menu/CustomGamePlayers.cpp:327
 msgid "Player"
 msgstr ""
 
@@ -1757,91 +1757,91 @@ msgstr ""
 msgid "MP Maps"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:67
+#: src/MapEditor/MapSettingsWindow.cpp:69
 msgid "Picture on winning"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:93
+#: src/MapEditor/MapSettingsWindow.cpp:95
 msgid "Picture on losing"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:119
+#: src/MapEditor/MapSettingsWindow.cpp:121
 msgid "Picture for briefing"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:151
+#: src/MapEditor/MapSettingsWindow.cpp:154
 msgid "Conditions for finishing the game"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:156
-#: src/MapEditor/MapSettingsWindow.cpp:193
+#: src/MapEditor/MapSettingsWindow.cpp:159
+#: src/MapEditor/MapSettingsWindow.cpp:196
 msgid "Timeout reached"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:167
-#: src/MapEditor/MapSettingsWindow.cpp:200
+#: src/MapEditor/MapSettingsWindow.cpp:170
+#: src/MapEditor/MapSettingsWindow.cpp:203
 msgid "Spice quota reached"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:173
+#: src/MapEditor/MapSettingsWindow.cpp:176
 msgid "Player has no units/structures left"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:180
-#: src/MapEditor/MapSettingsWindow.cpp:213
+#: src/MapEditor/MapSettingsWindow.cpp:183
+#: src/MapEditor/MapSettingsWindow.cpp:216
 msgid "Others have no units/structures left"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:188
+#: src/MapEditor/MapSettingsWindow.cpp:191
 msgid "Conditions for winning the game (in case it is finished)"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:206
+#: src/MapEditor/MapSettingsWindow.cpp:209
 msgid "Player has units/structures left"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:221
+#: src/MapEditor/MapSettingsWindow.cpp:224
 msgid "Tech Level"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:227
+#: src/MapEditor/MapSettingsWindow.cpp:230
 msgid "Level 1:  Concrete, Windtrap, Refinery"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:228
+#: src/MapEditor/MapSettingsWindow.cpp:231
 msgid ""
 "Level 2:  Radar, Barracks/Light Factory/WOR, Silo, Soldier/Trooper, Trike"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:229
+#: src/MapEditor/MapSettingsWindow.cpp:232
 msgid "Level 3:  Light Factory, Quad"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:230
+#: src/MapEditor/MapSettingsWindow.cpp:233
 msgid "Level 4:  2x2 Concrete, Wall, Heavy Factory, Tank, Harvester, MCV"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:231
+#: src/MapEditor/MapSettingsWindow.cpp:234
 msgid "Level 5:  Gun Turret, Hightech Factory, Rapair Yard, Launcher, Carryall"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:232
+#: src/MapEditor/MapSettingsWindow.cpp:235
 msgid "Level 6:  Starport, Rocket Turret, Siege Tank"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:233
+#: src/MapEditor/MapSettingsWindow.cpp:236
 msgid "Level 7:  House IX, Sonic Tank/Deviator/Devastator, Ornithopter"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:234
+#: src/MapEditor/MapSettingsWindow.cpp:237
 msgid "Level 8:  Palace, Fremen, Saboteur"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:241 src/MapEditor/NewMapWindow.cpp:184
+#: src/MapEditor/MapSettingsWindow.cpp:244 src/MapEditor/NewMapWindow.cpp:184
 msgid "Author:"
 msgstr ""
 
-#: src/MapEditor/MapSettingsWindow.cpp:252 src/MapEditor/NewMapWindow.cpp:195
+#: src/MapEditor/MapSettingsWindow.cpp:255 src/MapEditor/NewMapWindow.cpp:195
 msgid "License:"
 msgstr ""
 
@@ -1898,8 +1898,8 @@ msgid "Create"
 msgstr ""
 
 #: src/MapEditor/PlayerSettingsWindow.cpp:81
-#: src/MapEditor/ReinforcementsWindow.cpp:362 src/MapEditor/TeamsWindow.cpp:373
-#: src/Menu/CustomGamePlayers.cpp:208 src/Menu/CustomGameStatsMenu.cpp:100
+#: src/MapEditor/ReinforcementsWindow.cpp:374 src/MapEditor/TeamsWindow.cpp:393
+#: src/Menu/CustomGamePlayers.cpp:211 src/Menu/CustomGameStatsMenu.cpp:100
 msgid "House"
 msgstr ""
 
@@ -1917,7 +1917,7 @@ msgid "Credits"
 msgstr ""
 
 #: src/MapEditor/PlayerSettingsWindow.cpp:119
-#: src/Menu/CustomGamePlayers.cpp:241 src/Menu/CustomGamePlayers.cpp:249
+#: src/Menu/CustomGamePlayers.cpp:244 src/Menu/CustomGamePlayers.cpp:252
 msgid "Team"
 msgstr ""
 
@@ -1945,21 +1945,21 @@ msgid ""
 "same time are combined."
 msgstr ""
 
-#: src/MapEditor/ReinforcementsWindow.cpp:83 src/MapEditor/TeamsWindow.cpp:73
+#: src/MapEditor/ReinforcementsWindow.cpp:83 src/MapEditor/TeamsWindow.cpp:75
 msgid "Move up"
 msgstr ""
 
-#: src/MapEditor/ReinforcementsWindow.cpp:89 src/MapEditor/TeamsWindow.cpp:79
+#: src/MapEditor/ReinforcementsWindow.cpp:89 src/MapEditor/TeamsWindow.cpp:81
 msgid "Move down"
 msgstr ""
 
-#: src/MapEditor/ReinforcementsWindow.cpp:97 src/MapEditor/TeamsWindow.cpp:87
+#: src/MapEditor/ReinforcementsWindow.cpp:97 src/MapEditor/TeamsWindow.cpp:89
 msgid "Add"
 msgstr ""
 
 #: src/MapEditor/ReinforcementsWindow.cpp:122
-#: src/MapEditor/ReinforcementsWindow.cpp:361 src/MapEditor/TeamsWindow.cpp:112
-#: src/MapEditor/TeamsWindow.cpp:372
+#: src/MapEditor/ReinforcementsWindow.cpp:373 src/MapEditor/TeamsWindow.cpp:114
+#: src/MapEditor/TeamsWindow.cpp:392
 #, c-format
 msgid "Player %d"
 msgstr ""
@@ -1980,47 +1980,47 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: src/MapEditor/ReinforcementsWindow.cpp:269 src/MapEditor/TeamsWindow.cpp:259
+#: src/MapEditor/ReinforcementsWindow.cpp:271 src/MapEditor/TeamsWindow.cpp:263
 msgid "Dune2-compatible maps support only up to 16 entries!"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:119
+#: src/MapEditor/TeamsWindow.cpp:121
 msgid "Team Behavior"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:142
+#: src/MapEditor/TeamsWindow.cpp:144
 msgid "Team Type"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:147
+#: src/MapEditor/TeamsWindow.cpp:149
 msgid "Foot (Infantry, Troopers)"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:148
+#: src/MapEditor/TeamsWindow.cpp:150
 msgid "Wheeled (Trike, Raider, Quad)"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:150
+#: src/MapEditor/TeamsWindow.cpp:152
 msgid "Tracked (Tank, Launcher, Siege Tank,...)"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:152
+#: src/MapEditor/TeamsWindow.cpp:154
 msgid "Winged (Carryall, Ornithopter, Frigate)"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:154
+#: src/MapEditor/TeamsWindow.cpp:156
 msgid "Slither (Sandworm)"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:155
+#: src/MapEditor/TeamsWindow.cpp:157
 msgid "Harvester (Harvester)"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:159
+#: src/MapEditor/TeamsWindow.cpp:161
 msgid "Units"
 msgstr ""
 
-#: src/MapEditor/TeamsWindow.cpp:166
+#: src/MapEditor/TeamsWindow.cpp:168
 msgid "to"
 msgstr ""
 
@@ -2128,39 +2128,39 @@ msgstr ""
 msgid "Game Options..."
 msgstr ""
 
-#: src/Menu/CustomGameMenu.cpp:134 src/Menu/CustomGamePlayers.cpp:157
-#: src/Menu/MultiPlayerMenu.cpp:115 src/Menu/OptionsMenu.cpp:225
+#: src/Menu/CustomGameMenu.cpp:134 src/Menu/CustomGamePlayers.cpp:160
+#: src/Menu/MultiPlayerMenu.cpp:115 src/Menu/OptionsMenu.cpp:227
 #: src/Menu/SinglePlayerSkirmishMenu.cpp:66
 msgid "Back"
 msgstr ""
 
-#: src/Menu/CustomGameMenu.cpp:150 src/Menu/CustomGamePlayers.cpp:186
+#: src/Menu/CustomGameMenu.cpp:150 src/Menu/CustomGamePlayers.cpp:189
 msgid "Next"
 msgstr ""
 
-#: src/Menu/CustomGamePlayers.cpp:275 src/Menu/CustomGamePlayers.cpp:310
-#: src/Menu/CustomGamePlayers.cpp:333 src/Menu/CustomGamePlayers.cpp:367
-#: src/Menu/CustomGamePlayers.cpp:1151 src/Menu/CustomGamePlayers.cpp:1218
+#: src/Menu/CustomGamePlayers.cpp:278 src/Menu/CustomGamePlayers.cpp:313
+#: src/Menu/CustomGamePlayers.cpp:336 src/Menu/CustomGamePlayers.cpp:370
+#: src/Menu/CustomGamePlayers.cpp:1154 src/Menu/CustomGamePlayers.cpp:1221
 msgid "closed"
 msgstr ""
 
-#: src/Menu/CustomGamePlayers.cpp:284 src/Menu/CustomGamePlayers.cpp:308
-#: src/Menu/CustomGamePlayers.cpp:342 src/Menu/CustomGamePlayers.cpp:365
-#: src/Menu/CustomGamePlayers.cpp:1147 src/Menu/CustomGamePlayers.cpp:1215
+#: src/Menu/CustomGamePlayers.cpp:287 src/Menu/CustomGamePlayers.cpp:311
+#: src/Menu/CustomGamePlayers.cpp:345 src/Menu/CustomGamePlayers.cpp:368
+#: src/Menu/CustomGamePlayers.cpp:1150 src/Menu/CustomGamePlayers.cpp:1218
 msgid "open"
 msgstr ""
 
-#: src/Menu/CustomGamePlayers.cpp:717
+#: src/Menu/CustomGamePlayers.cpp:720
 msgid ""
 "At least 2 houses must be controlled\n"
 "by a human player or an AI player!"
 msgstr ""
 
-#: src/Menu/CustomGamePlayers.cpp:720
+#: src/Menu/CustomGamePlayers.cpp:723
 msgid "There must be at least two different teams!"
 msgstr ""
 
-#: src/Menu/CustomGamePlayers.cpp:1332 src/Menu/CustomGamePlayers.cpp:1344
+#: src/Menu/CustomGamePlayers.cpp:1335 src/Menu/CustomGamePlayers.cpp:1347
 msgid "Random"
 msgstr ""
 
@@ -2240,98 +2240,98 @@ msgstr ""
 msgid "Join"
 msgstr ""
 
-#: src/Menu/MultiPlayerMenu.cpp:179 src/Menu/MultiPlayerMenu.cpp:207
+#: src/Menu/MultiPlayerMenu.cpp:179 src/Menu/MultiPlayerMenu.cpp:209
 msgid "Connecting..."
 msgstr ""
 
-#: src/Menu/MultiPlayerMenu.cpp:404
+#: src/Menu/MultiPlayerMenu.cpp:399
 msgid "The game host quit the game!"
 msgstr ""
 
-#: src/Menu/MultiPlayerMenu.cpp:408
+#: src/Menu/MultiPlayerMenu.cpp:403
 msgid "The server timed out!"
 msgstr ""
 
-#: src/Menu/MultiPlayerMenu.cpp:412
+#: src/Menu/MultiPlayerMenu.cpp:407
 msgid "A player with the same name as yours already exists!"
 msgstr ""
 
-#: src/Menu/MultiPlayerMenu.cpp:416
+#: src/Menu/MultiPlayerMenu.cpp:411
 msgid "There is no free player slot in this game left!"
 msgstr ""
 
-#: src/Menu/MultiPlayerMenu.cpp:420
+#: src/Menu/MultiPlayerMenu.cpp:415
 msgid "The connection to the game host was lost!"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:65
+#: src/Menu/OptionsMenu.cpp:67
 msgid "Player Name"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:79
+#: src/Menu/OptionsMenu.cpp:81
 msgid "Default Game Options"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:80
+#: src/Menu/OptionsMenu.cpp:82
 msgid "Change..."
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:93
+#: src/Menu/OptionsMenu.cpp:95
 msgid "Language"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:112
+#: src/Menu/OptionsMenu.cpp:114
 msgid "Campaign AI"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:120
+#: src/Menu/OptionsMenu.cpp:122
 msgid "Play Intro"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:131
+#: src/Menu/OptionsMenu.cpp:133
 msgid "Video Resolution"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:171
+#: src/Menu/OptionsMenu.cpp:173
 msgid "Full Screen"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:175
+#: src/Menu/OptionsMenu.cpp:177
 msgid "Show Tutorial Hints"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:186
+#: src/Menu/OptionsMenu.cpp:188
 msgid "Play SFX"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:190
+#: src/Menu/OptionsMenu.cpp:192
 msgid "Play Music"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:201
+#: src/Menu/OptionsMenu.cpp:203
 msgid "Port"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:214
+#: src/Menu/OptionsMenu.cpp:216
 msgid "MetaServer"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:231
+#: src/Menu/OptionsMenu.cpp:233
 msgid "Accept"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:287
+#: src/Menu/OptionsMenu.cpp:289
 msgid "Please enter a Player Name."
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:294
+#: src/Menu/OptionsMenu.cpp:296
 #, c-format
 msgid ""
 "Server Port must be between 1 and 65535!\n"
 "Default Server Port is %d!"
 msgstr ""
 
-#: src/Menu/OptionsMenu.cpp:300
+#: src/Menu/OptionsMenu.cpp:302
 msgid "Please enter a MetaServer."
 msgstr ""
 
@@ -2474,203 +2474,203 @@ msgid ""
 "supports commanding distant vehicles."
 msgstr ""
 
-#: src/sand.cpp:344
+#: src/sand.cpp:345
 msgid "@DUNE.ENG|253#Barracks"
 msgstr ""
 
-#: src/sand.cpp:345
+#: src/sand.cpp:346
 msgid "@DUNE.ENG|249#Construction Yard"
 msgstr ""
 
-#: src/sand.cpp:346
+#: src/sand.cpp:347
 msgid "@DUNE.ENG|263#Gun Turret"
 msgstr ""
 
-#: src/sand.cpp:347
+#: src/sand.cpp:348
 msgid "@DUNE.ENG|241#Heacy Factory"
 msgstr ""
 
-#: src/sand.cpp:348
+#: src/sand.cpp:349
 msgid "@DUNE.ENG|243#Hightech Factory"
 msgstr ""
 
-#: src/sand.cpp:349
+#: src/sand.cpp:350
 msgid "@DUNE.ENG|245#House IX"
 msgstr ""
 
-#: src/sand.cpp:350
+#: src/sand.cpp:351
 msgid "@DUNE.ENG|239#Light Factory"
 msgstr ""
 
-#: src/sand.cpp:351
+#: src/sand.cpp:352
 msgid "@DUNE.ENG|237#Palace"
 msgstr ""
 
-#: src/sand.cpp:352
+#: src/sand.cpp:353
 msgid "@DUNE.ENG|269#Radar"
 msgstr ""
 
-#: src/sand.cpp:353
+#: src/sand.cpp:354
 msgid "@DUNE.ENG|256#Refinery"
 msgstr ""
 
-#: src/sand.cpp:354
+#: src/sand.cpp:355
 msgid "@DUNE.ENG|259#Repair Yard"
 msgstr ""
 
-#: src/sand.cpp:355
+#: src/sand.cpp:356
 msgid "@DUNE.ENG|265#Rocket Turret"
 msgstr ""
 
-#: src/sand.cpp:356
+#: src/sand.cpp:357
 msgid "@DUNE.ENG|267#Silo"
 msgstr ""
 
-#: src/sand.cpp:357
+#: src/sand.cpp:358
 msgid "@DUNE.ENG|233#Slab"
 msgstr ""
 
-#: src/sand.cpp:358
+#: src/sand.cpp:359
 msgid "@DUNE.ENG|235#Slab (2x2)"
 msgstr ""
 
-#: src/sand.cpp:359
+#: src/sand.cpp:360
 msgid "@DUNE.ENG|255#Starport"
 msgstr ""
 
-#: src/sand.cpp:360
+#: src/sand.cpp:361
 msgid "@DUNE.ENG|261#Wall"
 msgstr ""
 
-#: src/sand.cpp:361
+#: src/sand.cpp:362
 msgid "@DUNE.ENG|251#Windtrap"
 msgstr ""
 
-#: src/sand.cpp:362
+#: src/sand.cpp:363
 msgid "@DUNE.ENG|247#WOR"
 msgstr ""
 
-#: src/sand.cpp:364
+#: src/sand.cpp:365
 msgid "@DUNE.ENG|195#Carryall"
 msgstr ""
 
-#: src/sand.cpp:365
+#: src/sand.cpp:366
 msgid "@DUNE.ENG|217#Devastator"
 msgstr ""
 
-#: src/sand.cpp:366
+#: src/sand.cpp:367
 msgid "@DUNE.ENG|211#Deviator"
 msgstr ""
 
-#: src/sand.cpp:367
+#: src/sand.cpp:368
 msgid "Frigate"
 msgstr ""
 
-#: src/sand.cpp:368
+#: src/sand.cpp:369
 msgid "@DUNE.ENG|227#Harvester"
 msgstr ""
 
-#: src/sand.cpp:369
+#: src/sand.cpp:370
 msgid "@DUNE.ENG|209#Launcher"
 msgstr ""
 
-#: src/sand.cpp:370
+#: src/sand.cpp:371
 msgid "@DUNE.ENG|229#MCV"
 msgstr ""
 
-#: src/sand.cpp:371
+#: src/sand.cpp:372
 msgid "@DUNE.ENG|197#Ornithopter"
 msgstr ""
 
-#: src/sand.cpp:372
+#: src/sand.cpp:373
 msgid "@DUNE.ENG|225#Quad"
 msgstr ""
 
-#: src/sand.cpp:373
+#: src/sand.cpp:374
 msgid "@DUNE.ENG|223#Raider Trike"
 msgstr ""
 
-#: src/sand.cpp:374
+#: src/sand.cpp:375
 msgid "@DUNE.ENG|215#Siege Tank"
 msgstr ""
 
-#: src/sand.cpp:375
+#: src/sand.cpp:376
 msgid "@DUNE.ENG|219#Sonic Tank"
 msgstr ""
 
-#: src/sand.cpp:376
+#: src/sand.cpp:377
 msgid "@DUNE.ENG|213#Tank"
 msgstr ""
 
-#: src/sand.cpp:377
+#: src/sand.cpp:378
 msgid "@DUNE.ENG|221#Trike"
 msgstr ""
 
-#: src/sand.cpp:378
+#: src/sand.cpp:379
 msgid "@DUNE.ENG|207#Saboteur"
 msgstr ""
 
-#: src/sand.cpp:379
+#: src/sand.cpp:380
 msgid "@DUNE.ENG|231#Sandworm"
 msgstr ""
 
-#: src/sand.cpp:380
+#: src/sand.cpp:381
 msgid "@DUNE.ENG|203#Soldier"
 msgstr ""
 
-#: src/sand.cpp:381
+#: src/sand.cpp:382
 msgid "@DUNE.ENG|205#Trooper"
 msgstr ""
 
-#: src/sand.cpp:382
+#: src/sand.cpp:383
 msgid "Sonic/Devast./Devia."
 msgstr ""
 
-#: src/sand.cpp:383
+#: src/sand.cpp:384
 msgid "@DUNE.ENG|199#Infantry"
 msgstr ""
 
-#: src/sand.cpp:384
+#: src/sand.cpp:385
 msgid "@DUNE.ENG|201#Troopers"
 msgstr ""
 
-#: src/sand.cpp:520
+#: src/sand.cpp:521
 msgid "top edge"
 msgstr ""
 
-#: src/sand.cpp:521
+#: src/sand.cpp:522
 msgid "right edge"
 msgstr ""
 
-#: src/sand.cpp:522
+#: src/sand.cpp:523
 msgid "bottom edge"
 msgstr ""
 
-#: src/sand.cpp:523
+#: src/sand.cpp:524
 msgid "left edge"
 msgstr ""
 
-#: src/sand.cpp:524
+#: src/sand.cpp:525
 msgid "random"
 msgstr ""
 
-#: src/sand.cpp:525
+#: src/sand.cpp:526
 msgid "middle"
 msgstr ""
 
-#: src/sand.cpp:526
+#: src/sand.cpp:527
 msgid "enemy base"
 msgstr ""
 
-#: src/sand.cpp:527
+#: src/sand.cpp:528
 msgid "home base"
 msgstr ""
 
-#: src/structures/BuilderBase.cpp:319 src/structures/StarPort.cpp:118
+#: src/structures/BuilderBase.cpp:321 src/structures/StarPort.cpp:118
 msgid "Not enough money"
 msgstr ""
 
-#: src/structures/BuilderBase.cpp:425
+#: src/structures/BuilderBase.cpp:427
 msgid "@DUNE.ENG|51#Construction is complete"
 msgstr ""
 
