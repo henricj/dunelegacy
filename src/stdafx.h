@@ -1,4 +1,3 @@
-
 #ifndef STDAFX_H
 #define STDAFX_H
 
@@ -110,10 +109,8 @@
 #    include <string.h>
 #endif // __cplusplus
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_endian.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_rwops.h>
+#include <misc/dune_sdl.h>
+#include <misc/dune_sdl_mixer.h>
 
 #include <fcntl.h>
 #include <sys/stat.h>

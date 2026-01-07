@@ -16,11 +16,9 @@
  */
 
 #include <misc/FileSystem.h>
-#include <misc/SDL2pp.h>
+#include <misc/dune_sdlpp.h>
 #include <misc/exceptions.h>
 #include <misc/string_util.h>
-
-#include <SDL2/SDL_filesystem.h>
 
 #include <algorithm>
 #include <cctype>

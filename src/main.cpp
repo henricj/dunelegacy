@@ -43,7 +43,8 @@
 #include "misc/dune_events.h"
 #include "misc/sdl_support.h"
 #include <misc/FileSystem.h>
-#include <misc/SDL2pp.h>
+#include <misc/dune_sdlpp.h>
+#include <misc/dune_sdl_ttf.h>
 #include <misc/Scaler.h>
 #include <misc/exceptions.h>
 #include <misc/fnkdat.h>
@@ -54,8 +55,6 @@
 #include <CutScenes/Intro.h>
 
 #include "logging.h"
-
-#include <SDL2/SDL_ttf.h>
 
 #include <cmath>
 #include <fcntl.h>
@@ -72,7 +71,12 @@
 
 #    include <ShellScalingApi.h>
 
+// SDL_syswm.h location differs between SDL2 and SDL3
+#if DUNE_SDL_VERSION >= 3
+#    include <SDL3/SDL_syswm.h>
+#else
 #    include <SDL_syswm.h>
+#endif
 
 #    ifdef DUNE_CRT_HEAP_DEBUG
 #        include <crtdbg.h>

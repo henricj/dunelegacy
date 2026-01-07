@@ -22,10 +22,8 @@
 
 #include "FileClasses/DuneConfig.h"
 
-#include "misc/SDL2pp.h"
+#include "misc/dune_sdlpp.h"
 #include "misc/fnkdat.h"
-
-#include <SDL2/SDL.h>
 
 #include <enet/enet.h>
 

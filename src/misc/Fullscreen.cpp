@@ -17,11 +17,9 @@
 
 #include "misc/Fullscreen.h"
 
-#include "misc/SDL2pp.h"
+#include "misc/dune_sdlpp.h"
 
 #include "globals.h"
-
-#include <SDL2/SDL.h>
 
 namespace {
 bool pendingFullscreen = false;

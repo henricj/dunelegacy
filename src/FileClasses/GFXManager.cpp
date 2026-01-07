@@ -23,7 +23,7 @@
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
-#include <SDL2/SDL.h>
+#include <misc/dune_sdl.h>
 
 GFXManager::GFXManager(SDL_Renderer* renderer, int width, int height)
     : random_{RandomFactory{}.create("UI")}, surfaceLoader{width, height},

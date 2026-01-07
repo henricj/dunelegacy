@@ -43,8 +43,8 @@
 
 #include <misc/exceptions.h>
 
-#include <SDL2/SDL_endian.h>
-#include <SDL2/SDL_mixer.h>
+#include <misc/dune_sdl.h>
+#include <misc/dune_sdl_mixer.h>
 
 #if _MSC_VER
 #    pragma warning(push)

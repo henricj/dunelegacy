@@ -20,9 +20,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "misc/SDL2pp.h"
-
-#include <SDL2/SDL.h>
+#include "misc/dune_sdlpp.h"
 
 #include <fmt/core.h>
 

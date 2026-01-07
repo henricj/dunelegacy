@@ -18,10 +18,8 @@
 #include "FileClasses/SaveTextureAsBmp.h"
 
 #include "FileClasses/LoadSavePNG.h"
-#include "misc/SDL2pp.h"
+#include "misc/dune_sdlpp.h"
 #include "misc/sdl_support.h"
-
-#include <SDL2/SDL.h>
 
 namespace {
 class RestoreRenderTarget final {

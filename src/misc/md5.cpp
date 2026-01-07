@@ -30,12 +30,10 @@
 
 #include <misc/md5.h>
 
-#include <SDL2/SDL_rwops.h>
+#include <misc/dune_sdlpp.h>
 
 #include <array>
 #include <cstring>
-
-#include "misc/SDL2pp.h"
 
 namespace {
 

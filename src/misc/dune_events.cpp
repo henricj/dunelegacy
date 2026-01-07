@@ -21,7 +21,7 @@
 
 #include "GUI/GUIStyle.h"
 
-#include <SDL2/SDL.h>
+#include <misc/dune_sdl.h>
 
 #if defined(_WIN32)
 #    include <Windows.h>

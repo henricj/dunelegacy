@@ -19,10 +19,8 @@
 
 #include <dune_gitversion.h>
 
-#include "misc/SDL2pp.h"
+#include "misc/dune_sdlpp.h"
 #include "misc/string_util.h"
-
-#include <SDL2/SDL.h>
 
 #include <fmt/core.h>
 

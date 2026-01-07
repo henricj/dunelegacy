@@ -19,7 +19,7 @@
 
 #include <misc/exceptions.h>
 
-#include <SDL2/SDL_endian.h>
+#include <misc/dune_sdl.h>
 
 #include <gsl/gsl>
 

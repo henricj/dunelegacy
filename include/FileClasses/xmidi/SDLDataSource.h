@@ -23,9 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "misc/BufferedReader.h"
 
-#include <misc/SDL2pp.h>
-
-#include <SDL2/SDL_rwops.h>
+#include <misc/dune_sdlpp.h>
 
 inline uint8_t Read1(BufferedReader<>& reader) {
     uint8_t value = 0;

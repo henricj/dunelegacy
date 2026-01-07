@@ -33,7 +33,8 @@
 #include <misc/IFileStream.h>
 #include <misc/IMemoryStream.h>
 #include <misc/OFileStream.h>
-#include <misc/SDL2pp.h>
+#include <misc/dune_sdlpp.h>
+#include <misc/dune_sdl.h>
 #include <misc/draw_util.h>
 #include <misc/dune_events.h>
 #include <misc/dune_timer_resolution.h>
@@ -67,8 +68,6 @@
 #include <units/Harvester.h>
 #include <units/InfantryBase.h>
 #include <units/UnitBase.h>
-
-#include <SDL2/SDL_render.h>
 
 #include <fmt/format.h>
 

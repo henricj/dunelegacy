@@ -18,8 +18,8 @@
 #ifndef SOUND_UTIL_H
 #define SOUND_UTIL_H
 
-#include <SDL2/SDL_mixer.h>
-#include <misc/SDL2pp.h>
+#include <misc/dune_sdl_mixer.h>
+#include <misc/dune_sdlpp.h>
 #include <string_view>
 
 namespace sdl2 {

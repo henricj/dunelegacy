@@ -17,8 +17,7 @@
 
 #include "logging.h"
 
-#include "misc/SDL2pp.h"
-#include <SDL2/SDL.h>
+#include "misc/dune_sdlpp.h"
 
 #include <gsl/gsl>
 

@@ -15,19 +15,20 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SDL2PP_H
-#define SDL2PP_H
+#ifndef DUNE_LEGACY_SDL_H
+#define DUNE_LEGACY_SDL_H
 
 /**
- * @file SDL2pp.h
- * @brief Backward compatibility header - redirects to dune_sdlpp.h
+ * @file dune_sdl.h
+ * @brief Centralized SDL include header for Dune Legacy.
  *
- * This header exists for backward compatibility with existing code.
- * New code should include <misc/dune_sdlpp.h> directly.
- *
- * @deprecated Use <misc/dune_sdlpp.h> instead.
+ * This header provides a single point of control for all SDL includes.
+ * Do NOT include SDL headers directly in other source files.
  */
 
-#include <misc/dune_sdlpp.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_endian.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_rwops.h>
 
-#endif // SDL2PP_H
+#endif // DUNE_LEGACY_SDL_H

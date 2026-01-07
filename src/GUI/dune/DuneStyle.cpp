@@ -27,7 +27,7 @@
 
 #include <globals.h>
 
-#include <SDL2/SDL_render.h>
+#include <misc/dune_sdl.h>
 
 #include <algorithm>
 #include <string_view>

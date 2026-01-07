@@ -28,10 +28,8 @@
 #include <GUI/ObjectInterfaces/ObjectInterface.h>
 #include <ObjectBase.h>
 
-#include <misc/SDL2pp.h>
+#include <misc/dune_sdlpp.h>
 #include <misc/draw_util.h>
-
-#include <SDL2/SDL.h>
 
 #include <vector>
 

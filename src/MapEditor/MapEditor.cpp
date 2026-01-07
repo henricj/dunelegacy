@@ -31,6 +31,7 @@
 #include <structures/Wall.h>
 
 #include "misc/DrawingRectHelper.h"
+#include "misc/dune_sdl.h"
 #include "misc/Fullscreen.h"
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
@@ -44,8 +45,6 @@
 #include <sand.h>
 
 #include <config.h>
-
-#include <SDL2/SDL_render.h>
 
 #include <fmt/core.h>
 #include <fmt/printf.h>

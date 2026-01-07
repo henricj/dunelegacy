@@ -22,7 +22,7 @@
 #include "globals.h"
 #include "misc/draw_util.h"
 
-#include <SDL2/SDL_render.h>
+#include <misc/dune_sdl.h>
 
 #include <cassert>
 #include <cmath>

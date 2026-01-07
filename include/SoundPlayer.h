@@ -20,7 +20,7 @@
 
 #include <FileClasses/SFXManager.h>
 
-#include <SDL2/SDL_mixer.h>
+#include <misc/dune_sdl_mixer.h>
 
 // forward declaration
 class Coord;

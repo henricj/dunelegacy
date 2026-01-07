@@ -1,15 +1,13 @@
-
 #include <misc/sound_util.h>
 
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Vocfile.h>
 
-#include <misc/SDL2pp.h>
+#include <misc/dune_sdlpp.h>
+#include <misc/dune_sdl_mixer.h>
 #include <misc/exceptions.h>
 
 #include <globals.h>
-
-#include <SDL2/SDL_mixer.h>
 
 sdl2::mix_chunk_ptr create_chunk() {
     return sdl2::mix_chunk_ptr{static_cast<Mix_Chunk*>(SDL_malloc(sizeof(Mix_Chunk)))};

@@ -19,9 +19,9 @@
 #define TTFFONT_H
 
 #include "Font.h"
-#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL_ttf.h>
+#include <misc/dune_sdlpp.h>
+#include <misc/dune_sdl_ttf.h>
 
 #include <string_view>
 

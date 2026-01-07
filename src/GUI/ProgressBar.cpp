@@ -20,7 +20,7 @@
 #include "GUI/GUIStyle.h"
 #include "misc/DrawingRectHelper.h"
 
-#include <SDL2/SDL.h>
+#include <misc/dune_sdl.h>
 
 #include <string>
 #include <utility>

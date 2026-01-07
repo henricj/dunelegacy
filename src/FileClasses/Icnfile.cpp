@@ -24,7 +24,7 @@
 #include "globals.h"
 #include <Definitions.h>
 
-#include <SDL2/SDL_endian.h>
+#include <misc/dune_sdl.h>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>

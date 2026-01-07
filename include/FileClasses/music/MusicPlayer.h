@@ -22,7 +22,7 @@
 
 #include "misc/Random.h"
 
-#include <SDL2/SDL_mixer.h>
+#include <misc/dune_sdl_mixer.h>
 
 #include <string_view>
 

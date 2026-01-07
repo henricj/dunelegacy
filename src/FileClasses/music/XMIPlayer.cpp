@@ -25,8 +25,8 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/xmidi/XMidiFile.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
+#include <misc/dune_sdl.h>
+#include <misc/dune_sdl_mixer.h>
 
 #include <gsl/gsl>
 

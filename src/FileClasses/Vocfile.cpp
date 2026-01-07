@@ -22,9 +22,8 @@
 
 #include "misc/BufferedReader.h"
 #include "misc/string_error.h"
-#include <misc/SDL2pp.h>
-
-#include <SDL2/SDL_mixer.h>
+#include <misc/dune_sdlpp.h>
+#include <misc/dune_sdl_mixer.h>
 
 #include <soxr.h>
 
