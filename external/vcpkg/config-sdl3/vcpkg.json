@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "dunelegacy-sdl3",
+  "version-string": "0.96.5-sdl3",
+  "description": "Dune Legacy - SDL3 migration branch",
+  "dependencies": [
+    "fmt",
+    "gtest",
+    "lodepng",
+    "ms-gsl",
+    {
+      "name": "sdl3",
+      "default-features": false
+    },
+    {
+      "name": "sdl3-mixer",
+      "default-features": false
+    },
+    {
+      "name": "sdl3-ttf",
+      "default-features": false
+    },
+    {
+      "name": "soxr",
+      "default-features": false
+    }
+  ]
+}

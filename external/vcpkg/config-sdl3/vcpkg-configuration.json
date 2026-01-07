@@ -1,0 +1,8 @@
+{
+  "overlay-ports": [
+    "../config/ports/sdl3-mixer"
+  ],
+  "overlay-triplets": [
+    "../config/triplets"
+  ]
+}
