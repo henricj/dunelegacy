@@ -1,4 +1,4 @@
-add_sources(HEADERS
+target_sources(dune PRIVATE
 	AITeamInfo.h
 	AStarSearch.h
 	Bullet.h
@@ -294,5 +294,3 @@ add_sources(HEADERS
 	units/Trooper.h
 	units/UnitBase.h
 )
-
-add_sources(EXE_HEADERS main.h logging.h)

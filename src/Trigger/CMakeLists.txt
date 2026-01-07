@@ -1,4 +1,4 @@
-add_sources(TRIGGER_SOURCES
+target_sources(dune PRIVATE
 	ReinforcementTrigger.cpp
 	TimeoutTrigger.cpp
 	TriggerManager.cpp

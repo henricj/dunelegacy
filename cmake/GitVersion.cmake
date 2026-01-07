@@ -8,35 +8,30 @@ if(NOT GITVERSION_EXECUTE)
       message(STATUS "Creating gitversion target ${name}")
 
       set(GITVERSION_GENERATED_INCLUDE_DIR "${GITVERSION_GENERATED_DIR}/include")
-      set(GITVERSION_GENERATED_DUMMY_FILE "${GITVERSION_GENERATED_INCLUDE_DIR}/_${name}.h")
       set(GITVERSION_GENERATED_FILE "${GITVERSION_GENERATED_INCLUDE_DIR}/${name}.h")
 
-      # Use a target that depends on the output of the command to prevent the
-      # command from running more than once.
-      # https://gitlab.kitware.com/cmake/cmake/-/issues/16767 We add a dummy
-      # output to force the command to run every build.
-      # https://www.mattkeeter.com/blog/2018-01-06-versioning/
-      add_custom_command(
-        OUTPUT
-          "${GITVERSION_GENERATED_FILE}"
-          "${GITVERSION_GENERATED_DUMMY_FILE}"
+      # Create the include directory at configure time to satisfy target_include_directories
+      file(MAKE_DIRECTORY "${GITVERSION_GENERATED_INCLUDE_DIR}")
+
+      # Use a custom target that always runs to check for version updates.
+      # We use BYPRODUCTS to inform Ninja that this target generates the header file.
+      add_custom_target(${name}_update
+        BYPRODUCTS "${GITVERSION_GENERATED_FILE}"
         COMMENT "Generating gitversion header."
         COMMAND
           "${CMAKE_COMMAND}"
-            -D GIT=\"${GIT_EXECUTABLE}\"
+            -D GIT=${GIT_EXECUTABLE}
             -D GITVERSION_NAME=${name}
-            -D GITVERSION_GENERATED_DIR=\"${GITVERSION_GENERATED_DIR}\"
-            -D GITVERSION_GENERATED_FILE=\"${GITVERSION_GENERATED_FILE}\"
+            -D GITVERSION_GENERATED_DIR=${GITVERSION_GENERATED_DIR}
+            -D GITVERSION_GENERATED_FILE=${GITVERSION_GENERATED_FILE}
             -D GITVERSION_EXECUTE=true
             -P cmake/GitVersion.cmake
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        VERBATIM
       )
 
-      add_custom_target(${name}_intermediate
-        DEPENDS "${GITVERSION_GENERATED_FILE}"
-      )
       add_library(${name} INTERFACE)
-      add_dependencies(${name} ${name}_intermediate)
+      add_dependencies(${name} ${name}_update)
 
       target_include_directories(${name}
         INTERFACE "$<BUILD_INTERFACE:${GITVERSION_GENERATED_INCLUDE_DIR}>"

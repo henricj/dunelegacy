@@ -1,4 +1,4 @@
-add_sources(FILE_CLASSES_SOURCES
+target_sources(dune PRIVATE
 	Animation.cpp
 	Cpsfile.cpp
 	Decode.cpp
@@ -31,4 +31,4 @@ add_sources(FILE_CLASSES_SOURCES
 	music/XMIPlayer.cpp
 )
 
-include(FileClasses/xmidi/sources.cmake)
+add_subdirectory(xmidi)

@@ -1,4 +1,4 @@
-add_sources(UNITS_SOURCES
+target_sources(dune PRIVATE
 	AirUnit.cpp
 	Carryall.cpp
 	Devastator.cpp

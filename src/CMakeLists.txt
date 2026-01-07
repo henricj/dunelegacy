@@ -1,27 +1,5 @@
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-include(sources.cmake)
-include(../include/sources.cmake)
-
-set(SOURCES
-	${TOP_SOURCES}
-	${CUT_SCENES_SOURCES}
-	${FILE_CLASSES_SOURCES}
-	${GUI_SOURCES}
-	${INIMAP_SOURCES}
-	${MAP_EDITOR_SOURCES}
-	${MENU_SOURCES}
-	${NETWORK_SOURCES}
-	${TRIGGER_SOURCES}
-	${FIX_MATH_SOURCES}
-	${MISC_SOURCES}
-	${PLATFORMS_SOURCES}
-	${PLAYERS_SOURCES}
-	${STRUCTURES_SOURCES}
-	${RENDERER_SOURCES}
-	${UNITS_SOURCES}
-)
-
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_mixer CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
@@ -73,8 +51,13 @@ set(LIBS
 
 if(WIN32)
 	list(APPEND LIBS Psapi shlwapi ws2_32 winmm)
-	list(APPEND SOURCES fixmath/fixmath.natvis FileClasses/INIFile.natvis)
-	list(APPEND EXE_SOURCES ../Windows/DuneLegacy.exe.manifest ../resource.rc)
+    # Note: These cannot simply be added via target_sources if they are unconditional or need special handling
+    # But using target_sources for C++ files is preferred.
+    # fixmath/fixmath.natvis is in fixmath/
+    # FileClasses/INIFile.natvis is in FileClasses/
+    # We will handle subdirectories shortly.
+    # For now, let's keep win32 specific logic simple or push it down.
+	# We'll use target_sources(dune PRIVATE ...) for these later.
 endif()
 
 if(UNIX AND NOT APPLE)
@@ -90,7 +73,57 @@ separate_arguments(dune_flags)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library(dune STATIC ${SOURCES} ${HEADERS})
+# Define library target FIRST
+add_library(dune STATIC)
+
+# Add sources in current directory
+target_sources(dune PRIVATE
+	AStarSearch.cpp
+	Bullet.cpp
+	Choam.cpp
+	Command.cpp
+	CommandManager.cpp
+	Explosion.cpp
+	Game.cpp
+	GameInitSettings.cpp
+	GameInterface.cpp
+	globals.cpp
+	House.cpp
+	Map.cpp
+	MapSeed.cpp
+	mmath.cpp
+	ObjectBase.cpp
+	ObjectData.cpp
+	ObjectManager.cpp
+	ObjectPointer.cpp
+	RadarView.cpp
+	RadarViewBase.cpp
+	sand.cpp
+	ScreenBorder.cpp
+	SoundPlayer.cpp
+	Tile.cpp
+)
+
+# Add subdirectories
+add_subdirectory(CutScenes)
+add_subdirectory(FileClasses)
+add_subdirectory(fixmath)
+add_subdirectory(GUI)
+add_subdirectory(INIMap)
+add_subdirectory(MapEditor)
+add_subdirectory(Menu)
+add_subdirectory(misc)
+add_subdirectory(Network)
+add_subdirectory(platforms)
+add_subdirectory(players)
+add_subdirectory(Renderer)
+add_subdirectory(structures)
+add_subdirectory(Trigger)
+add_subdirectory(units)
+
+# Add headers from include directory
+add_subdirectory(../include include)
+
 target_compile_options(dune PRIVATE ${dune_flags})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
 target_link_libraries(dune PUBLIC ${LIBS})
@@ -150,7 +183,28 @@ if(DUNE_PRECOMPILED_HEADERS)
 	target_precompile_headers(dune PRIVATE stdafx.h)
 endif()
 
-add_executable(dunelegacy ${EXE_SOURCES} ${EXE_HEADERS})
+# Define Executable
+# Note: main.h and logging.h are in ../include, but belong to the executable
+add_executable(dunelegacy 
+    main.cpp 
+    logging.cpp
+    ../include/main.h 
+    ../include/logging.h
+)
+
+if(WIN32)
+    # Add windows specific sources/manifests to executable
+    target_sources(dunelegacy PRIVATE 
+        ../Windows/DuneLegacy.exe.manifest 
+        ../resource.rc
+    )
+    # Add natvis files to library
+    target_sources(dune PRIVATE
+        fixmath/fixmath.natvis 
+        FileClasses/INIFile.natvis
+    )
+endif()
+
 target_compile_options(dunelegacy PRIVATE ${dune_flags})
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main harden_interface)
 
@@ -202,7 +256,15 @@ endif()
 
 install(TARGETS dunelegacy RUNTIME DESTINATION .)
 
-set(CLANGFORMAT_SOURCES ${SOURCES} ${EXE_SOURCES} ${HEADERS} ${EXE_HEADERS} stdafx.h)
+# Clang format target - tricky because variables are gone
+# We can use a glob or manually list them again, OR rely on file visibility.
+# Simplest for now is to omit or fix later, but to be safe, let's glob inside . or something.
+# Or better: remove the strict list and just glob src/
+file(GLOB_RECURSE CLANGFORMAT_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+)
+list(APPEND CLANGFORMAT_SOURCES ../include/*.h)
 
 add_custom_target(
 	clangformat

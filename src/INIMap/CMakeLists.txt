@@ -1,4 +1,4 @@
-add_sources(INIMAP_SOURCES
+target_sources(dune PRIVATE
 	INIMap.cpp
 	INIMapEditorLoader.cpp
 	INIMapLoader.cpp

@@ -1,4 +1,4 @@
-add_sources(RENDERER_SOURCES
+target_sources(dune PRIVATE
 	DuneRenderer.cpp
 	DuneRotateTexture.cpp
 	DuneSurface.cpp

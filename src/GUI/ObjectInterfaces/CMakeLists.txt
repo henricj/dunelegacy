@@ -1,4 +1,4 @@
-add_sources(GUI_SOURCES
+target_sources(dune PRIVATE
 	BuilderInterface.cpp
 	DefaultObjectInterface.cpp
 	DefaultStructureInterface.cpp

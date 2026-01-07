@@ -1,4 +1,4 @@
-add_sources(MAP_EDITOR_SOURCES
+target_sources(dune PRIVATE
 	ChoamWindow.cpp
 	LoadMapWindow.cpp
 	MapEditor.cpp

@@ -1,4 +1,4 @@
-add_sources(MENU_SOURCES
+target_sources(dune PRIVATE
 	AboutMenu.cpp
 	BriefingMenu.cpp
 	CampaignStatsMenu.cpp

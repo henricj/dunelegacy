@@ -1,4 +1,4 @@
-add_sources(NETWORK_SOURCES
+target_sources(dune PRIVATE
 	ChangeEventList.cpp
 	ENetHttp.cpp
 	LANGameFinderAndAnnouncer.cpp

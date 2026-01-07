@@ -102,7 +102,7 @@ private:
     sdl2::sdl_ptr<void> buffer_;
 };
 
-binistream* CProvider_Cache::open(std::string filename) const {
+binistream* CProvider_Cache::open([[maybe_unused]] std::string filename) const {
     auto f = std::make_unique<binisstream>(buffer_.get(), static_cast<unsigned long>(size_));
 
     if (!f)

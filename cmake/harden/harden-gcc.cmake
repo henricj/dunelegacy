@@ -60,11 +60,7 @@ option(HARDEN_USE_SAFE_STACK "Enable the SafeStack sanitizer" ON)
 if (HARDEN_USE_SAFE_STACK)
   harden_add_compile_option(-fsanitize=safe-stack HARDEN_COMPILE_SANITIZE_SAFE_STACK TRUE)
 
-  if (COMMAND harden_add_link_option)
-    harden_add_link_option(-fsanitize=safe-stack HARDEN_LINK_SANITIZE_SAFE_STACK TRUE)
-  else ()
-    harden_add_compile_option("LINKER:-fsanitize=safe-stack" HARDEN_LINK_SANITIZE_SAFE_STACK TRUE)
-  endif ()
+  harden_add_link_option(-fsanitize=safe-stack HARDEN_LINK_SANITIZE_SAFE_STACK TRUE)
 
   # Invert the individual flags to change unset to true. ("if (<unset> EQUAL <unset>)" is false.)
   if (NOT (NOT HARDEN_COMPILE_SANITIZE_SAFE_STACK) EQUAL (NOT HARDEN_LINK_SANITIZE_SAFE_STACK))
@@ -82,13 +78,8 @@ if (NOT HARDEN_COMPILE_STACK_PROTECTOR_STRONG)
 endif ()
 
 # https://www.redhat.com/en/blog/hardening-elf-binaries-using-relocation-read-only-relro
-if (COMMAND harden_add_link_option)
-  harden_add_link_option("SHELL:-z relro" HARDEN_LINK_Z_RELRO FALSE)
-  harden_add_link_option("SHELL:-z now" HARDEN_LINK_Z_NOW FALSE)
-else ()
-  harden_add_compile_option("-Wl,-z,relro" HARDEN_LINK_Z_RELRO FALSE)
-  harden_add_compile_option("-Wl,-z,now" HARDEN_LINK_Z_NOW FALSE)
-endif ()
+harden_add_link_option("SHELL:-z relro" HARDEN_LINK_Z_RELRO FALSE)
+harden_add_link_option("SHELL:-z now" HARDEN_LINK_Z_NOW FALSE)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_C_FLAGS "${HARDEN_GCC_ORIGINAL_C_FLAGS}")

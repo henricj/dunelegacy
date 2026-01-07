@@ -90,7 +90,7 @@ endif()
 
 # Strip out options we want to set ourselves
 function(strip_msvc_debug_compiler_options OPTIONS_VAR)
-    string(REGEX REPLACE "/Zi" "" local_options_var "${${OPTIONS_VAR}}")
+    string(REGEX REPLACE "[-/]Zi" "" local_options_var "${${OPTIONS_VAR}}")
     set(${OPTIONS_VAR} "${local_options_var}" PARENT_SCOPE)
 endfunction()
 
@@ -101,8 +101,13 @@ function(strip_msvc_release_compiler_options OPTIONS_VAR)
     set(${OPTIONS_VAR} "${local_options_var}" PARENT_SCOPE)
 endfunction()
 
+# Always strip /Zi from Debug flags because we explicitly add /ZI via DUNE_MSVC_DEBUG_FLAGS
+strip_msvc_debug_compiler_options(CMAKE_CXX_FLAGS_DEBUG)
+strip_msvc_debug_compiler_options(CMAKE_C_FLAGS_DEBUG)
+
 foreach(config ${build_list})
     string(TOUPPER "${config}" upper_config)
+    string(STRIP "${upper_config}" upper_config)
 
     if(upper_config STREQUAL "DEBUG")
         strip_msvc_debug_compiler_options(CMAKE_CXX_FLAGS)

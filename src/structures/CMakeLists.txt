@@ -1,4 +1,4 @@
-add_sources(STRUCTURES_SOURCES
+target_sources(dune PRIVATE
 	Barracks.cpp
 	BuilderBase.cpp
 	ConstructionYard.cpp

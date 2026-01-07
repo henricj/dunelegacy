@@ -1,4 +1,4 @@
-add_sources(GUI_SOURCES
+target_sources(dune PRIVATE
 	BuilderList.cpp
 	ChatManager.cpp
 	DigitsCounter.cpp

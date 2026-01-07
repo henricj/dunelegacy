@@ -1,4 +1,4 @@
-add_sources(MISC_SOURCES
+target_sources(dune PRIVATE
 	BlendBlitter.cpp
 	draw_util.cpp
 	dune_localtime.cpp

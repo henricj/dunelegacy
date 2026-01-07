@@ -1,4 +1,4 @@
-add_sources(CUT_SCENES_SOURCES
+target_sources(dune PRIVATE
 	CrossBlendVideoEvent.cpp
 	CutScene.cpp
 	CutSceneTrigger.cpp

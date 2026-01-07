@@ -1,4 +1,4 @@
-add_sources(GUI_SOURCES
+target_sources(dune PRIVATE
 	Button.cpp
 	Checkbox.cpp
 	DropDownBox.cpp
@@ -25,5 +25,5 @@ add_sources(GUI_SOURCES
 	Window.cpp
 )
 
-include(GUI/dune/sources.cmake)
-include(GUI/ObjectInterfaces/sources.cmake)
+add_subdirectory(dune)
+add_subdirectory(ObjectInterfaces)

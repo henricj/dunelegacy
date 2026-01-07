@@ -1,4 +1,4 @@
-add_sources(FILE_CLASSES_SOURCES
+target_sources(dune PRIVATE
 	databuf.cpp
 	MemoryDataSource.cpp
 	SDLDataSource.cpp

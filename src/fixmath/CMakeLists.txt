@@ -1,4 +1,4 @@
-add_sources(FIX_MATH_SOURCES
+target_sources(dune PRIVATE
 	fix16.c
 	fix16_exp.c
 	fix16_sqrt.c
