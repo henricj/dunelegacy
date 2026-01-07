@@ -12,7 +12,7 @@
 ### Binaries
 
 Binaries are built automatically from the latest source and can be found here:
-**[Windows](../../releases/tag/latest-windows)**  
+**[Windows](../../releases/tag/latest-windows)**
 
 ### Summary
 
@@ -21,8 +21,8 @@ performance.  The game engine itself will eventually be moved off of the renderi
 will provide for a much more responsive user interface, particularly when many units are on the map.
 
 All builds are now being done through [CMake](https://cmake.org/) with regular testing
-on Windows with [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) and Ubuntu with g++.  Windows
-development is being done with VS2022's native CMake support, which uses Ninja for the actual build.  (It
+on Windows with [Visual Studio 2026](https://visualstudio.microsoft.com/vs/) and Ubuntu with g++.  Windows
+development is being done with VS2026's native CMake support, which uses Ninja for the actual build.  (It
 is unknown if the CMake Visual Studio generators produce usable `vcxproj` files.)
 
 ### Notable Changes
@@ -59,77 +59,91 @@ under the `[Video]` section in the INI file).
 
 ### Building
 
+#### Prerequisites
+
+- **CMake 3.22** or later (3.26+ recommended for better preset support).
+- **Git** with submodule support.
+- A C++20 compatible compiler.
+
 #### Windows Build
 
-Install Visual Studio 2022 including the "Desktop development with C++" workload.  Go
+Install Visual Studio 2026 (or later) including the "Desktop development with C++" workload. Go
 to the "Individual Components" of the installer to make sure "C++ CMake tools for Windows" is
-enabled (enable clang as well to enable builds with "clang-cl").
+enabled (enable Clang as well to enable builds with `clang-cl`).
 
-To build from inside Visual Studio, open the "dunelegacy" folder, select a configuration,
-then then select "Build" -> "Build All".  It should be possible to open the
-repository directly by going to "File" -> "Clone Repository..." on the menu.
+**Building from Visual Studio (recommended):**
 
-From the command line (a bit faster, but requires more typing):
+Open the `dunelegacy` folder directly in Visual Studio ("File" -> "Open" -> "Folder..." or
+"File" -> "Clone Repository..."). Select a CMake preset/configuration from the toolbar dropdown,
+then select "Build" -> "Build All".
 
-First open a command prompt with access to CMake (for example, "Developer Command Prompt
-for Visual Studio 2022").  Get a copy of the code repository, along with the submodules:
+**Building from the command line:**
+
+Open a command prompt with access to CMake (e.g., "Developer Command Prompt for Visual Studio 2026"
+or "Developer PowerShell for VS 2026").
+
+Clone the repository with submodules:
 
 ```bat
 git clone --recurse-submodules -j 8 https://github.com/henricj/dunelegacy.git
 cd dunelegacy
 ```
 
-Configure CMake's build folder, compile the source, and run the tests (alas, there are far
-too few tests):
+Configure, build, and test using a CMake preset:
 
 ```bat
-mkdir out\build\x64-avx2-Release
-cd out\build\x64-avx2-Release
-cmake --preset=windows-x64-avx2-release -B . -S ../../..
-cmake --build .
-ctest
+cmake --preset=windows-x64-release
+cmake --build --preset=windows-x64-release
+ctest --preset=windows-x64-release
 ```
 
-There should now be a working dunelegacy executable in `out\build\x64-avx2-Release\src`.
+The executable will be in `out/build/windows-x64-release/src/dunelegacy.exe`.
 
-To see the full list of CMake presets (from the top level dunelegacy directory):
+To see all available CMake presets:
 
 ```bat
 cmake --list-presets
 ```
 
+**Note:** If you have multiple Visual Studio versions installed, ensure you use a consistent
+toolchain. Mixing compiler versions (e.g., building vcpkg packages with one version and
+linking with another) can cause linker errors like `unresolved external symbol __std_rotate`.
+
 #### Linux Build
 
-The build-essential, git, ninja-build, and cmake packages are needed.  Either g++ or clang
-can be used for the build (tested with GCC 11 and Clang 13).
+Install the required packages. On Debian/Ubuntu:
+
+```sh
+sudo apt-get install build-essential git ninja-build cmake pkg-config \
+    libsdl2-dev libsdl2-mixer-dev libsdl2-ttf-dev libsoxr-dev
+```
+
+Clone the repository with submodules:
 
 ```sh
 git clone --recurse-submodules -j 8 https://github.com/henricj/dunelegacy.git
 cd dunelegacy
 ```
 
-Configure CMake's build folder, compile the source, and run the tests (alas, there are far
-too few tests):
+Configure, build, and test using a CMake preset (requires CMake 3.21+):
 
 ```sh
-mkdir -p out/build/x64-Release
-cd out/build/x64-Release
-cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DVCPKG_TARGET_TRIPLET:STRING=x64-linux ../../..
+cmake --preset=linux-release
+cmake --build --preset=linux-release
+ctest --preset=linux-release
+```
+
+Or configure manually:
+
+```sh
+mkdir -p out/build/release
+cd out/build/release
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ../../..
 cmake --build .
 ctest
 ```
 
-With a sufficiently recent version of CMake, a preset can be used.
-
-```sh
-mkdir -p out/build/linux-release
-cd out/build/linux-release
-cmake --preset=linux-release -B . -S ../../..
-cmake --build .
-ctest
-```
-
-There should now be a working dunelegacy executable in `out/build/linux-release/src`.
+The executable will be in `out/build/release/src/dunelegacy` (or the preset's output directory).
 
 ### Other Platforms
 
@@ -148,6 +162,13 @@ ctest
 If there are linker errors on a BSD platform, check to see if
 `/usr/local/lib` is in the link library search path (e.g., check
 the LIBRARY_PATH environment variable).
+
+### Useful CMake Targets
+
+There are a few helper targets defined to facilitate development:
+
+- `cmake --build . --target update_locale`: Scans the source code for translatable strings, updates `dunelegacy.pot`, and then merges those changes into the source `.po` files (e.g., `data/locale/German.de.po`).
+- `cmake --build . --target clangformat`: Runs `clang-format` on the codebase to enforce code style.
 
 ### Notes
 
@@ -297,5 +318,5 @@ To play online via Internet you have to manually enable port forwarding if you u
 Example: If your machine has IP 192.168.123.1 and your using the default Dune Legacy Port, than forward port 28747 from your router to 192.168.123.1:28747.
 
 ---
-IRC: #dunelegacy @ irc.freenode.net  
+IRC: #dunelegacy @ irc.freenode.net
 Web: <http://sourceforge.net/projects/dunelegacy>
