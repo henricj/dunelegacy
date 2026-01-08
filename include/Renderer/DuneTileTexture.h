@@ -4,8 +4,7 @@
 #include "DuneTexture.h"
 #include "misc/exceptions.h"
 
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
+#include <misc/dune_sdl.h>
 
 #include <cstddef>
 #include <span>

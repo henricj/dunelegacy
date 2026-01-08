@@ -202,7 +202,11 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
 
         count++;
 
-        if (getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false,
+        if (getMap().okayToPlaceStructure(pos.x,
+                                          pos.y,
+                                          structureSizeX,
+                                          structureSizeY,
+                                          false,
                                           (itemID == Structure_ConstructionYard) ? nullptr : getHouse())) {
             FixPoint rating;
 
@@ -591,12 +595,14 @@ void AIPlayer::build() {
                                                 if (getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
                                                     startI = location.x, startJ = location.y, incI = 1, incJ = 1;
                                                 } else if (getMap().isWithinBuildRange(
-                                                               location.x + getStructureSize(itemID).x - 1, location.y,
+                                                               location.x + getStructureSize(itemID).x - 1,
+                                                               location.y,
                                                                getHouse())) {
                                                     startI = location.x + getStructureSize(itemID).x - 1,
                                                     startJ = location.y, incI = -1, incJ = 1;
                                                 } else if (getMap().isWithinBuildRange(
-                                                               location.x, location.y + getStructureSize(itemID).y - 1,
+                                                               location.x,
+                                                               location.y + getStructureSize(itemID).y - 1,
                                                                getHouse())) {
                                                     startI = location.x,
                                                     startJ = location.y + getStructureSize(itemID).y - 1, incI = 1,
@@ -655,8 +661,8 @@ void AIPlayer::build() {
                             if (!placeLocations.empty()) {
                                 const Coord location   = placeLocations.front();
                                 const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
-                                if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false,
-                                                                  pConstYard->getOwner())) {
+                                if (getMap().okayToPlaceStructure(
+                                        location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
                                     placeLocations.pop_front();
                                 } else if (itemID == Structure_Slab1) {

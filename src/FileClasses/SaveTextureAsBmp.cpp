@@ -35,15 +35,28 @@ public:
 sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* src) {
     // From https://stackoverflow.com/a/48176678 and https://stackoverflow.com/a/51238719
 
-    uint32_t format = SDL_PIXELFORMAT_RGBA32;
+    SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA32;
 
     int w = 0;
     int h = 0;
 
     /* Get information about texture we want to save */
-    if (SDL_QueryTexture(texture, &format, nullptr, &w, &h)) {
-        sdl2::log_info("Failed querying texture: {}\n", SDL_GetError());
-        return {};
+    // SDL3: SDL_QueryTexture is removed, use SDL_GetTextureSize and SDL_GetTextureProperties
+    {
+        float fw = 0, fh = 0;
+        if (!SDL_GetTextureSize(texture, &fw, &fh)) {
+            sdl2::log_info("Failed querying texture size: {}\n", SDL_GetError());
+            return {};
+        }
+        w = static_cast<int>(fw);
+        h = static_cast<int>(fh);
+
+        // Get format from properties
+        SDL_PropertiesID props = SDL_GetTextureProperties(texture);
+        if (props != 0) {
+            format = static_cast<SDL_PixelFormat>(
+                SDL_GetNumberProperty(props, SDL_PROP_TEXTURE_FORMAT_NUMBER, SDL_PIXELFORMAT_RGBA32));
+        }
     }
 
     if (src) {
@@ -51,6 +64,7 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
         h = src->h;
     }
 
+    // SDL3: SDL_CreateTexture now takes SDL_PixelFormat directly
     const auto ren_tex = sdl2::texture_ptr{SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, w, h)};
     if (!ren_tex) {
         sdl2::log_info("Failed creating render texture: {}\n", SDL_GetError());
@@ -63,7 +77,7 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
      * Initialize our canvas, then copy texture to a target whose pixel data we
      * can access
      */
-    if (SDL_SetRenderTarget(renderer, ren_tex.get())) {
+    if (!SDL_SetRenderTarget(renderer, ren_tex.get())) {
         sdl2::log_info("Failed setting render target: {}\n", SDL_GetError());
         return {};
     }
@@ -75,22 +89,30 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
     SDL_GetTextureBlendMode(texture, &oldBlendMode);
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
 
-    if (SDL_RenderCopy(renderer, texture, src, nullptr)) {
-        sdl2::log_info("Failed copying texture data: {}\n", SDL_GetError());
-        return {};
+    // SDL3: SDL_RenderCopy is replaced by SDL_RenderTexture with SDL_FRect
+    {
+        SDL_FRect fsrc{}, *pfsrc = nullptr;
+        if (src) {
+            fsrc  = {static_cast<float>(src->x),
+                     static_cast<float>(src->y),
+                     static_cast<float>(src->w),
+                     static_cast<float>(src->h)};
+            pfsrc = &fsrc;
+        }
+        if (!SDL_RenderTexture(renderer, texture, pfsrc, nullptr)) {
+            sdl2::log_info("Failed copying texture data: {}\n", SDL_GetError());
+            return {};
+        }
     }
 
     SDL_SetTextureBlendMode(texture, oldBlendMode);
 
-    auto surface = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BYTESPERPIXEL(format), format)};
+    // SDL3: SDL_RenderReadPixels now returns an SDL_Surface* directly
+    auto surface = sdl2::surface_ptr{SDL_RenderReadPixels(renderer, nullptr)};
 
-    { // Scope
-        const sdl2::surface_lock lock{surface.get()};
-
-        if (SDL_RenderReadPixels(renderer, nullptr, format, lock.pixels(), lock.pitch())) {
-            sdl2::log_info("Failed reading pixel data: {}\n", SDL_GetError());
-            return {};
-        }
+    if (!surface) {
+        sdl2::log_info("Failed reading pixel data: {}\n", SDL_GetError());
+        return {};
     }
 
     return surface;
@@ -103,7 +125,9 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, std::filesys
         return;
 
     /* Save result to an image */
-    if (SDL_SaveBMP(surface.get(), filename.u8string())) {
+    // SDL3: Need to convert u8string to char* for SDL_SaveBMP
+    const std::string filepath = filename.string();
+    if (!SDL_SaveBMP(surface.get(), filepath.c_str())) {
         sdl2::log_info("Failed saving image: {}\n", SDL_GetError());
         return;
     }

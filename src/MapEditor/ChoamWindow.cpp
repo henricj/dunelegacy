@@ -30,9 +30,20 @@
 
 #include <cstddef>
 
-static constexpr ItemID_enum choamUnits[] = {
-    Unit_Carryall, Unit_Ornithopter, Unit_Harvester, Unit_MCV,        Unit_Trike,    Unit_RaiderTrike, Unit_Quad,
-    Unit_Tank,     Unit_Launcher,    Unit_SiegeTank, Unit_Devastator, Unit_Deviator, Unit_SonicTank,   ItemID_Invalid};
+static constexpr ItemID_enum choamUnits[] = {Unit_Carryall,
+                                             Unit_Ornithopter,
+                                             Unit_Harvester,
+                                             Unit_MCV,
+                                             Unit_Trike,
+                                             Unit_RaiderTrike,
+                                             Unit_Quad,
+                                             Unit_Tank,
+                                             Unit_Launcher,
+                                             Unit_SiegeTank,
+                                             Unit_Devastator,
+                                             Unit_Deviator,
+                                             Unit_SonicTank,
+                                             ItemID_Invalid};
 
 ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {

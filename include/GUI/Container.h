@@ -183,7 +183,8 @@ public:
         if (pActiveChildWidget != nullptr)
             return pActiveChildWidget->handleKeyPress(key);
 
-        if (key.keysym.sym == SDLK_TAB) {
+        // SDL3: key.keysym.sym -> key.key
+        if (key.key == SDLK_TAB) {
             activateFirstActivatableWidget();
             return true;
         }

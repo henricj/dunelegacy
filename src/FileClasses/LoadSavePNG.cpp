@@ -80,21 +80,29 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             unsigned char* lode_out = nullptr;
             error = lodepng_decode(&lode_out, &width, &height, &lodePNGState, pFiledata.get(), filesize);
             if (error != 0) {
-                THROW(std::runtime_error, "LoadPNG_RW(): Decoding this palletized *.png-File failed: {}",
+                THROW(std::runtime_error,
+                      "LoadPNG_RW(): Decoding this palletized *.png-File failed: {}",
                       lodepng_error_text(error));
             }
 
             const lodepng_ptr pImageOut{lode_out};
 
             // create new picture surface
-            pic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
+            // SDL3: SDL_CreateRGBSurface -> SDL_CreateSurface
+            pic = sdl2::surface_ptr{SDL_CreateSurface(width, height, SDL_PIXELFORMAT_INDEX8)};
             if (pic == nullptr) {
-                THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
+                THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateSurface has failed!");
+            }
+
+            // SDL3: Ensure the surface has a palette using the consolidated helper
+            const auto paletteSize = gsl::narrow<int>(lodePNGState.info_png.color.palettesize);
+            SDL_Palette* palette   = ensureSurfacePalette(pic.get(), paletteSize > 0 ? paletteSize : 256);
+            if (palette == nullptr) {
+                THROW(std::runtime_error, "LoadPNG_RW(): Failed to create surface palette!");
             }
 
             const auto* const colors = reinterpret_cast<SDL_Color*>(lodePNGState.info_png.color.palette);
-            SDL_SetPaletteColors(pic->format->palette, colors, 0,
-                                 gsl::narrow<int>(lodePNGState.info_png.color.palettesize));
+            SDL_SetPaletteColors(palette, colors, 0, paletteSize);
 
             const sdl2::surface_lock pic_lock{pic.get()};
 
@@ -118,8 +126,8 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             unsigned char* lode_out = nullptr;
             error                   = lodepng_decode32(&lode_out, &width, &height, pFiledata.get(), filesize);
             if (error != 0) {
-                THROW(std::runtime_error, "LoadPNG_RW(): Decoding this *.png-File failed: {}",
-                      lodepng_error_text(error));
+                THROW(
+                    std::runtime_error, "LoadPNG_RW(): Decoding this *.png-File failed: {}", lodepng_error_text(error));
             }
 
             const lodepng_ptr pImageOut{lode_out};
@@ -170,7 +178,8 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
 
     sdl2::surface_ptr surface_copy;
 
-    if (surface->format->format != SDL_PIXELFORMAT_RGBA32) {
+    // SDL3: surface->format is now the pixel format value, not a pointer
+    if (surface->format != SDL_PIXELFORMAT_RGBA32) {
         surface_copy = sdl2::surface_ptr{SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0)};
 
         surface = surface_copy.get();
@@ -185,8 +194,8 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     { // Scope
         sdl2::surface_lock lock{surface};
 
-        const auto error = lodepng_encode32(&ppngFile, &pngFileSize, static_cast<const unsigned char*>(surface->pixels),
-                                            width, height);
+        const auto error = lodepng_encode32(
+            &ppngFile, &pngFileSize, static_cast<const unsigned char*>(surface->pixels), width, height);
         if (error != 0) {
             sdl2::log_info("{}", lodepng_error_text(error));
             free(ppngFile);

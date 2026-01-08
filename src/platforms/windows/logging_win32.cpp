@@ -136,7 +136,10 @@ void log_windows_version() {
             if (RtlGetVersion) {
                 RTL_OSVERSIONINFOEXW os_version{sizeof(os_version)};
                 if (NT_SUCCESS(RtlGetVersion(&os_version))) {
-                    sdl2::log_info("System: {} ({}.{}.{})", name, os_version.dwMajorVersion, os_version.dwMinorVersion,
+                    sdl2::log_info("System: {} ({}.{}.{})",
+                                   name,
+                                   os_version.dwMajorVersion,
+                                   os_version.dwMinorVersion,
                                    os_version.dwBuildNumber);
                     return;
                 }
@@ -171,7 +174,8 @@ void log_computer_info() {
         SYSTEM_INFO system_info;
         GetNativeSystemInfo(&system_info);
 
-        sdl2::log_info("       {} core {}", system_info.dwNumberOfProcessors,
+        sdl2::log_info("       {} core {}",
+                       system_info.dwNumberOfProcessors,
                        get_processor_type(system_info.wProcessorArchitecture));
     }
 
@@ -211,21 +215,30 @@ void log_process_info() {
         const auto user_duration   = convert_to_file_time_duration(user_time);
         const auto kernel_duration = convert_to_file_time_duration(kernel_time);
 
-        sdl2::log_info("        cpu time {} user {} kernel", format_duration(user_duration),
-                       format_duration(kernel_duration));
+        sdl2::log_info(
+            "        cpu time {} user {} kernel", format_duration(user_duration), format_duration(kernel_duration));
     }
 }
 
 void log_sdk_info() {
 #ifdef DUNE_WINDOWS_SDK_VERSION
-    sdl2::log_info("   Windows SDK " DUNE_WINDOWS_SDK_VERSION " ({}.{}.{}.{})", OSVER(WDK_NTDDI_VERSION) >> 24,
-                   0xff & OSVER(WDK_NTDDI_VERSION) >> 16, SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
+    sdl2::log_info("   Windows SDK " DUNE_WINDOWS_SDK_VERSION " ({}.{}.{}.{})",
+                   OSVER(WDK_NTDDI_VERSION) >> 24,
+                   0xff & OSVER(WDK_NTDDI_VERSION) >> 16,
+                   SPVER(WDK_NTDDI_VERSION),
+                   SUBVER(WDK_NTDDI_VERSION));
 #else
-    sdl2::log_info("   Windows SDK {}.{}.{}.{}", OSVER(WDK_NTDDI_VERSION) >> 24,
-                   0xff & (OSVER(WDK_NTDDI_VERSION) >> 16), SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
+    sdl2::log_info("   Windows SDK {}.{}.{}.{}",
+                   OSVER(WDK_NTDDI_VERSION) >> 24,
+                   0xff & (OSVER(WDK_NTDDI_VERSION) >> 16),
+                   SPVER(WDK_NTDDI_VERSION),
+                   SUBVER(WDK_NTDDI_VERSION));
 #endif
-    sdl2::log_info("   Minimum Windows {}.{}.{}.{}", OSVER(NTDDI_VERSION) >> 24, 0xff & OSVER(NTDDI_VERSION) >> 16,
-                   SPVER(NTDDI_VERSION), SUBVER(NTDDI_VERSION));
+    sdl2::log_info("   Minimum Windows {}.{}.{}.{}",
+                   OSVER(NTDDI_VERSION) >> 24,
+                   0xff & OSVER(NTDDI_VERSION) >> 16,
+                   SPVER(NTDDI_VERSION),
+                   SUBVER(NTDDI_VERSION));
 }
 
 void log_capture_output(const std::filesystem::path logfilePath) {
@@ -243,12 +256,18 @@ void log_capture_output(const std::filesystem::path logfilePath) {
 
     const auto wLogFilePath = logfilePath.wstring();
 
-    const auto log_handle = CreateFileW(wLogFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
-                                        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+    const auto log_handle = CreateFileW(wLogFilePath.c_str(),
+                                        GENERIC_WRITE,
+                                        FILE_SHARE_READ,
+                                        nullptr,
+                                        CREATE_ALWAYS,
+                                        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN,
+                                        nullptr);
 
     if (log_handle == INVALID_HANDLE_VALUE) {
         // use stdout in this error case as stderr is not yet ready
-        THROW(io_error, "Opening logfile '{}' as stdout failed!",
+        THROW(io_error,
+              "Opening logfile '{}' as stdout failed!",
               reinterpret_cast<const char*>(logfilePath.u8string().c_str()));
     }
 

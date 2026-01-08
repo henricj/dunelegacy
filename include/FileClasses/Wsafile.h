@@ -33,13 +33,13 @@
 class Wsafile final {
 public:
     /**
-        The constructor reads from the RWops all data and saves them internally. The SDL_RWops can be readonly but must
-       support seeking. Immediately after the Wsafile-Object is constructed the RWops can be closed. All data is saved
+        The constructor reads from the IOStream all data and saves them internally. The SDL_IOStream can be readonly but must
+       support seeking. Immediately after the Wsafile-Object is constructed the IOStream can be closed. All data is saved
        in the class. All animations are concatenated.
-       \param  rwops     SDL_RWops for each wsa-File. (can be readonly)
+       \param  ios     SDL_IOStream for each wsa-File. (can be readonly)
     */
-    explicit Wsafile(std::convertible_to<SDL_RWops*> auto... rwops) {
-        readdata(std::initializer_list<SDL_RWops*>{rwops...});
+    explicit Wsafile(std::convertible_to<SDL_IOStream*> auto... ios) {
+        readdata(std::initializer_list<SDL_IOStream*>{ios...});
     }
 
     Wsafile(const Wsafile& wsafile)            = delete;
@@ -82,8 +82,8 @@ public:
 private:
     void decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames,
                       unsigned char* pDecodedFrames, int x, int y) const;
-    std::tuple<std::unique_ptr<unsigned char[]>, size_t> readfile(SDL_RWops* rwop) const;
-    void readdata(const std::initializer_list<SDL_RWops*>& rwops);
+    std::tuple<std::unique_ptr<unsigned char[]>, size_t> readfile(SDL_IOStream* io) const;
+    void readdata(const std::initializer_list<SDL_IOStream*>& ios);
 
     std::vector<unsigned char> decodedFrames;
 

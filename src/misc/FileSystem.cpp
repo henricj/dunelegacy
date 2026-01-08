@@ -161,7 +161,8 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
     for (const auto& entry : std::filesystem::directory_iterator(directory, ec)) {
         if (ec) {
             sdl2::log_info("Scanning directory {} failed with {}",
-                           reinterpret_cast<const char*>(directory.u8string().c_str()), ec.message().c_str());
+                           reinterpret_cast<const char*>(directory.u8string().c_str()),
+                           ec.message().c_str());
             break;
         }
 
@@ -175,11 +176,15 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
         if (filename.length() < target_extension.length() + 1)
             continue;
 
-        const auto match = bIgnoreCase
-                             ? std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
-                                          [](auto a, auto b) { return a == safe_tolower(b); })
-                             : std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
-                                          [](auto a, auto b) { return a == b; });
+        const auto match =
+            bIgnoreCase
+                ? std::equal(target_extension.rbegin(),
+                             target_extension.rend(),
+                             filename.rbegin(),
+                             [](auto a, auto b) { return a == safe_tolower(b); })
+                : std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(), [](auto a, auto b) {
+                      return a == b;
+                  });
 
         if (match) {
             const auto full_path = std::filesystem::canonical(path);
@@ -188,14 +193,16 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
 
             if (ec) {
                 sdl2::log_info("Getting size of {} failed with {}",
-                               reinterpret_cast<const char*>(full_path.u8string().c_str()), ec.message().c_str());
+                               reinterpret_cast<const char*>(full_path.u8string().c_str()),
+                               ec.message().c_str());
                 continue;
             }
 
             const auto modified = std::filesystem::last_write_time(full_path, ec);
             if (ec) {
                 sdl2::log_info("Getting last modified time of {} failed with {}",
-                               reinterpret_cast<const char*>(full_path.u8string().c_str()), ec.message().c_str());
+                               reinterpret_cast<const char*>(full_path.u8string().c_str()),
+                               ec.message().c_str());
                 continue;
             }
 
@@ -350,12 +357,13 @@ std::filesystem::path getDuneLegacyDataDir() {
 #endif
 
         if (dataDir.empty() || dataDir == "." || dataDir == "./" || dataDir == ".\\") {
-            const sdl2::sdl_ptr<char> basePath{SDL_GetBasePath()};
+            // SDL3: SDL_GetBasePath returns const char* that doesn't need to be freed
+            const char* basePath = SDL_GetBasePath();
 
             if (basePath == nullptr) {
                 THROW(sdl_error, "SDL_GetBasePath() failed: {}!", SDL_GetError());
             }
-            dataDir = basePath.get();
+            dataDir = basePath;
         }
 
         duneLegacyDataDir = dataDir.lexically_normal().make_preferred();

@@ -21,10 +21,10 @@
 #include <misc/SDL2pp.h>
 
 /**
-    Try to load a VOC from the RWop. Returns a pointer to Mix_Chunk.
-    \param  rwop    The source SDL_RWops as a pointer. The sample is loaded from this VOC-File.
+    Try to load a VOC from the IOStream. Returns a pointer to Mix_Chunk.
+    \param  io    The source SDL_IOStream as a pointer. The sample is loaded from this VOC-File.
     \return a pointer to the sample as a Mix_Chunk. nullptr is returned on errors.
  */
-sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop);
+sdl2::mix_chunk_ptr LoadVOC_RW(SDL_IOStream* io);
 
 #endif // VOCFILE_H

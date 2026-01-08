@@ -106,12 +106,8 @@ bool Window::isBroadcastEvent(const SDL_Event& event) {
     if (event_type_filter.contains(type))
         return true;
 
-    if (SDL_WINDOWEVENT != type)
-        return false;
-
-    const auto& we = event.window;
-
-    return we.event == SDL_WINDOWEVENT_SIZE_CHANGED;
+    // SDL3: Window events are individual event types, not subtypes
+    return type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 }
 
 void Window::handleInput(const SDL_Event& event) {
@@ -128,74 +124,75 @@ void Window::handleInput(const SDL_Event& event) {
     }
 
     switch (event.type) {
-        case SDL_KEYDOWN: {
+        // SDL3: SDL_KEYDOWN -> SDL_EVENT_KEY_DOWN
+        case SDL_EVENT_KEY_DOWN: {
             handleKeyPress(event.key);
         } break;
 
-        case SDL_TEXTINPUT: {
+        // SDL3: SDL_TEXTINPUT -> SDL_EVENT_TEXT_INPUT
+        case SDL_EVENT_TEXT_INPUT: {
             handleTextInput(event.text);
         } break;
 
-        case SDL_MOUSEMOTION: {
-            handleMouseMovement(event.motion.x, event.motion.y);
+        // SDL3: SDL_MOUSEMOTION -> SDL_EVENT_MOUSE_MOTION, coordinates are now float
+        case SDL_EVENT_MOUSE_MOTION: {
+            handleMouseMovement(static_cast<int32_t>(event.motion.x), static_cast<int32_t>(event.motion.y));
         } break;
 
-        case SDL_MOUSEBUTTONDOWN: {
+        // SDL3: SDL_MOUSEBUTTONDOWN -> SDL_EVENT_MOUSE_BUTTON_DOWN, coordinates are now float
+        case SDL_EVENT_MOUSE_BUTTON_DOWN: {
             switch (event.button.button) {
                 case SDL_BUTTON_LEFT: {
-                    handleMouseLeft(event.button.x, event.button.y, true);
+                    handleMouseLeft(static_cast<int32_t>(event.button.x), static_cast<int32_t>(event.button.y), true);
                 } break;
 
                 case SDL_BUTTON_RIGHT: {
-                    handleMouseRight(event.button.x, event.button.y, true);
+                    handleMouseRight(static_cast<int32_t>(event.button.x), static_cast<int32_t>(event.button.y), true);
                 } break;
                 default: break;
             }
         } break;
 
-        case SDL_MOUSEWHEEL: {
+        // SDL3: SDL_MOUSEWHEEL -> SDL_EVENT_MOUSE_WHEEL
+        case SDL_EVENT_MOUSE_WHEEL: {
             if (event.wheel.y != 0) {
                 handleMouseWheel(dune::globals::drawnMouseX, dune::globals::drawnMouseY, (event.wheel.y > 0));
             }
         } break;
 
-        case SDL_MOUSEBUTTONUP: {
+        // SDL3: SDL_MOUSEBUTTONUP -> SDL_EVENT_MOUSE_BUTTON_UP, coordinates are now float
+        case SDL_EVENT_MOUSE_BUTTON_UP: {
             switch (event.button.button) {
                 case SDL_BUTTON_LEFT: {
-                    handleMouseLeft(event.button.x, event.button.y, false);
+                    handleMouseLeft(static_cast<int32_t>(event.button.x), static_cast<int32_t>(event.button.y), false);
                 } break;
 
                 case SDL_BUTTON_RIGHT: {
-                    handleMouseRight(event.button.x, event.button.y, false);
+                    handleMouseRight(static_cast<int32_t>(event.button.x), static_cast<int32_t>(event.button.y), false);
                 } break;
 
                 default: break;
             }
         } break;
 
-        case SDL_WINDOWEVENT: {
-            switch (event.window.event) {
-                case SDL_WINDOWEVENT_SIZE_CHANGED: {
-                    auto& gui = GUIStyle::getInstance();
+        // SDL3: Window events are now individual event types
+        case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
+            auto& gui = GUIStyle::getInstance();
 
-                    gui.setLogicalSize(dune::globals::renderer.get(), event.window.data1, event.window.data2);
+            gui.setLogicalSize(dune::globals::renderer.get(), event.window.data1, event.window.data2);
 
-                    const auto actual = getRendererSize();
+            const auto actual = getRendererSize();
 
-                    resize(actual.w, actual.h);
+            resize(actual.w, actual.h);
 
-                    const auto size = getMinimumSize();
+            const auto size = getMinimumSize();
 
-                    if (size.x > 0 && size.y > 0)
-                        SDL_SetWindowMinimumSize(dune::globals::window.get(), size.x, size.y);
-                } break;
+            if (size.x > 0 && size.y > 0)
+                SDL_SetWindowMinimumSize(dune::globals::window.get(), size.x, size.y);
+        } break;
 
-                case SDL_WINDOWEVENT_DISPLAY_CHANGED: {
-                    invalidateTextures();
-                } break;
-
-                default: break;
-            }
+        case SDL_EVENT_WINDOW_DISPLAY_CHANGED: {
+            invalidateTextures();
         } break;
 
         case SDL_DISPLAYEVENT_ORIENTATION: [[fallthrough]];

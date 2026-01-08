@@ -3,8 +3,8 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Vocfile.h>
 
-#include <misc/dune_sdlpp.h>
 #include <misc/dune_sdl_mixer.h>
+#include <misc/dune_sdlpp.h>
 #include <misc/exceptions.h>
 
 #include <globals.h>

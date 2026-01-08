@@ -55,7 +55,8 @@ void ObjectManager::load(InputStream& stream) {
         auto pObject = loadObject(stream, objectID);
         if (objectID != pObject->getObjectID()) {
             sdl2::log_info("ObjectManager::load(): The loaded object has a different ID than expected ({}!={})!",
-                           objectID, pObject->getObjectID());
+                           objectID,
+                           pObject->getObjectID());
         }
 
         const auto& [_, ok] = objectMap.emplace(objectID, std::move(pObject));

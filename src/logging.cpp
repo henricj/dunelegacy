@@ -99,8 +99,8 @@ void log_build_info() {
 void logOutputFunction([[maybe_unused]] void* userdata, [[maybe_unused]] int category, SDL_LogPriority priority,
                        const char* message) {
 
-    static constexpr std::string_view priorityStrings[] = {"<UNK> ",   "VERBOSE ", "DEBUG   ", "INFO    ",
-                                                           "WARN    ", "ERROR   ", "CRITICAL"};
+    static constexpr std::string_view priorityStrings[] = {
+        "<UNK> ", "VERBOSE ", "DEBUG   ", "INFO    ", "WARN    ", "ERROR   ", "CRITICAL"};
 
     static constexpr auto priorityStringsSize = static_cast<int>(std::size(priorityStrings));
 
@@ -121,9 +121,9 @@ void logOutputFunction([[maybe_unused]] void* userdata, [[maybe_unused]] int cat
 namespace dune {
 
 void logging_initialize() {
-    SDL_LogSetOutputFunction(logOutputFunction, nullptr);
-    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
-    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);
+    SDL_SetLogOutputFunction(logOutputFunction, nullptr);
+    SDL_SetLogPriorities(SDL_LOG_PRIORITY_WARN);
+    SDL_SetLogPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);
 }
 
 void logging_configure(bool capture_output) {

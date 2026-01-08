@@ -196,7 +196,9 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     if (xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for (int i = 0; i < scale; i++) {
                             for (int j = 0; j < scale; j++) {
-                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY,
+                                putPixel(pMinimap.get(),
+                                         xpos * scale + i + offsetX,
+                                         ypos * scale + j + offsetY,
                                          COLOR_BLOOM);
                             }
                         }
@@ -221,7 +223,9 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     if (xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for (int i = 0; i < scale; i++) {
                             for (int j = 0; j < scale; j++) {
-                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY,
+                                putPixel(pMinimap.get(),
+                                         xpos * scale + i + offsetX,
+                                         ypos * scale + j + offsetY,
                                          COLOR_BLOOM);
                             }
                         }

@@ -59,7 +59,9 @@ protected:
     MusicPlayer(bool bMusicOn, int newMusicVolume, std::string_view name)
         : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID), currentMusicType(MUSIC_RANDOM),
           random_{RandomFactory{}.create(name)} {
-        Mix_VolumeMusic(musicVolume);
+        // TODO: SDL3_mixer has a completely different API - volume is set per-track
+        // Mix_VolumeMusic is not available in SDL3_mixer
+        // The audio system needs to be refactored to use MIX_Mixer/MIX_Track
     }
 
 public:
@@ -119,6 +121,7 @@ public:
     virtual void setMusicVolume(int newVolume) {
         if (newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
             musicVolume = newVolume;
+            // TODO: SDL3_mixer volume control - needs MIX_Track API
         }
     }
 

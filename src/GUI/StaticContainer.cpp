@@ -37,7 +37,8 @@ void StaticContainer::addWidget(Widget* newWidget, const SDL_Rect& rect) {
 }
 
 void StaticContainer::addWidget(Widget* newWidget, const SDL_FRect& rect) {
-    addWidget(newWidget, {static_cast<int>(std::ceil(rect.x)), static_cast<int>(std::ceil(rect.y))},
+    addWidget(newWidget,
+              {static_cast<int>(std::ceil(rect.x)), static_cast<int>(std::ceil(rect.y))},
               {static_cast<int>(std::ceil(rect.w)), static_cast<int>(std::ceil(rect.h))});
 }
 

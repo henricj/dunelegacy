@@ -82,7 +82,7 @@ bool ListBox::handleMouseWheel([[maybe_unused]] int32_t x, [[maybe_unused]] int3
 bool ListBox::handleKeyPress(const SDL_KeyboardEvent& key) {
     parent::handleKeyPress(key);
     if (isActive()) {
-        switch (key.keysym.sym) {
+        switch (key.key) {
             case SDLK_UP: {
                 if (selectedElement_ == invalid_index)
                     setSelectedItem(0, true);
@@ -383,8 +383,8 @@ void ListBox::updateTextures() {
             if (i >= getNumEntries())
                 break;
 
-            auto pSurface = gui.createListBoxEntry(scaled_width, getEntry(i),
-                                                   bHighlightSelectedElement_ && i == selectedElement_, color_);
+            auto pSurface = gui.createListBoxEntry(
+                scaled_width, getEntry(i), bHighlightSelectedElement_ && i == selectedElement_, color_);
 
             auto dest =
                 calcDrawingRect(pSurface.get(), 0, gsl::narrow<int>((i - firstVisibleElement_) * scaled_entry_height));

@@ -60,10 +60,12 @@ void ChatManager::draw(Point position) {
     }
 
     SDL_FRect timeDest{static_cast<float>(position.x), static_cast<float>(position.y), 0.f, 0.f};
-    SDL_FRect usernameOrPictureDest{static_cast<float>(position.x) + LEFT_BORDER_WIDTH, static_cast<float>(position.y),
-                                    0.f, 0.f};
+    SDL_FRect usernameOrPictureDest{
+        static_cast<float>(position.x) + LEFT_BORDER_WIDTH, static_cast<float>(position.y), 0.f, 0.f};
     SDL_FRect messageDest{static_cast<float>(position.x) + LEFT_BORDER_WIDTH + maxUsernameSizeY,
-                          static_cast<float>(position.y), 0.f, 0.f};
+                          static_cast<float>(position.y),
+                          0.f,
+                          0.f};
     for (const auto& chatMessage : chatMessages) {
 
         if (chatMessage.messageType == MessageType::MSGTYPE_NORMAL) {
@@ -92,8 +94,8 @@ void ChatManager::draw(Point position) {
             messageDest.h = (chatMessage.pMessageTexture.height_);
         } else {
 
-            auto infoDest = calcDrawingRect(chatMessage.pMessageTexture,
-                                            static_cast<float>(position.x) + LEFT_BORDER_WIDTH - 20, messageDest.y);
+            auto infoDest = calcDrawingRect(
+                chatMessage.pMessageTexture, static_cast<float>(position.x) + LEFT_BORDER_WIDTH - 20, messageDest.y);
 
             float maxHeight{};
 
@@ -101,7 +103,8 @@ void ChatManager::draw(Point position) {
             if (chatMessage.pUsernameTexture) {
                 auto pictureDest = calcDrawingRect(chatMessage.pUsernameTexture,
                                                    static_cast<float>(position.x) + LEFT_BORDER_WIDTH - 30,
-                                                   messageDest.y, HAlign::Right);
+                                                   messageDest.y,
+                                                   HAlign::Right);
 
                 maxHeight = std::max(pictureDest.h, infoDest.h);
 
@@ -111,7 +114,8 @@ void ChatManager::draw(Point position) {
             } else {
                 auto pictureDest = calcDrawingRect(chatMessage.pPictureTexture,
                                                    static_cast<float>(position.x) + LEFT_BORDER_WIDTH - 30,
-                                                   messageDest.y, HAlign::Right);
+                                                   messageDest.y,
+                                                   HAlign::Right);
 
                 maxHeight = std::max(pictureDest.h, infoDest.h);
 
@@ -145,8 +149,11 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
     auto pUsernameTexture = gui.createText(renderer, std::string{username} + ": ", COLOR_WHITE, 12);
     auto pMessageTexture  = gui.createText(renderer, message, COLOR_WHITE, 12);
 
-    chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture),
-                              dune::dune_clock::now(), MessageType::MSGTYPE_NORMAL);
+    chatMessages.emplace_back(std::move(pTimeTexture),
+                              std::move(pUsernameTexture),
+                              std::move(pMessageTexture),
+                              dune::dune_clock::now(),
+                              MessageType::MSGTYPE_NORMAL);
 
     prune_messages();
 }
@@ -168,16 +175,16 @@ void ChatManager::addHintMessage(std::string_view message, const DuneTexture* pT
     const auto& gui      = GUIStyle::getInstance();
     auto* const renderer = dune::globals::renderer.get();
 
-    const auto lines = greedyWordWrap(message, static_cast<float>(width),
-                                      [&gui](std::string_view tmp) { return gui.getTextWidth(tmp, 12); });
+    const auto lines = greedyWordWrap(
+        message, static_cast<float>(width), [&gui](std::string_view tmp) { return gui.getTextWidth(tmp, 12); });
 
     const auto height = static_cast<int>(std::ceil(static_cast<float>(lines.size()) * gui.getTextHeight(12) + 4));
 
     auto pMessageTexture =
         gui.createLabel(renderer, width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT);
 
-    chatMessages.emplace_back(std::move(pMessageTexture), pTexture, dune::dune_clock::now(),
-                              MessageType::MSGTYPE_PICTURE);
+    chatMessages.emplace_back(
+        std::move(pMessageTexture), pTexture, dune::dune_clock::now(), MessageType::MSGTYPE_PICTURE);
 
     prune_messages();
 }

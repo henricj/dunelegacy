@@ -80,7 +80,7 @@ void OFileStream::writeUint8(uint8_t x) {
 }
 
 void OFileStream::writeUint16(uint16_t x) {
-    x = SDL_SwapLE16(x);
+    x = SDL_Swap16LE(x);
 
     if (fwrite(&x, sizeof(uint16_t), 1, fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint16(): An I/O-Error occurred!");
@@ -88,7 +88,7 @@ void OFileStream::writeUint16(uint16_t x) {
 }
 
 void OFileStream::writeUint32(uint32_t x) {
-    x = SDL_SwapLE32(x);
+    x = SDL_Swap32LE(x);
 
     if (fwrite(&x, sizeof(uint32_t), 1, fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint32(): An I/O-Error occurred!");
@@ -96,7 +96,7 @@ void OFileStream::writeUint32(uint32_t x) {
 }
 
 void OFileStream::writeUint64(uint64_t x) {
-    x = SDL_SwapLE64(x);
+    x = SDL_Swap64LE(x);
     if (fwrite(&x, sizeof(uint64_t), 1, fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint64(): An I/O-Error occurred!");
     }

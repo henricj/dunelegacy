@@ -19,6 +19,8 @@
 
 #include "Renderer/DuneRenderer.h"
 
+#include <misc/dune_sdl.h> // Include compatibility header for SDL_RenderCopyExF macro
+
 #include <memory>
 #include <utility>
 #include <vector>
@@ -63,8 +65,11 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect&
     DuneRendererImplementation::countRenderCopy(texture_);
 
     if (source.x < 0 || source.y < 0 || source.w < 1 || source.h < 1) {
-        sdl2::log_error("DuneTexture::draw() The source rectangle is invalid ({}x{} at {}x{})", source.w, source.h,
-                        source.x, source.y);
+        sdl2::log_error("DuneTexture::draw() The source rectangle is invalid ({}x{} at {}x{})",
+                        source.w,
+                        source.h,
+                        source.x,
+                        source.y);
         return;
     }
 

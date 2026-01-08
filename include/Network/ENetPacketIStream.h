@@ -88,7 +88,7 @@ public:
 
         const uint16_t tmp = *reinterpret_cast<uint16_t*>(packet->data + currentPos);
         currentPos += sizeof(uint16_t);
-        return SDL_SwapLE16(tmp);
+        return SDL_Swap16LE(tmp);
     }
 
     uint32_t readUint32() override {
@@ -98,7 +98,7 @@ public:
 
         const uint32_t tmp = *reinterpret_cast<uint32_t*>(packet->data + currentPos);
         currentPos += sizeof(uint32_t);
-        return SDL_SwapLE32(tmp);
+        return SDL_Swap32LE(tmp);
     }
 
     uint64_t readUint64() override {
@@ -108,7 +108,7 @@ public:
 
         const uint64_t tmp = *reinterpret_cast<uint64_t*>(packet->data + currentPos);
         currentPos += sizeof(uint64_t);
-        return SDL_SwapLE64(tmp);
+        return SDL_Swap64LE(tmp);
     }
 
     bool readBool() override { return readUint8() == 1 ? true : false; }

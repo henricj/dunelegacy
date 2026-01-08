@@ -160,8 +160,8 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
                 loadIntValue(objectDataFile, sectionName, "WeaponDamage", houseChar[h], defaultData.weapondamage);
             data[itemID][h].weaponrange =
                 loadIntValue(objectDataFile, sectionName, "WeaponRange", houseChar[h], defaultData.weaponrange);
-            data[itemID][h].weaponreloadtime = loadIntValue(objectDataFile, sectionName, "WeaponReloadTime",
-                                                            houseChar[h], defaultData.weaponreloadtime);
+            data[itemID][h].weaponreloadtime = loadIntValue(
+                objectDataFile, sectionName, "WeaponReloadTime", houseChar[h], defaultData.weaponreloadtime);
             data[itemID][h].maxspeed =
                 loadFixPointValue(objectDataFile, sectionName, "MaxSpeed", houseChar[h], defaultData.maxspeed);
             data[itemID][h].turnspeed =
@@ -283,7 +283,9 @@ ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, std::string_vi
     if (itemID == ItemID_Invalid) {
         sdl2::log_info(
             "Warning: Cannot read object data from section '{}', key '{}': '{}' is no valid structure/unit name!",
-            section, key, strItem);
+            section,
+            key,
+            strItem);
         return defaultValue;
     }
 
@@ -312,7 +314,9 @@ ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, std::st
         if (itemID == ItemID_Invalid || !isStructure(itemID)) {
             sdl2::log_info(
                 "Warning: Cannot read object data from section '{}', key '{}': '{}' is no valid structure name!",
-                section, key, strItem2);
+                section,
+                key,
+                strItem2);
             return defaultValue;
         }
 

@@ -48,7 +48,8 @@ sdl2::surface_ptr Wsafile::getPicture(uint32_t frameNumber) const {
     if (frameNumber >= numFrames) {
         THROW(std::invalid_argument,
               "Wsafile::getPicture(): Requested frame number is %ud but the file contains only %ud frames!",
-              frameNumber, numFrames);
+              frameNumber,
+              numFrames);
     }
 
     // create new picture surface
@@ -109,7 +110,8 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
             for (auto line = ptrdiff_t{0}; line < ptrdiff_t{sizeY}; ++line) {
                 memcpy(pixels + (static_cast<ptrdiff_t>(y) * sizeY + line) * pic->pitch
                            + x * static_cast<ptrdiff_t>(sizeX),
-                       pImage + line * sizeX, sizeX);
+                       pImage + line * sizeX,
+                       sizeX);
             }
         }
     }
@@ -283,7 +285,8 @@ void Wsafile::readdata(const std::initializer_list<SDL_RWops*>& rwops) {
         for (auto i = 1U; i < numFiles; ++i) {
             if (extended[i]) {
                 // copy last frame
-                memcpy(nextFreeFrame, nextFreeFrame - static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY),
+                memcpy(nextFreeFrame,
+                       nextFreeFrame - static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY),
                        static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY));
             }
             assert(nextFreeFrame + static_cast<ptrdiff_t>(sizeX) * sizeY <= &decodedFrames.back());

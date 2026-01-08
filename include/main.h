@@ -22,12 +22,70 @@
 
 #include <string>
 
-class CaseInsensitiveFileSystemCache;
+class CaseInsensitiveFilesystemCache;
+class INIFile;
+
+// ============================================================================
+// Video functions (MainVideo.cpp)
+// ============================================================================
 
 /**
     This functions sets the video mode according to the settings
+    \param displayIndex The display index to use
 */
-void setVideoMode();
+void setVideoMode(int displayIndex);
+
+/**
+    Updates the display scale based on DPI settings
+    \param sdl_window The SDL window
+*/
+void update_display_scale(SDL_Window* sdl_window);
+
+/**
+    This function shows a list of missing pak-files in a message box.
+    It returns, when the message box is closed.
+    \param filesystemCache The filesystem cache to check
+*/
+void showMissingFilesMessageBox(const CaseInsensitiveFilesystemCache& filesystemCache);
+
+// ============================================================================
+// Configuration functions (MainConfig.cpp)
+// ============================================================================
+
+/**
+    This function tries to determine the system language the user uses.
+    \return two character language code (e.g. en, de, fr) or empty if unknown
+*/
+std::string getUserLanguage();
+
+/**
+    Load settings from INI file into global settings
+    \param myINIFile The INI file to load from
+*/
+void load_settings(const INIFile& myINIFile);
+
+/**
+    Configure the game based on settings file and command line arguments
+    \param argc Argument count
+    \param argv Argument values
+    \param bFirstInit True if this is the first initialization
+    \param currentDisplayIndex Current display index
+    \return True if this is the first gamestart
+*/
+bool configure_game(int argc, char* argv[], bool bFirstInit, int currentDisplayIndex);
+
+/**
+    Parse command line arguments
+    \param argc Argument count
+    \param argv Argument values
+    \param bShowDebugLog Output: whether to show debug log
+    \return True if parsing succeeded
+*/
+bool parseCommandLine(int argc, char* argv[], bool& bShowDebugLog);
+
+// ============================================================================
+// Main game functions (main.cpp)
+// ============================================================================
 
 /**
     This function is used by SDL to write out log messages
@@ -35,15 +93,11 @@ void setVideoMode();
 void logOutputFunction(void* userdata, int category, SDL_LogPriority priority, const char* message);
 
 /**
-    This function shows a list of missing pak-files in a message box.
-    It returns, when the message box is closed.
+    Run the main game loop
+    \param argc Argument count
+    \param argv Argument values
+    \return True if the game ran successfully
 */
-void showMissingFilesMessageBox(const CaseInsensitiveFileSystemCache& cache);
-
-/**
-    This function tries to determine the system language the user uses.
-    \return two character language code (e.g. en, de, fr) or empty if unknown
-*/
-std::string getUserLanguage();
+bool run_game(int argc, char* argv[]);
 
 #endif // MAIN_H

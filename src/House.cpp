@@ -267,16 +267,20 @@ FixPoint House::takeCredits(FixPoint amount) {
 
 void House::printStat() const {
     sdl2::log_info("House {}: (Number of Units: {}, Number of Structures: {})",
-                   getHouseNameByNumber(getHouseID()).c_str(), numUnits_, numStructures_);
+                   getHouseNameByNumber(getHouseID()).c_str(),
+                   numUnits_,
+                   numStructures_);
     sdl2::log_info("Barracks: {}\t\tWORs: {}", numItem_[Structure_Barracks], numItem_[Structure_WOR]);
-    sdl2::log_info("Light Factories: {}\tHeavy Factories: {}", numItem_[Structure_LightFactory],
-                   numItem_[Structure_HeavyFactory]);
+    sdl2::log_info(
+        "Light Factories: {}\tHeavy Factories: {}", numItem_[Structure_LightFactory], numItem_[Structure_HeavyFactory]);
     sdl2::log_info("IXs: {}\t\t\tPalaces: {}", numItem_[Structure_IX], numItem_[Structure_Palace]);
-    sdl2::log_info("Repair Yards: {}\t\tHigh-Tech Factories: {}", numItem_[Structure_RepairYard],
+    sdl2::log_info("Repair Yards: {}\t\tHigh-Tech Factories: {}",
+                   numItem_[Structure_RepairYard],
                    numItem_[Structure_HighTechFactory]);
     sdl2::log_info("Refineries: {}\t\tStarports: {}", numItem_[Structure_Refinery], numItem_[Structure_StarPort]);
     sdl2::log_info("Walls: {}\t\tRocket Turrets: {}", numItem_[Structure_Wall], numItem_[Structure_RocketTurret]);
-    sdl2::log_info("Gun Turrets: {}\t\tConstruction Yards: {}", numItem_[Structure_GunTurret],
+    sdl2::log_info("Gun Turrets: {}\t\tConstruction Yards: {}",
+                   numItem_[Structure_GunTurret],
                    numItem_[Structure_ConstructionYard]);
     sdl2::log_info("Windtraps: {}\t\tRadars: {}", numItem_[Structure_WindTrap], numItem_[Structure_Radar]);
     sdl2::log_info("Silos: {}", numItem_[Structure_Silo]);
@@ -354,8 +358,8 @@ void House::incrementUnits(ItemID_enum itemID) {
 
 void House::decrementUnits(ItemID_enum itemID) {
     if (numUnits_ < 1)
-        THROW(std::runtime_error, "Cannot decrement number of units {} (itemId {})", numUnits_,
-              static_cast<int>(itemID));
+        THROW(
+            std::runtime_error, "Cannot decrement number of units {} (itemId {})", numUnits_, static_cast<int>(itemID));
 
     numUnits_--;
     numItemLosses_[itemID]++;
@@ -408,7 +412,9 @@ void House::incrementStructures(ItemID_enum itemID) {
 
 void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
     if (numStructures_ < 1)
-        THROW(std::runtime_error, "Cannot decrement number of structures {} (itemId {})", numStructures_,
+        THROW(std::runtime_error,
+              "Cannot decrement number of structures {} (itemId {})",
+              numStructures_,
               static_cast<int>(itemID));
 
     numStructures_--;
@@ -627,8 +633,8 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
             // Slabs are no normal buildings
             tile->setType(context_, TERRAINTYPE::Terrain_Slab);
             tile->setOwner(getHouseID());
-            map.viewMap(getHouseID(), xPos, yPos,
-                        game.objectData.data[Structure_Slab1][static_cast<int>(houseID_)].viewrange);
+            map.viewMap(
+                getHouseID(), xPos, yPos, game.objectData.data[Structure_Slab1][static_cast<int>(houseID_)].viewrange);
             //      context.map.getTile(xPos, yPos)->clearTerrain();
 
             if (pBuilder != nullptr) {
@@ -655,7 +661,9 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
                 t.setType(context_, TERRAINTYPE::Terrain_Slab);
                 t.setOwner(houseID_);
                 context_.map.viewMap(
-                    getHouseID(), t.getLocation().x, t.getLocation().y,
+                    getHouseID(),
+                    t.getLocation().x,
+                    t.getLocation().y,
                     context_.game.objectData.data[Structure_Slab4][static_cast<int>(houseID_)].viewrange);
                 // pTile->clearTerrain();
             });
@@ -697,13 +705,19 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
             if (!bForcePlacing) {
                 // check if there is already something on this tile
 
-                if (map.find(xPos, yPos, xPos + newStructure->getStructureSizeX(), newStructure->getStructureSizeY(),
+                if (map.find(xPos,
+                             yPos,
+                             xPos + newStructure->getStructureSizeX(),
+                             newStructure->getStructureSizeY(),
                              [](Tile& tile) { return tile.hasAGroundObject(); })) {
                     return nullptr;
                 }
             }
 
-            map.for_each(xPos, yPos, xPos + newStructure->getStructureSizeX(), yPos + newStructure->getStructureSizeY(),
+            map.for_each(xPos,
+                         yPos,
+                         xPos + newStructure->getStructureSizeX(),
+                         yPos + newStructure->getStructureSizeY(),
                          [](auto& tile) { tile.clearTerrain(); });
 
             newStructure->setLocation(context_, xPos, yPos);

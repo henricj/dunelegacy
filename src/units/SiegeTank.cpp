@@ -84,9 +84,13 @@ void SiegeTank::blitToScreen() {
 
     const auto offset = siegeTankTurretOffset[static_cast<int>(drawnTurretAngle)];
 
-    const auto dest2 = calcSpriteDrawingRect(pTurretGraphic, screenborder->world2screenX(realX_ + offset.x),
-                                             screenborder->world2screenY(realY_ + offset.y), NUM_ANGLES, 1,
-                                             HAlign::Center, VAlign::Center);
+    const auto dest2 = calcSpriteDrawingRect(pTurretGraphic,
+                                             screenborder->world2screenX(realX_ + offset.x),
+                                             screenborder->world2screenY(realY_ + offset.y),
+                                             NUM_ANGLES,
+                                             1,
+                                             HAlign::Center,
+                                             VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 

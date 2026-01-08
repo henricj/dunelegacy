@@ -83,13 +83,13 @@ void NetworkManager::startServer(bool bLANServer, std::string serverName, std::s
 
     if (bLANServer) {
         if (pLANGameFinderAndAnnouncer_ != nullptr) {
-            pLANGameFinderAndAnnouncer_->startAnnounce(std::move(serverName), host_->address.port, std::move(map_name),
-                                                       numPlayers8, maxPlayers8);
+            pLANGameFinderAndAnnouncer_->startAnnounce(
+                std::move(serverName), host_->address.port, std::move(map_name), numPlayers8, maxPlayers8);
         }
     } else {
         if (pMetaServerClient_ != nullptr) {
-            pMetaServerClient_->startAnnounce(std::move(serverName), host_->address.port, std::move(map_name),
-                                              numPlayers8, maxPlayers8);
+            pMetaServerClient_->startAnnounce(
+                std::move(serverName), host_->address.port, std::move(map_name), numPlayers8, maxPlayers8);
         }
     }
 }
@@ -263,8 +263,8 @@ void NetworkManager::update() {
             case ENET_EVENT_TYPE_CONNECT: {
                 if (bIsServer_) {
                     // Server
-                    debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address),
-                                 peer->address.port);
+                    debugNetwork(
+                        "NetworkManager: %s:%u connected.\n", Address2String(peer->address), peer->address.port);
 
                     auto newPeerData      = std::make_unique<PeerData>(peer, PeerData::PeerState::WaitingForName);
                     newPeerData->timeout_ = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
@@ -293,7 +293,8 @@ void NetworkManager::update() {
                         peerData->peerState_ = PeerData::PeerState::WaitingForOtherPeersToConnect;
                         peerData->timeout_   = dune::dune_clock::time_point{};
                     } else {
-                        debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(),
+                        debugNetwork("NetworkManager: %s:%u connected.\n",
+                                     Address2String(peer->address).c_str(),
                                      peer->address.port);
 
                         const auto* pConnectPeerData = static_cast<PeerData*>(connectPeer_->data);
@@ -342,8 +343,11 @@ void NetworkManager::update() {
 
                 const auto disconnectCause = event.data;
 
-                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address),
-                             peer->address.port, (peerData != nullptr) ? peerData->name_ : "unknown", disconnectCause);
+                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n",
+                             Address2String(peer->address),
+                             peer->address.port,
+                             (peerData != nullptr) ? peerData->name_ : "unknown",
+                             disconnectCause);
 
                 if (peerData != nullptr) {
                     if (std::ranges::find(awaitingConnectionList_, peer) != awaitingConnectionList_.end()) {

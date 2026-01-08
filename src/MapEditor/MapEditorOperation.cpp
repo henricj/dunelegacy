@@ -164,9 +164,13 @@ std::unique_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEdi
 
     for (auto iter = units.begin(); iter != units.end(); ++iter) {
         if (iter->id_ == id_) {
-            auto redoOperation =
-                std::make_unique<MapEditorUnitPlaceOperation>(iter->id_, iter->position_, iter->house_, iter->itemID_,
-                                                              iter->health_, iter->angle_, iter->attack_mode_);
+            auto redoOperation = std::make_unique<MapEditorUnitPlaceOperation>(iter->id_,
+                                                                               iter->position_,
+                                                                               iter->house_,
+                                                                               iter->itemID_,
+                                                                               iter->health_,
+                                                                               iter->angle_,
+                                                                               iter->attack_mode_);
 
             units.erase(iter);
 
@@ -223,8 +227,8 @@ std::unique_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor* pM
 
     pMapEditor->informPlayersChanged();
 
-    return std::make_unique<MapEditorChangePlayer>(playerNum_, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota,
-                                                   oldMaxunit);
+    return std::make_unique<MapEditorChangePlayer>(
+        playerNum_, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota, oldMaxunit);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorChangeChoam::perform(MapEditor* pMapEditor) {

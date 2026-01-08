@@ -387,19 +387,19 @@ void OptionsMenu::saveConfiguration2File() {
 
     myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
     myINIFile.setBoolValue("Game Options", "Concrete Required", settings.gameOptions.concreteRequired);
-    myINIFile.setBoolValue("Game Options", "Structures Degrade On Concrete",
-                           settings.gameOptions.structuresDegradeOnConcrete);
+    myINIFile.setBoolValue(
+        "Game Options", "Structures Degrade On Concrete", settings.gameOptions.structuresDegradeOnConcrete);
     myINIFile.setBoolValue("Game Options", "Fog of War", settings.gameOptions.fogOfWar);
     myINIFile.setBoolValue("Game Options", "Start with Explored Map", settings.gameOptions.startWithExploredMap);
     myINIFile.setBoolValue("Game Options", "Instant Build", settings.gameOptions.instantBuild);
     myINIFile.setBoolValue("Game Options", "Only One Palace", settings.gameOptions.onlyOnePalace);
     myINIFile.setBoolValue("Game Options", "Rocket-Turrets Need Power", settings.gameOptions.rocketTurretsNeedPower);
     myINIFile.setBoolValue("Game Options", "Sandworms Respawn", settings.gameOptions.sandwormsRespawn);
-    myINIFile.setBoolValue("Game Options", "Killed Sandworms Drop Spice",
-                           settings.gameOptions.killedSandwormsDropSpice);
+    myINIFile.setBoolValue(
+        "Game Options", "Killed Sandworms Drop Spice", settings.gameOptions.killedSandwormsDropSpice);
     myINIFile.setBoolValue("Game Options", "Manual Carryall Drops", settings.gameOptions.manualCarryallDrops);
-    myINIFile.setIntValue("Game Options", "Maximum Number of Units Override",
-                          settings.gameOptions.maximumNumberOfUnitsOverride);
+    myINIFile.setIntValue(
+        "Game Options", "Maximum Number of Units Override", settings.gameOptions.maximumNumberOfUnitsOverride);
 
     myINIFile.setIntValue("Network", "ServerPort", settings.network.serverPort);
     myINIFile.setStringValue("Network", "MetaServer", settings.network.metaServer);
@@ -424,13 +424,19 @@ void OptionsMenu::determineAvailableScreenResolutions() {
     // Make it possible to open a window on a RDP session that isn't
     // full screen.
 
-    SDL_DisplayMode displayMode;
-    const int displayIndex    = SDL_GetWindowDisplayIndex(dune::globals::window.get());
-    const int numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
-    for (int i = numDisplayModes - 1; i >= 0; i--) {
-        if (SDL_GetDisplayMode(displayIndex, i, &displayMode) == 0) {
-            addResolution(Coord{displayMode.w, displayMode.h});
+    // SDL3: Display mode enumeration changed
+    // SDL_GetNumDisplayModes/SDL_GetDisplayMode replaced with SDL_GetFullscreenDisplayModes
+    const SDL_DisplayID displayID = SDL_GetDisplayForWindow(dune::globals::window.get());
+
+    int numModes            = 0;
+    SDL_DisplayMode** modes = SDL_GetFullscreenDisplayModes(displayID, &numModes);
+    if (modes) {
+        for (int i = numModes - 1; i >= 0; i--) {
+            if (modes[i]) {
+                addResolution(Coord{modes[i]->w, modes[i]->h});
+            }
         }
+        SDL_free(modes);
     }
 
     if (availScreenRes.empty()) {

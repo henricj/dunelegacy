@@ -100,8 +100,14 @@ struct CaseInsensitiveHash {
 
 using bool_lookup_type = std::unordered_map<std::string_view, bool, CaseInsensitiveHash, CaseInsensitiveEqualTo>;
 
-const bool_lookup_type bool_lookup = {{"true", true},   {"enabled", true},   {"on", true},   {"1", true},
-                                      {"false", false}, {"disabled", false}, {"off", false}, {"0", false}};
+const bool_lookup_type bool_lookup = {{"true", true},
+                                      {"enabled", true},
+                                      {"on", true},
+                                      {"1", true},
+                                      {"false", false},
+                                      {"disabled", false},
+                                      {"off", false},
+                                      {"0", false}};
 } // namespace
 
 bool INIFile::Key::getBoolValue(bool defaultValue) const {
@@ -695,8 +701,10 @@ void INIFile::readfile(SDL_RWops* file) {
                     bSyntaxError = true;
                 } else {
                     // valid section line
-                    lines_.emplace_back(std::in_place_type<Section>, completeLine,
-                                        substring(sectionstart, sectionend - sectionstart), bWhitespace);
+                    lines_.emplace_back(std::in_place_type<Section>,
+                                        completeLine,
+                                        substring(sectionstart, sectionend - sectionstart),
+                                        bWhitespace);
                 }
             } else {
 
@@ -724,7 +732,8 @@ void INIFile::readfile(SDL_RWops* file) {
                                     bSyntaxError = true;
                                 } else {
                                     // valid key/value line
-                                    lines_.emplace_back(std::in_place_type<Key>, completeLine,
+                                    lines_.emplace_back(std::in_place_type<Key>,
+                                                        completeLine,
                                                         substring(keystart, keyend - keystart),
                                                         substring(valuestart + 1, valueend - valuestart - 1));
                                 }
@@ -736,7 +745,8 @@ void INIFile::readfile(SDL_RWops* file) {
                                     bSyntaxError = true;
                                 } else {
                                     // valid key/value line
-                                    lines_.emplace_back(std::in_place_type<Key>, completeLine,
+                                    lines_.emplace_back(std::in_place_type<Key>,
+                                                        completeLine,
                                                         substring(keystart, keyend - keystart),
                                                         substring(valuestart, valueend - valuestart));
                                 }
@@ -798,8 +808,9 @@ INIFile::getSectionInternal(std::string_view sectionname) const {
     auto end = lines_.end();
 
     if (begin != lines_.end()) {
-        end = std::find_if(sectionname.empty() ? begin : std::next(begin), lines_.end(),
-                           [](const auto& v) { return std::holds_alternative<Section>(v); });
+        end = std::find_if(sectionname.empty() ? begin : std::next(begin), lines_.end(), [](const auto& v) {
+            return std::holds_alternative<Section>(v);
+        });
     }
 
     return {begin, end};
@@ -811,8 +822,9 @@ std::ranges::subrange<INIFile::lines_type::iterator> INIFile::getSectionInternal
     auto end = lines_.end();
 
     if (begin != lines_.end()) {
-        end = std::find_if(sectionname.empty() ? begin : std::next(begin), lines_.end(),
-                           [](const auto& v) { return std::holds_alternative<Section>(v); });
+        end = std::find_if(sectionname.empty() ? begin : std::next(begin), lines_.end(), [](const auto& v) {
+            return std::holds_alternative<Section>(v);
+        });
     }
 
     return {begin, end};
@@ -822,8 +834,9 @@ std::ranges::subrange<INIFile::lines_type::iterator> INIFile::getSectionOrCreate
     auto section = findSectionInternal(sectionname);
 
     if (section != lines_.end()) {
-        auto end = std::find_if(sectionname.empty() ? section : std::next(section), lines_.end(),
-                                [](const auto& v) { return std::holds_alternative<Section>(v); });
+        auto end = std::find_if(sectionname.empty() ? section : std::next(section), lines_.end(), [](const auto& v) {
+            return std::holds_alternative<Section>(v);
+        });
 
         return {section, end};
     }

@@ -22,7 +22,7 @@
 
 #include "misc/dune_clock.h"
 
-#include <SDL2/SDL_events.h>
+#include <misc/dune_sdl.h>
 
 #include <functional>
 

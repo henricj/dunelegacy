@@ -28,12 +28,6 @@
 
 #include <utility>
 
-namespace {
-
-inline constexpr auto PAKFILE_RWOP_TYPE = 0x9a5f17ecU;
-
-}
-
 BasePakfile::BasePakfile(std::filesystem::path pakfilename) : filename_{std::move(pakfilename)} { }
 
 BasePakfile::~BasePakfile() = default;
@@ -46,24 +40,32 @@ BasePakfile::~BasePakfile() = default;
 */
 const std::string& BasePakfile::getFilename(unsigned int index) const {
     if (index >= fileEntries.size()) {
-        THROW(std::invalid_argument, "Pakfile::getFilename({}): This Pakfile has only {} entries!", index,
+        THROW(std::invalid_argument,
+              "Pakfile::getFilename({}): This Pakfile has only {} entries!",
+              index,
               fileEntries.size());
     }
 
     return fileEntries[index].filename;
 }
 
-size_t BasePakfile::WriteFile([[maybe_unused]] SDL_RWops* pRWop, [[maybe_unused]] const void* ptr,
-                              [[maybe_unused]] size_t size, [[maybe_unused]] size_t n) {
+// SDL3: WriteFile callback - pakfiles are read-only so this just reports failure
+size_t BasePakfile::WriteFile(void* userdata, const void* ptr, size_t size, SDL_IOStatus* status) {
+    (void)userdata;
+    (void)ptr;
+    (void)size;
+    if (status)
+        *status = SDL_IO_STATUS_ERROR;
     return 0;
 }
 
-int64_t BasePakfile::SizeFile(SDL_RWops* pRWop) {
-    if (pRWop == nullptr || pRWop->hidden.unknown.data1 == nullptr || pRWop->type != PAKFILE_RWOP_TYPE) {
+// SDL3: SizeFile callback - returns size of the virtual file
+Sint64 BasePakfile::SizeFile(void* userdata) {
+    if (userdata == nullptr) {
         return -1;
     }
 
-    const auto* const pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    const auto* const pRWopData = static_cast<RWopData*>(userdata);
     const auto* const pPakfile  = pRWopData->curPakfile;
     if (pPakfile == nullptr) {
         return -1;
@@ -77,12 +79,13 @@ int64_t BasePakfile::SizeFile(SDL_RWops* pRWop) {
          - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1;
 }
 
-int64_t BasePakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
-    if (pRWop == nullptr || pRWop->hidden.unknown.data1 == nullptr || pRWop->type != PAKFILE_RWOP_TYPE) {
+// SDL3: SeekFile callback
+Sint64 BasePakfile::SeekFile(void* userdata, Sint64 offset, SDL_IOWhence whence) {
+    if (userdata == nullptr) {
         return -1;
     }
 
-    auto* const pRWopData      = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    auto* const pRWopData      = static_cast<RWopData*>(userdata);
     const auto* const pPakfile = pRWopData->curPakfile;
     if (pPakfile == nullptr) {
         return -1;
@@ -95,15 +98,15 @@ int64_t BasePakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
     int64_t newOffset = 0;
 
     switch (whence) {
-        case SEEK_SET: {
+        case SDL_IO_SEEK_SET: {
             newOffset = offset;
         } break;
 
-        case SEEK_CUR: {
+        case SDL_IO_SEEK_CUR: {
             newOffset = pRWopData->fileOffset + offset;
         } break;
 
-        case SEEK_END: {
+        case SDL_IO_SEEK_END: {
             newOffset = pPakfile->fileEntries[pRWopData->fileIndex].endOffset
                       - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1 + offset;
         } break;
@@ -122,16 +125,15 @@ int64_t BasePakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
     return newOffset;
 }
 
-int BasePakfile::CloseFile(SDL_RWops* pRWop) {
-    if (pRWop == nullptr || pRWop->hidden.unknown.data1 == nullptr || pRWop->type != PAKFILE_RWOP_TYPE) {
-        return -1;
+// SDL3: CloseFile callback
+bool BasePakfile::CloseFile(void* userdata) {
+    if (userdata == nullptr) {
+        return false;
     }
 
-    const auto* const pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    const auto* const pRWopData = static_cast<RWopData*>(userdata);
     delete pRWopData;
-    pRWop->hidden.unknown.data1 = nullptr;
-    SDL_FreeRW(pRWop);
-    return 0;
+    return true;
 }
 
 void BasePakfile::readIndex() {
@@ -170,9 +172,9 @@ void BasePakfile::readIndex() {
         fileEntries.push_back(newEntry);
     }
 
-    const auto filesize = SDL_RWsize(fPakFile.get());
+    const auto filesize = SDL_GetIOSize(fPakFile.get());
     if (filesize < 0) {
-        THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWsize() failed!");
+        THROW(std::runtime_error, "Pakfile::readIndex(): SDL_GetIOSize() failed!");
     }
 
     fileEntries.back().endOffset = static_cast<uint32_t>(filesize) - 1u;
@@ -187,8 +189,8 @@ void BasePakfile::readIndex() {
 */
 Pakfile::Pakfile(const std::filesystem::path& pakfilename) : BasePakfile{pakfilename} {
 
-    // Open for reading
-    sdl2::RWops_ptr file{SDL_RWFromFile(filename_.u8string(), "rb")};
+    // Open for reading - SDL3: use SDL_IOFromFile
+    sdl2::IOStream_ptr file{SDL_IOFromFile(filename_.string().c_str(), "rb")};
 
     if (file == nullptr) {
         THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open {}!", pakfilename.string());
@@ -208,13 +210,14 @@ Pakfile::~Pakfile() = default;
 /// Opens a file in this PAK-File.
 /**
     This method opens the file specified by filename. It is only allowed if the Pakfile is opened for reading.
-    The returned SDL_RWops-structure can be used readonly with SDL_RWread, SDL_RWsize, SDL_RWseek and SDL_RWclose. No
-   writing is supported.<br> NOTICE: The returned SDL_RWops-Structure is only valid as long as this Pakfile-Object
-   exists. It gets invalid as soon as Pakfile:~Pakfile() is executed.
+    The returned SDL_IOStream-structure can be used readonly with SDL_ReadIO, SDL_GetIOSize, SDL_SeekIO and SDL_CloseIO.
+    No writing is supported.<br>
+    NOTICE: The returned SDL_IOStream-Structure is only valid as long as this Pakfile-Object exists. It gets invalid
+    as soon as Pakfile:~Pakfile() is executed.
    \param  filename    The name of this file
-   \return SDL_RWops for this file
+   \return SDL_IOStream for this file
 */
-sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) const {
+sdl2::IOStream_ptr Pakfile::openFile(const std::string& filename) const {
     // find file
     for (auto i = 0U; i < fileEntries.size(); ++i) {
         if (filename == fileEntries[i].filename)
@@ -224,33 +227,32 @@ sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) const {
     THROW(io_error, "Pakfile::openFile(): Cannot find file with name '{}' in this PAK file!", filename);
 }
 
-sdl2::RWops_ptr Pakfile::openFile(int index) const {
+sdl2::IOStream_ptr Pakfile::openFile(int index) const {
     if (index < 0 || std::cmp_greater_equal(index, fileEntries.size()))
         THROW(io_error, "Pakfile::openFile(): There is not file at index '{}' in this PAK file!", index);
 
-    // alloc RWop
-
-    sdl2::RWops_ptr pRWop{SDL_AllocRW()};
-
-    if (!pRWop) {
-        THROW(io_error, "Pakfile::openFile(): Cannot open file at index '{}' in this PAK file!", index);
-    }
-
-    // alloc RWopData
+    // alloc RWopData - this will be passed to the callbacks as userdata
     auto pRWopData = std::make_unique<RWopData>();
 
-    pRWop->type           = PAKFILE_RWOP_TYPE;
     pRWopData->curPakfile = this;
     pRWopData->fileOffset = 0;
     pRWopData->fileIndex  = index;
 
-    pRWop->read  = ReadFile;
-    pRWop->write = WriteFile;
-    pRWop->size  = SizeFile;
-    pRWop->seek  = SeekFile;
-    pRWop->close = CloseFile;
+    // SDL3: Create SDL_IOStreamInterface with our callbacks
+    SDL_IOStreamInterface iface{};
+    iface.version = sizeof(SDL_IOStreamInterface);
+    iface.size    = SizeFile;
+    iface.seek    = SeekFile;
+    iface.read    = ReadFile;
+    iface.write   = WriteFile;
+    iface.close   = CloseFile;
 
-    pRWop->hidden.unknown.data1 = static_cast<void*>(pRWopData.release());
+    // SDL3: SDL_OpenIO creates an SDL_IOStream from an interface
+    sdl2::IOStream_ptr pRWop{SDL_OpenIO(&iface, pRWopData.release())};
+
+    if (!pRWop) {
+        THROW(io_error, "Pakfile::openFile(): Cannot open file at index '{}' in this PAK file!", index);
+    }
 
     return pRWop;
 }
@@ -259,49 +261,64 @@ bool BasePakfile::exists(const std::string& filename) const {
     return std::ranges::any_of(fileEntries, [&](auto& fe) { return filename == fe.filename; });
 }
 
-size_t Pakfile::ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n) {
-    if (pRWop == nullptr || ptr == nullptr || pRWop->hidden.unknown.data1 == nullptr
-        || pRWop->type != PAKFILE_RWOP_TYPE) {
+// SDL3: ReadFile callback
+size_t Pakfile::ReadFile(void* userdata, void* ptr, size_t size, SDL_IOStatus* status) {
+    if (userdata == nullptr || ptr == nullptr) {
+        if (status)
+            *status = SDL_IO_STATUS_ERROR;
         return 0;
     }
 
-    auto bytes2read = size * n;
-
-    auto* const pRWopData      = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    auto* const pRWopData      = static_cast<RWopData*>(userdata);
     const auto* const pPakfile = static_cast<const Pakfile*>(pRWopData->curPakfile);
     if (pPakfile == nullptr) {
+        if (status)
+            *status = SDL_IO_STATUS_ERROR;
         return 0;
     }
 
     if (pRWopData->fileIndex >= pPakfile->fileEntries.size()) {
+        if (status)
+            *status = SDL_IO_STATUS_ERROR;
         return 0;
     }
+
+    auto bytes2read = size;
 
     const auto readstartoffset = pPakfile->fileEntries[pRWopData->fileIndex].startOffset + pRWopData->fileOffset;
 
     if (readstartoffset > pPakfile->fileEntries[pRWopData->fileIndex].endOffset) {
+        if (status)
+            *status = SDL_IO_STATUS_EOF;
         return 0;
     }
 
-    if (readstartoffset + bytes2read > pPakfile->fileEntries[pRWopData->fileIndex].endOffset) {
+    if (readstartoffset + bytes2read > pPakfile->fileEntries[pRWopData->fileIndex].endOffset + 1) {
         bytes2read = pPakfile->fileEntries[pRWopData->fileIndex].endOffset + 1 - readstartoffset;
-        // round to last full block
-        bytes2read = (bytes2read / size) * size;
         if (bytes2read == 0) {
+            if (status)
+                *status = SDL_IO_STATUS_EOF;
             return 0;
         }
     }
 
-    if (SDL_RWseek(pPakfile->fPakFile.get(), static_cast<Sint64>(readstartoffset), SEEK_SET) < 0) {
+    if (SDL_SeekIO(pPakfile->fPakFile.get(), static_cast<Sint64>(readstartoffset), SDL_IO_SEEK_SET) < 0) {
+        if (status)
+            *status = SDL_IO_STATUS_ERROR;
         return 0;
     }
 
-    if (SDL_RWread(pPakfile->fPakFile.get(), ptr, bytes2read, 1) != 1) {
+    const auto bytesRead = SDL_ReadIO(pPakfile->fPakFile.get(), ptr, bytes2read);
+    if (bytesRead == 0) {
+        if (status)
+            *status = SDL_IO_STATUS_ERROR;
         return 0;
     }
 
-    pRWopData->fileOffset += bytes2read;
-    return bytes2read / size;
+    pRWopData->fileOffset += bytesRead;
+    if (status)
+        *status = SDL_IO_STATUS_READY;
+    return bytesRead;
 }
 
 /// Constructor for OutPakfile
@@ -312,8 +329,8 @@ size_t Pakfile::ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n) {
 */
 OutPakfile::OutPakfile(const std::filesystem::path& pakfilename) : BasePakfile{pakfilename} {
 
-    // Open for writing
-    fPakFile = sdl2::RWops_ptr{SDL_RWFromFile(filename_.u8string().c_str(), "wb")};
+    // Open for writing - SDL3: use SDL_IOFromFile
+    fPakFile = sdl2::IOStream_ptr{SDL_IOFromFile(filename_.string().c_str(), "wb")};
 
     if (!fPakFile) {
         THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open {}!", pakfilename.string());
@@ -336,15 +353,15 @@ OutPakfile::~OutPakfile() {
     // write out header
     for (const auto& fileEntry : fileEntries) {
         const auto startoffset = SDL_SwapLE32(gsl::narrow<uint32_t>(fileEntry.startOffset + headersize));
-        SDL_RWwrite(fPakFile.get(), &startoffset, sizeof(uint32_t), 1);
-        SDL_RWwrite(fPakFile.get(), fileEntry.filename.data(), fileEntry.filename.length() + 1, 1);
+        SDL_WriteIO(fPakFile.get(), &startoffset, sizeof(uint32_t));
+        SDL_WriteIO(fPakFile.get(), fileEntry.filename.data(), fileEntry.filename.length() + 1);
     }
 
     static constexpr uint32_t tmp = 0;
-    SDL_RWwrite(fPakFile.get(), &tmp, sizeof(uint32_t), 1);
+    SDL_WriteIO(fPakFile.get(), &tmp, sizeof(uint32_t));
 
     // write out data
-    SDL_RWwrite(fPakFile.get(), writeOutData, numWriteOutData, 1);
+    SDL_WriteIO(fPakFile.get(), writeOutData, numWriteOutData);
 
     if (writeOutData != nullptr) {
         free(writeOutData);
@@ -355,17 +372,17 @@ OutPakfile::~OutPakfile() {
 
 /// Adds a file to this PAK-File
 /**
-    This methods adds the SDL_RWop File to this PAK-File. The used name is specified by filename. If the Pakfile
+    This methods adds the SDL_IOStream File to this PAK-File. The used name is specified by filename. If the Pakfile
     is read-only this method has no effect.
-    \param  rwop        Data to add (the SDL_RWop can be read-only but must support seeking)
+    \param  io          Data to add (the SDL_IOStream can be read-only but must support seeking)
     \param  filename    This is the filename the data is added with
 */
-void OutPakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
-    if (rwop == nullptr) {
-        THROW(std::invalid_argument, "Pakfile::addFile(): rwop==nullptr is not allowed!");
+void OutPakfile::addFile(SDL_IOStream* io, const std::string& filename) {
+    if (io == nullptr) {
+        THROW(std::invalid_argument, "Pakfile::addFile(): io==nullptr is not allowed!");
     }
 
-    const auto filelength1 = SDL_RWsize(rwop);
+    const auto filelength1 = SDL_GetIOSize(io);
     if (filelength1 < 0) {
         THROW(std::runtime_error, "Pakfile::addFile(): unable to get file size!");
     }
@@ -378,7 +395,7 @@ void OutPakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     }
     writeOutData = extendedBuffer;
 
-    if (SDL_RWread(rwop, writeOutData + numWriteOutData, 1, filelength) != filelength) {
+    if (SDL_ReadIO(io, writeOutData + numWriteOutData, filelength) != filelength) {
         // revert the buffer to the original size
         char* shrinkedBuffer = nullptr;
         if ((shrinkedBuffer = static_cast<char*>(realloc(writeOutData, numWriteOutData))) == nullptr) {
@@ -386,7 +403,7 @@ void OutPakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
             THROW(std::runtime_error, "Pakfile::addFile(): realloc failed!");
         }
         writeOutData = shrinkedBuffer;
-        THROW(std::runtime_error, "Pakfile::addFile(): SDL_RWread failed!");
+        THROW(std::runtime_error, "Pakfile::addFile(): SDL_ReadIO failed!");
     }
 
     PakFileEntry newPakFileEntry;
@@ -398,5 +415,5 @@ void OutPakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
 
     numWriteOutData += filelength;
 
-    SDL_RWseek(rwop, 0, SEEK_SET);
+    SDL_SeekIO(io, 0, SDL_IO_SEEK_SET);
 }

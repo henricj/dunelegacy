@@ -91,8 +91,8 @@ bool Carryall::update(const GameContext& context) {
     if (pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX_, realY_, pTarget->getRealX(), pTarget->getRealY());
     } else if ((pTarget != nullptr) || hasCargo()) {
-        dist = distanceFrom(realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2,
-                            destination_.y * TILESIZE + TILESIZE / 2);
+        dist = distanceFrom(
+            realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2);
     }
 
     if (dist >= 0) {
@@ -227,8 +227,8 @@ void Carryall::deployUnit(const GameContext& context, uint32_t unitID) {
     if (auto* const tile = context.map.tryGetTile(location_.x, location_.y))
         deployUnit(context, tile, pUnit);
     else
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location {}, {}", location_.x,
-                        location_.y);
+        sdl2::log_error(
+            SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location {}, {}", location_.x, location_.y);
 
     post_deployUnits();
 }

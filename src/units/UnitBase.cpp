@@ -416,8 +416,11 @@ void UnitBase::drawOtherPlayerSelectionBox() {
         default: selectionBox = gfx->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2); break;
     }
 
-    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX_),
-                                      screenborder->world2screenY(realY_), HAlign::Center, VAlign::Center);
+    const auto dest = calcDrawingRect(selectionBox,
+                                      screenborder->world2screenX(realX_),
+                                      screenborder->world2screenY(realY_),
+                                      HAlign::Center,
+                                      VAlign::Center);
     Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
 }
 
@@ -838,8 +841,11 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
     } else {
         // move this unit
         game.getCommandManager().addCommand(Command{dune::globals::pLocalPlayer->getPlayerID(),
-                                                    CMDTYPE::CMD_UNIT_MOVE2POS, objectID_, static_cast<uint32_t>(xPos),
-                                                    static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)});
+                                                    CMDTYPE::CMD_UNIT_MOVE2POS,
+                                                    objectID_,
+                                                    static_cast<uint32_t>(xPos),
+                                                    static_cast<uint32_t>(yPos),
+                                                    static_cast<uint32_t>(true)});
     }
 }
 
@@ -857,13 +863,17 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
             // attack unit/structure or move to structure
 
             game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                        CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID_,
+                                                        CMDTYPE::CMD_UNIT_ATTACKOBJECT,
+                                                        objectID_,
                                                         tempTarget->getObjectID()));
         } else {
             // attack pos
-            game.getCommandManager().addCommand(
-                Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS, objectID_,
-                        static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
+            game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
+                                                        CMDTYPE::CMD_UNIT_ATTACKPOS,
+                                                        objectID_,
+                                                        static_cast<uint32_t>(xPos),
+                                                        static_cast<uint32_t>(yPos),
+                                                        static_cast<uint32_t>(true)));
         }
     }
 }
@@ -874,15 +884,19 @@ void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
 
     if (context.map.tileExists(xPos, yPos)) {
         // move to pos
-        context.game.getCommandManager().addCommand(
-            Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID_,
-                    static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
+        context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
+                                                            CMDTYPE::CMD_UNIT_MOVE2POS,
+                                                            objectID_,
+                                                            static_cast<uint32_t>(xPos),
+                                                            static_cast<uint32_t>(yPos),
+                                                            static_cast<uint32_t>(true)));
     }
 }
 
 void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode) {
     context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                        CMDTYPE::CMD_UNIT_SETMODE, objectID_,
+                                                        CMDTYPE::CMD_UNIT_SETMODE,
+                                                        objectID_,
                                                         static_cast<uint32_t>(newAttackMode)));
 }
 
@@ -896,8 +910,10 @@ void UnitBase::handleRequestCarryallDropClick(const GameContext& context, int xP
 
     if (context.map.tileExists(xPos, yPos)) {
         context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                            CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID_,
-                                                            static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
+                                                            CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP,
+                                                            objectID_,
+                                                            static_cast<uint32_t>(xPos),
+                                                            static_cast<uint32_t>(yPos)));
     }
 }
 
@@ -1529,8 +1545,8 @@ void UnitBase::drawSmoke(float x, float y) const {
     if (frame == 3)
         frame = 1;
 
-    const auto* const pSmokeTex = dune::globals::pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(),
-                                                                              dune::globals::currentZoomlevel);
+    const auto* const pSmokeTex = dune::globals::pGFXManager->getZoomedObjPic(
+        ObjPic_Smoke, getOwner()->getHouseID(), dune::globals::currentZoomlevel);
 
     const auto dest   = calcSpriteDrawingRect(pSmokeTex, x, y, 3, 1, HAlign::Center, VAlign::Bottom);
     const auto source = calcSpriteSourceRect(pSmokeTex, frame, 3);

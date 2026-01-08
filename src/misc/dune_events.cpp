@@ -27,8 +27,6 @@
 #    include <Windows.h>
 
 #    include <WinUser.h>
-
-#    include <SDL2/SDL_syswm.h>
 #endif
 
 namespace dune {
@@ -37,7 +35,7 @@ bool Dune_WaitEvent(SDL_Event* event, uint32_t timeout) {
     assert(event);
 
     if (timeout < 1)
-        return 0 != SDL_PollEvent(event);
+        return SDL_PollEvent(event);
 
 #if defined(_WIN32)
     // The API that SDL_WaitEventTimeout() uses has a minimum wait time of 10ms.
@@ -51,7 +49,7 @@ bool Dune_WaitEvent(SDL_Event* event, uint32_t timeout) {
     if (wStatus != WAIT_OBJECT_0)
         return false;
 
-    return 0 != SDL_PollEvent(event);
+    return SDL_PollEvent(event);
 #else
     return SDL_WaitEventTimeout(event, timeout);
 #endif
@@ -61,35 +59,20 @@ bool Dune_WaitEvent(SDL_Event* event, uint32_t timeout) {
 namespace {
 inline constexpr auto local_win32_WM_DPICHANGED = 0x02E0;
 
-extern "C" int dune_watch_events([[maybe_unused]] void* userdata, SDL_Event* event) {
+// SDL3: Event filter callback returns bool instead of int
+extern "C" bool dune_watch_events([[maybe_unused]] void* userdata, SDL_Event* event) {
     switch (event->type) {
-        case SDL_SYSWMEVENT: {
-            assert(event && event->syswm.msg);
-
-            const auto& win_msg = event->syswm.msg->msg.win;
-
-            switch (win_msg.msg) {
-                case local_win32_WM_DPICHANGED: {
-                    const auto dpi   = HIWORD(event->syswm.msg->msg.win.wParam);
-                    const auto ratio = static_cast<float>(dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
-
-                    GUIStyle::getInstance().setDisplayDpi(ratio);
-
-                    const RECT* const prcNewWindow =
-                        reinterpret_cast<RECT*>(event->syswm.msg->msg.win.lParam); // NOLINT(performance-no-int-to-ptr)
-
-                    auto* const window = dune::globals::window.get();
-
-                    SDL_SetWindowPosition(window, prcNewWindow->left, prcNewWindow->top);
-                    SDL_SetWindowSize(window, prcNewWindow->right - prcNewWindow->left,
-                                      prcNewWindow->bottom - prcNewWindow->top);
-
-                } break;
+        case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED: {
+            // SDL3 provides display scale change events directly
+            auto* const window = dune::globals::window.get();
+            if (window) {
+                const auto scale = SDL_GetWindowDisplayScale(window);
+                GUIStyle::getInstance().setDisplayDpi(scale);
             }
         } break;
     }
 
-    return 0;
+    return true; // SDL3: return true to allow event, false to drop it
 }
 
 } // namespace
@@ -99,7 +82,7 @@ DuneEventWatcher::DuneEventWatcher() {
 }
 
 DuneEventWatcher::~DuneEventWatcher() {
-    SDL_DelEventWatch(dune_watch_events, nullptr);
+    SDL_RemoveEventWatch(dune_watch_events, nullptr);
 }
 
 #else  // defined(_WIN32)

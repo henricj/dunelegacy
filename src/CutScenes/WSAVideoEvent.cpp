@@ -24,9 +24,11 @@
 WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical)
     : pWsafile(pWsafile), bCenterVertical(bCenterVertical) {
 
-    pStreamingTexture =
-        sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING,
-                                            2 * pWsafile->getWidth(), 2 * pWsafile->getHeight())};
+    pStreamingTexture = sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(),
+                                                            SCREEN_FORMAT,
+                                                            SDL_TEXTUREACCESS_STREAMING,
+                                                            2 * pWsafile->getWidth(),
+                                                            2 * pWsafile->getHeight())};
 }
 
 WSAVideoEvent::~WSAVideoEvent() = default;

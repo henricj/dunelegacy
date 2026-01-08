@@ -270,9 +270,13 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         return;
     }
 
-    const auto dest =
-        calcSpriteDrawingRect(graphic_[zoom], screenborder->world2screenX(realX_), screenborder->world2screenY(realY_),
-                              numFrames_, 1, HAlign::Center, VAlign::Center);
+    const auto dest = calcSpriteDrawingRect(graphic_[zoom],
+                                            screenborder->world2screenX(realX_),
+                                            screenborder->world2screenY(realY_),
+                                            numFrames_,
+                                            1,
+                                            HAlign::Center,
+                                            VAlign::Center);
 
     if (bulletID_ == Bullet_Sonic) {
         static constexpr uint8_t shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
@@ -287,45 +291,49 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         const auto shimmerOffsetIndex = ((cycleCount + getBulletID()) % 24) / 3;
         sx += shimmerOffset[shimmerOffsetIndex % 8] * 2;
 
-        uint32_t format = 0;
-        int access = 0, w = 0, h = 0;
-        SDL_QueryTexture(shimmerTex, &format, &access, &w, &h);
+        // SDL3: Use SDL_GetTextureSize instead of SDL_QueryTexture
+        float fw = 0, fh = 0;
+        SDL_GetTextureSize(shimmerTex, &fw, &fh);
+        int w = static_cast<int>(fw);
+        int h = static_cast<int>(fh);
 
         float scaleX = NAN, scaleY = NAN;
-        SDL_RenderGetScale(renderer, &scaleX, &scaleY);
+        SDL_GetRenderScale(renderer, &scaleX, &scaleY);
 
         // Even after this scale adjustment, there is an unknown offset between the effective coordinates
         // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
         // Note also that if we are partly off the screen, we will get the mask's black appearing in the
         // transparent areas of surface_copy.
-        const SDL_Rect scaled_source{static_cast<int>(lround(sx * scaleX)), static_cast<int>(lround(sy * scaleY)),
+        const SDL_Rect scaled_source{static_cast<int>(lround(sx * scaleX)),
+                                     static_cast<int>(lround(sy * scaleY)),
                                      static_cast<int>(lround(static_cast<float>(w) * scaleX)),
                                      static_cast<int>(lround(static_cast<float>(h) * scaleY))};
 
-        const sdl2::surface_ptr screen_copy{
-            SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
+        const sdl2::surface_ptr screen_copy{SDL_CreateSurface(scaled_source.w, scaled_source.h, SCREEN_FORMAT)};
 
         { // Scope
             const sdl2::surface_lock lock{screen_copy.get()};
 
-            if (SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
-                                     lock.pitch())) {
+            auto* renderSurface = SDL_RenderReadPixels(renderer, &scaled_source);
+            if (renderSurface) {
+                SDL_BlitSurface(renderSurface, nullptr, screen_copy.get(), nullptr);
+                SDL_DestroySurface(renderSurface);
+            } else {
                 sdl2::log_error("Bullet render pixels failed: {}!", SDL_GetError());
             }
         }
 
         // If we are close
-        const sdl2::surface_ptr shimmer_work{
-            SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
+        const sdl2::surface_ptr shimmer_work{SDL_CreateSurface(w, h, SCREEN_FORMAT)};
 
-        SDL_SetSurfaceBlendMode(shimmer_work.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
+        SDL_SetSurfaceBlendMode(shimmer_work.get(), SDL_BLENDMODE_BLEND);
 
-        SDL_SetSurfaceBlendMode(shimmerMaskSurface, SDL_BlendMode::SDL_BLENDMODE_NONE);
-        if (0 != SDL_BlitSurface(shimmerMaskSurface, nullptr, shimmer_work.get(), nullptr))
+        SDL_SetSurfaceBlendMode(shimmerMaskSurface, SDL_BLENDMODE_NONE);
+        if (!SDL_BlitSurface(shimmerMaskSurface, nullptr, shimmer_work.get(), nullptr))
             sdl2::log_error("Bullet draw failed to copy surface: {}!", SDL_GetError());
-        if (0 != SDL_SetSurfaceBlendMode(screen_copy.get(), SDL_BlendMode::SDL_BLENDMODE_ADD))
+        if (!SDL_SetSurfaceBlendMode(screen_copy.get(), SDL_BLENDMODE_ADD))
             sdl2::log_error("Bullet draw failed to set surface blend mode: {}!", SDL_GetError());
-        if (0 != SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr))
+        if (!SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr))
             sdl2::log_error("Bullet draw failed copy surface: {}!", SDL_GetError());
 
         { // Scope
@@ -517,8 +525,8 @@ void Bullet::destroy(const GameContext& context) const {
                         position.x = lround(realX_) + (i - 2) * TILESIZE;
                         position.y = lround(realY_) + (j - 2) * TILESIZE;
 
-                        map.damage(context, shooterID_, owner_, position, bulletID_, damage_, damageRadius_,
-                                   airAttack_);
+                        map.damage(
+                            context, shooterID_, owner_, position, bulletID_, damage_, damageRadius_, airAttack_);
 
                         uint32_t explosionID = game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
                         game.addExplosion(explosionID, position, houseID);

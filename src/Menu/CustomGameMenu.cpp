@@ -166,8 +166,8 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
             auto savegamedata = readCompleteFile(filename);
 
             auto servername = dune::globals::settings.general.playerName + "'s Game";
-            GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata),
-                                              std::move(servername));
+            GameInitSettings gameInitSettings(
+                getBasename(filename, true), std::move(savegamedata), std::move(servername));
 
             int ret =
                 CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu([&](const auto& e) { doInput(e); });
@@ -193,13 +193,17 @@ void CustomGameMenu::onNext() {
 
     GameInitSettings gameInitSettings;
     if (bMultiplayer) {
-        auto servername = dune::globals::settings.general.playerName + "'s Game";
-        gameInitSettings =
-            GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), std::move(servername),
-                             multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
+        auto servername  = dune::globals::settings.general.playerName + "'s Game";
+        gameInitSettings = GameInitSettings(getBasename(mapFilename, true),
+                                            readCompleteFile(mapFilename),
+                                            std::move(servername),
+                                            multiplePlayersPerHouseCheckbox.isChecked(),
+                                            currentGameOptions);
     } else {
-        gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename),
-                                            multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
+        gameInitSettings = GameInitSettings(getBasename(mapFilename, true),
+                                            readCompleteFile(mapFilename),
+                                            multiplePlayersPerHouseCheckbox.isChecked(),
+                                            currentGameOptions);
     }
 
     int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu([&](const auto& e) { doInput(e); });

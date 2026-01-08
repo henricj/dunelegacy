@@ -59,7 +59,9 @@ sdl2::surface_ptr Font::createMultilineTextSurface(std::string_view text, uint32
     }
 
     SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_BLEND);
-    SDL_FillRect(pic.get(), nullptr, SDL_MapRGBA(pic->format, 0, 0, 0, 0));
+    // SDL3: SDL_MapRGBA now takes SDL_PixelFormatDetails* and SDL_Palette*
+    const auto* formatDetails = SDL_GetPixelFormatDetails(pic->format);
+    SDL_FillSurfaceRect(pic.get(), nullptr, SDL_MapRGBA(formatDetails, nullptr, 0, 0, 0, 0));
 
     auto currentLineNum = 0;
     for (const auto& textLine : textLines) {

@@ -102,7 +102,9 @@ void Command::executeCommand(const GameContext& context) const {
             if (unit == nullptr) {
                 return;
             }
-            unit->doMove2Pos(context, static_cast<int>(parameter[1]), static_cast<int>(parameter[2]),
+            unit->doMove2Pos(context,
+                             static_cast<int>(parameter[1]),
+                             static_cast<int>(parameter[2]),
                              static_cast<bool>(parameter[3]));
         } break;
 
@@ -125,7 +127,9 @@ void Command::executeCommand(const GameContext& context) const {
             if (unit == nullptr) {
                 return;
             }
-            unit->doAttackPos(context, static_cast<int>(parameter[1]), static_cast<int>(parameter[2]),
+            unit->doAttackPos(context,
+                              static_cast<int>(parameter[1]),
+                              static_cast<int>(parameter[2]),
                               static_cast<bool>(parameter[3]));
         } break;
 
@@ -350,7 +354,9 @@ void Command::executeCommand(const GameContext& context) const {
             if (currentSeed[0] != parameter[0]) {
                 sdl2::log_info("Warning: Game is asynchronous in game cycle {}! Saved seed and current seed do not "
                                "match: {} != {}",
-                               game.getGameCycleCount(), parameter[0], currentSeed[0]);
+                               game.getGameCycleCount(),
+                               parameter[0],
+                               currentSeed[0]);
 #ifdef TEST_SYNC
                 context.game.saveGame("test.sav");
                 exit(0);

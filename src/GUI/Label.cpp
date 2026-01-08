@@ -103,8 +103,8 @@ void Label::updateTextures() {
             return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x) - 4.f;
         });
 
-    pTexture_ = gui.createLabel(renderer, size.x, size.y, textLines, fontSize_, alignment_, text_color_,
-                                text_shadow_color_, background_color_);
+    pTexture_ = gui.createLabel(
+        renderer, size.x, size.y, textLines, fontSize_, alignment_, text_color_, text_shadow_color_, background_color_);
 }
 
 void Label::invalidateTextures() {

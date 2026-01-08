@@ -211,7 +211,7 @@ void MultiPlayerMenu::onJoin() {
 
 void MultiPlayerMenu::onQuit() {
     SDL_Event quitEvent;
-    quitEvent.type = SDL_QUIT;
+    quitEvent.type = SDL_EVENT_QUIT;
     SDL_PushEvent(&quitEvent);
 }
 
@@ -327,9 +327,13 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
             ++oldListIndex;
         }
 
-        auto description = fmt::format("{} ({} : {}) - {} ({}/{})", gameServerInfo.serverName,
-                                       Address2String(gameServerInfo.serverAddress), gameServerInfo.serverAddress.port,
-                                       gameServerInfo.mapName, gameServerInfo.numPlayers, gameServerInfo.maxPlayers);
+        auto description = fmt::format("{} ({} : {}) - {} ({}/{})",
+                                       gameServerInfo.serverName,
+                                       Address2String(gameServerInfo.serverAddress),
+                                       gameServerInfo.serverAddress.port,
+                                       gameServerInfo.mapName,
+                                       gameServerInfo.numPlayers,
+                                       gameServerInfo.maxPlayers);
 
         if (oldListIndex >= InternetGameList.size()) {
             // not found => add at the end

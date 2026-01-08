@@ -51,12 +51,31 @@ std::vector<char> FontManager::loadImage(std::filesystem::path font_path) {
     if (!file)
         THROW(std::runtime_error, "Unable to open font because {}!", SDL_GetError());
 
-    const auto size = SDL_RWsize(file.get());
+    const auto size = SDL_SizeIO(file.get());
 
     std::vector<char> buffer(size);
 
-    if (1 != SDL_RWread(file.get(), buffer.data(), buffer.size(), 1))
-        THROW(std::runtime_error, "Unable to load font because {}!", SDL_GetError());
+    // SDL3: SDL_ReadIO returns number of bytes read and may return less than requested
+    // We need to loop until all bytes are read or an error occurs
+    size_t total_read = 0;
+    while (total_read < buffer.size()) {
+        const auto bytes_read = SDL_ReadIO(file.get(), buffer.data() + total_read, buffer.size() - total_read);
+        if (bytes_read == 0) {
+            // EOF or error - check SDL_GetIOStatus for details
+            const auto status = SDL_GetIOStatus(file.get());
+            if (status == SDL_IO_STATUS_EOF) {
+                THROW(std::runtime_error, "Unable to load font: unexpected end of file!");
+            } else if (status == SDL_IO_STATUS_ERROR) {
+                THROW(std::runtime_error, "Unable to load font because {}!", SDL_GetError());
+            }
+            // SDL_IO_STATUS_READY with 0 bytes is unusual, but break to avoid infinite loop
+            break;
+        }
+        total_read += bytes_read;
+    }
+
+    if (total_read != buffer.size())
+        THROW(std::runtime_error, "Unable to load font: read {} of {} bytes!", total_read, buffer.size());
 
     return buffer;
 }

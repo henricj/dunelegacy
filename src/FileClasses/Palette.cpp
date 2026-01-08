@@ -17,6 +17,7 @@
 
 #include <FileClasses/Palette.h>
 
+#include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
 #include <exception>
@@ -99,7 +100,7 @@ int Palette::getNumColors() const {
 }
 
 void Palette::applyToSurface(SDL_Surface* pSurface, int firstColor, int endColor) const {
-    const auto hasColorKey = SDL_HasColorKey(pSurface);
+    const auto hasColorKey = SDL_SurfaceHasColorKey(pSurface);
 
     if (pSDLPalette_ == nullptr) {
         THROW(std::runtime_error, "Palette::applyToSurface(): Palette not initialized yet!");
@@ -109,20 +110,23 @@ void Palette::applyToSurface(SDL_Surface* pSurface, int firstColor, int endColor
         THROW(std::runtime_error, "Palette::applyToSurface(): pSurface == nullptr!");
     }
 
-    if (pSurface->format->palette == nullptr) {
-        THROW(std::runtime_error, "Palette::applyToSurface(): Cannot apply palette to surface without a palette!");
+    // SDL3: Ensure the surface has a palette using the consolidated helper
+    SDL_Palette* surfacePalette = ensureSurfacePalette(pSurface, pSDLPalette_->ncolors);
+    if (surfacePalette == nullptr) {
+        THROW(
+            std::runtime_error, "Palette::applyToSurface(): Cannot create or get surface palette: {}", SDL_GetError());
     }
 
     const auto nColors = (endColor != -1) ? (endColor - firstColor + 1) : (pSDLPalette_->ncolors - firstColor);
-    SDL_SetPaletteColors(pSurface->format->palette, pSDLPalette_->colors + firstColor, firstColor, nColors);
+    SDL_SetPaletteColors(surfacePalette, pSDLPalette_->colors + firstColor, firstColor, nColors);
 
     if (hasColorKey) {
         Uint32 colorKey{};
-        if (SDL_GetColorKey(pSurface, &colorKey)) {
+        if (!SDL_GetSurfaceColorKey(pSurface, &colorKey)) {
             THROW(std::runtime_error, "Palette::applyToSurface(): Unable to get color key!");
         }
 
-        if (SDL_SetColorKey(pSurface, SDL_TRUE, colorKey)) {
+        if (!SDL_SetSurfaceColorKey(pSurface, true, colorKey)) {
             THROW(std::runtime_error, "Palette::applyToSurface(): Unable to set color key!");
         }
     }

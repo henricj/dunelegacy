@@ -35,11 +35,24 @@
 namespace {
 inline constexpr auto AIUPDATEINTERVAL = 50;
 
-const std::unordered_map<uint32_t, int> buildPriorityMap = {
-    {Unit_Carryall, 2},  {Unit_Ornithopter, 6}, {Unit_Infantry, 2},  {Unit_Troopers, 3}, {Unit_Soldier, 1},
-    {Unit_Trooper, 2},   {Unit_Saboteur, 0},    {Unit_Launcher, 8},  {Unit_Deviator, 3}, {Unit_Tank, 7},
-    {Unit_SiegeTank, 9}, {Unit_Devastator, 10}, {Unit_SonicTank, 7}, {Unit_Trike, 3},    {Unit_RaiderTrike, 4},
-    {Unit_Quad, 5},      {Unit_Harvester, 1},   {Unit_MCV, 1}};
+const std::unordered_map<uint32_t, int> buildPriorityMap = {{Unit_Carryall, 2},
+                                                            {Unit_Ornithopter, 6},
+                                                            {Unit_Infantry, 2},
+                                                            {Unit_Troopers, 3},
+                                                            {Unit_Soldier, 1},
+                                                            {Unit_Trooper, 2},
+                                                            {Unit_Saboteur, 0},
+                                                            {Unit_Launcher, 8},
+                                                            {Unit_Deviator, 3},
+                                                            {Unit_Tank, 7},
+                                                            {Unit_SiegeTank, 9},
+                                                            {Unit_Devastator, 10},
+                                                            {Unit_SonicTank, 7},
+                                                            {Unit_Trike, 3},
+                                                            {Unit_RaiderTrike, 4},
+                                                            {Unit_Quad, 5},
+                                                            {Unit_Harvester, 1},
+                                                            {Unit_MCV, 1}};
 
 const std::unordered_map<uint32_t, int> targetPriorityMap = {{Unit_Carryall, 36},
                                                              {Unit_Ornithopter, 105},
@@ -219,8 +232,8 @@ void CampaignAIPlayer::updateStructures() {
                             const auto location    = iter->location;
                             const Coord itemsize   = getStructureSize(itemID);
                             const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
-                            if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false,
-                                                              pConstYard->getOwner())) {
+                            if (getMap().okayToPlaceStructure(
+                                    location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
                                 doPlaceStructure(pConstYard, location.x, location.y);
                             } else if (itemID == Structure_Slab1) {
                                 // forget about concrete

@@ -78,7 +78,8 @@ void CommandManager::update() {
     CommandList commandList;
 
     for (uint32_t i = std::max(static_cast<int>(game->getGameCycleCount()) - MILLI2CYCLES(2500), 0);
-         i < game->getGameCycleCount() + networkCycleBuffer; i++) {
+         i < game->getGameCycleCount() + networkCycleBuffer;
+         i++) {
 
         std::vector<Command> commands;
 

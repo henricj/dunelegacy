@@ -132,8 +132,8 @@ Intro::Intro() {
     addVideoEvent<WSAVideoEvent>(pSandstorm.get());
     addVideoEvent<HoldPictureVideoEvent>(pSandstorm->getPicture(pSandstorm->getNumFrames() - 1).get(), 50);
     addTextEvent<TextEvent>(intro_text.getString(IntroText_Land_of_sand), color, 20, 40, true, true);
-    addTextEvent<TextEvent>(intro_text.getString(IntroText_Home_of_the_Spice_Melange), color, 61, 45, true, true,
-                            false);
+    addTextEvent<TextEvent>(
+        intro_text.getString(IntroText_Home_of_the_Spice_Melange), color, 61, 45, true, true, false);
     addTrigger<CutSceneSoundTrigger>(25, wind.get());
     if (bEnableVoice) {
         addTrigger<CutSceneSoundTrigger>(15, voice[Voice_Land_of_sand].get());
@@ -149,8 +149,8 @@ Intro::Intro() {
     addVideoEvent<WSAVideoEvent>(pHarvesters.get());
     addVideoEvent<HoldPictureVideoEvent>(pHarvesters->getPicture(pHarvesters->getNumFrames() - 1).get(), 22);
     addVideoEvent<FadeOutVideoEvent>(pHarvesters->getPicture(pHarvesters->getNumFrames() - 1).get(), 20);
-    addTextEvent<TextEvent>(intro_text.getString(IntroText_Spice_controls_the_Empire), color, 25, 40, true, true,
-                            false);
+    addTextEvent<TextEvent>(
+        intro_text.getString(IntroText_Spice_controls_the_Empire), color, 25, 40, true, true, false);
     addTextEvent<TextEvent>(intro_text.getString(IntroText_Whoever_controls_Dune), color, 66, 55, true, true, false);
     addTrigger<CutSceneSoundTrigger>(45, carryallLanding.get());
     addTrigger<CutSceneSoundTrigger>(79, harvester.get());
@@ -181,12 +181,12 @@ Intro::Intro() {
     addVideoEvent<WSAVideoEvent>(pImperator.get());
     addVideoEvent<HoldPictureVideoEvent>(pImperator->getPicture(pImperator->getNumFrames() - 1).get(), 15);
     addVideoEvent<FadeOutVideoEvent>(pImperator->getPicture(pImperator->getNumFrames() - 1).get(), 20);
-    addTextEvent<TextEvent>(intro_text.getString(IntroText_The_House_that_produces), sardaukarColor, 0, 52, true, true,
-                            false);
-    addTextEvent<TextEvent>(intro_text.getString(IntroText_There_are_no_set_territories), sardaukarColor, 68, 30, true,
-                            true, false);
-    addTextEvent<TextEvent>(intro_text.getString(IntroText_And_no_rules_of_engagement), sardaukarColor, 99, 30, true,
-                            true, false);
+    addTextEvent<TextEvent>(
+        intro_text.getString(IntroText_The_House_that_produces), sardaukarColor, 0, 52, true, true, false);
+    addTextEvent<TextEvent>(
+        intro_text.getString(IntroText_There_are_no_set_territories), sardaukarColor, 68, 30, true, true, false);
+    addTextEvent<TextEvent>(
+        intro_text.getString(IntroText_And_no_rules_of_engagement), sardaukarColor, 99, 30, true, true, false);
 
     if (bEnableVoice) {
         addTrigger<CutSceneSoundTrigger>(8, voice[Voice_The_House].get());
@@ -284,8 +284,8 @@ Intro::Intro() {
     addVideoEvent<WSAVideoEvent>(pDestroyedTank.get());
     addVideoEvent<WSAVideoEvent>(pDestroyedTank.get());
     addVideoEvent<FadeOutVideoEvent>(pDestroyedTank->getPicture(pDestroyedTank->getNumFrames() - 1).get(), 15);
-    addTextEvent<TextEvent>(intro_text.getString(IntroText_Only_one_House_will_prevail), color, 18, 35, true, true,
-                            false);
+    addTextEvent<TextEvent>(
+        intro_text.getString(IntroText_Only_one_House_will_prevail), color, 18, 35, true, true, false);
     if (bEnableVoice) {
         addTrigger<CutSceneSoundTrigger>(21, voice[Voice_Only_one_house].get());
         addTrigger<CutSceneSoundTrigger>(30, voice[Voice_will_prevail].get());
@@ -294,8 +294,8 @@ Intro::Intro() {
     startNewScene();
 
     addVideoEvent<HoldPictureVideoEvent>(nullptr, 184);
-    addTextEvent<TextEvent>(intro_text.getString(IntroText_Your_battle_for_Dune_begins), color, 20, 45, true, false,
-                            true);
+    addTextEvent<TextEvent>(
+        intro_text.getString(IntroText_Your_battle_for_Dune_begins), color, 20, 45, true, false, true);
     addTextEvent<TextEvent>(intro_text.getString(IntroText_NOW), color, 68, 83, false, true, true);
     //    addTextEvent<TextEvent>("",COLOR_BLACK,115,10,false,false,true);    // padding to give music
     //    time to complete

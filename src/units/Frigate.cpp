@@ -84,8 +84,8 @@ void Frigate::checkPos(const GameContext& context) {
     AirUnit::checkPos(context);
 
     if ((location_ == destination_)
-        && (distanceFrom(realX_, realY_, destination_.x * TILESIZE + (TILESIZE / 2),
-                         destination_.y * TILESIZE + (TILESIZE / 2))
+        && (distanceFrom(
+                realX_, realY_, destination_.x * TILESIZE + (TILESIZE / 2), destination_.y * TILESIZE + (TILESIZE / 2))
             < TILESIZE / 8)) {
         auto* pStarport = dynamic_cast<StarPort*>(target_.getStructurePointer());
 
@@ -107,8 +107,8 @@ bool Frigate::update(const GameContext& context) {
     if (pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX_, realY_, pTarget->getRealX(), pTarget->getRealY());
     } else if ((pTarget != nullptr) || !droppedOffCargo) {
-        dist = distanceFrom(realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2,
-                            destination_.y * TILESIZE + TILESIZE / 2);
+        dist = distanceFrom(
+            realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2);
     }
 
     if (dist >= 0) {

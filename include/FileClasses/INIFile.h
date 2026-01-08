@@ -220,7 +220,7 @@ public:
 public:
     INIFile(bool bWhitespace, std::string_view firstLineComment);
     INIFile(const std::filesystem::path& filename, bool bWhitespace = true);
-    INIFile(SDL_RWops* RWopsFile, bool bWhitespace = true);
+    INIFile(SDL_IOStream* io, bool bWhitespace = true);
     INIFile(const INIFile&) = delete;
     INIFile(INIFile&&)      = delete;
     ~INIFile();
@@ -252,7 +252,7 @@ public:
     void setDoubleValue(std::string_view section, std::string_view key, double value);
 
     [[nodiscard]] bool saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding = false) const;
-    bool saveChangesTo(SDL_RWops* file, bool bDOSLineEnding = false) const;
+    bool saveChangesTo(SDL_IOStream* file, bool bDOSLineEnding = false) const;
 
     auto sections() const {
         return lines_ | std::views::filter([](auto& v) { return std::holds_alternative<Section>(v); })
@@ -275,7 +275,7 @@ private:
     bool bWhitespace;
 
     void flush() const;
-    void readfile(SDL_RWops* file);
+    void readfile(SDL_IOStream* file);
 
     [[nodiscard]] lines_type::iterator findSectionInternal(std::string_view sectionname);
     [[nodiscard]] lines_type::const_iterator findSectionInternal(std::string_view sectionname) const;

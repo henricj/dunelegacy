@@ -92,7 +92,8 @@ CAdPlugDatabase* CAdPlug::database = nullptr;
 namespace {
 class CProvider_Cache final : public CFileProvider {
 public:
-    explicit CProvider_Cache(SDL_RWops* rwop) : buffer_{SDL_LoadFile_RW(rwop, &size_, 0)} { }
+    // SDL3: SDL_LoadFile_RW is renamed to SDL_LoadFile_IO
+    explicit CProvider_Cache(SDL_RWops* rwop) : buffer_{SDL_LoadFile_IO(rwop, &size_, false)} { }
 
     [[nodiscard]] binistream* open(std::string filename) const override;
     void close(binistream* f) const override;
@@ -138,11 +139,11 @@ std::unique_ptr<Copl> SoundAdlibPC::create_opl() {
     return opl;
 }
 
-SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq) {
+SoundAdlibPC::SoundAdlibPC(SDL_IOStream* rwop, int freq) {
 
     if (freq > 0) {
         m_freq     = freq;
-        m_format   = AUDIO_S16LSB;
+        m_format   = SDL_AUDIO_S16LE;
         m_channels = 2;
     } else
         Mix_QuerySpec(&m_freq, &m_format, &m_channels);

@@ -113,17 +113,17 @@ void Map::createSandRegions() {
                 ++numTilesInRegion;
                 pTile->setSandRegion(region);
 
-                index_for_each_angle(pTile->location_.x, pTile->location_.y,
-                                     [&]([[maybe_unused]] ANGLETYPE angle, int index) {
-                                         if (visited[index])
-                                             return;
+                index_for_each_angle(
+                    pTile->location_.x, pTile->location_.y, [&]([[maybe_unused]] ANGLETYPE angle, int index) {
+                        if (visited[index])
+                            return;
 
-                                         auto* const tile_angle = &tiles[index];
+                        auto* const tile_angle = &tiles[index];
 
-                                         if (!tile_angle->isRock()) {
-                                             tileQueue.push(tile_angle);
-                                         }
-                                     });
+                        if (!tile_angle->isRock()) {
+                            tileQueue.push(tile_angle);
+                        }
+                    });
             }
             sdl2::log_info("Generated Sand Region ID={} with {} tiles in it.", region, numTilesInRegion);
             numTilesInRegion = 0;
@@ -255,8 +255,8 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                                                    ? Tile::ROCKDAMAGETYPE::RockDamage1
                                                    : Tile::ROCKDAMAGETYPE::RockDamage2;
 
-                        pTile->addDamage(Tile::TerrainDamage_enum::Terrain_RockDamage, static_cast<int>(damage_type),
-                                         realPos);
+                        pTile->addDamage(
+                            Tile::TerrainDamage_enum::Terrain_RockDamage, static_cast<int>(damage_type), realPos);
 
                     } else if ((type == TERRAINTYPE::Terrain_Sand) || (type == TERRAINTYPE::Terrain_Spice)) {
                         const auto damage_tile = bulletID == BulletID_enum::Bullet_SmallRocket
@@ -541,8 +541,10 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
                         auto* const tile = tryGetTile(i, j);
 
                         if (tile && tile->hasAnObject()) {
-                            tile->selectAllPlayersUnitsOfType(game, pHouse->getHouseID(),
-                                                              lastSinglySelectedObject->getItemID(), &lastCheckedObject,
+                            tile->selectAllPlayersUnitsOfType(game,
+                                                              pHouse->getHouseID(),
+                                                              lastSinglySelectedObject->getItemID(),
+                                                              &lastCheckedObject,
                                                               &lastSelectedObject);
                         }
                     }
@@ -635,7 +637,9 @@ void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRan
     const auto cycle_count = dune::globals::currentGame->getGameCycleCount();
 
     for_each_filter(
-        location.x - maxViewRange, location.y - maxViewRange, location.x + maxViewRange + 1,
+        location.x - maxViewRange,
+        location.y - maxViewRange,
+        location.x + maxViewRange + 1,
         location.y + maxViewRange + 1,
         [&](int x, int y) {
             const auto distance =
@@ -653,7 +657,10 @@ void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRan
 */
 void Map::createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice) {
     for_each_filter(
-        location.x - radius, location.y - radius, location.x + radius, location.y + radius,
+        location.x - radius,
+        location.y - radius,
+        location.x + radius,
+        location.y + radius,
         [&](int x, int y) { return distanceFrom(location, {x, y}) <= radius; },
         [&](Tile& t) {
             if (t.isSand()) {

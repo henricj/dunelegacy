@@ -51,14 +51,17 @@ inline void setRenderDrawColor(SDL_Renderer* renderer, uint32_t color) {
                            (color & AMASK) >> ASHIFT);
 }
 
+// SDL3: SDL_RenderDrawLineF -> SDL_RenderLine
 inline void renderDrawLineF(SDL_Renderer* renderer, float x1, float y1, float x2, float y2, uint32_t color) {
     setRenderDrawColor(renderer, color);
-    SDL_RenderDrawLineF(renderer, x1, y1, x2, y2);
+    SDL_RenderLine(renderer, x1, y1, x2, y2);
 }
 
+// SDL3: SDL_RenderDrawLine -> SDL_RenderLine (takes floats)
 inline void renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     setRenderDrawColor(renderer, color);
-    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+    SDL_RenderLine(renderer, static_cast<float>(x1), static_cast<float>(y1), 
+                   static_cast<float>(x2), static_cast<float>(y2));
 }
 
 inline void renderDrawHLine(SDL_Renderer* renderer, int x1, int y, int x2, uint32_t color) {
@@ -66,7 +69,7 @@ inline void renderDrawHLine(SDL_Renderer* renderer, int x1, int y, int x2, uint3
 }
 
 inline void renderDrawHLine(SDL_Renderer* renderer, float x1, float y, float x2, uint32_t color) {
-    renderDrawLine(renderer, x1, y, x2, y, color);
+    renderDrawLineF(renderer, x1, y, x2, y, color);
 }
 
 inline void renderDrawVLine(SDL_Renderer* renderer, int x, int y1, int y2, uint32_t color) {
@@ -74,17 +77,25 @@ inline void renderDrawVLine(SDL_Renderer* renderer, int x, int y1, int y2, uint3
 }
 
 inline void renderDrawVLine(SDL_Renderer* renderer, float x, float y1, float y2, uint32_t color) {
-    renderDrawLine(renderer, x, y1, x, y2, color);
+    renderDrawLineF(renderer, x, y1, x, y2, color);
 }
 
+// SDL3: SDL_RenderDrawRect -> SDL_RenderRect (takes SDL_FRect*)
 inline void renderDrawRect(SDL_Renderer* renderer, const SDL_Rect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
-    SDL_RenderDrawRect(renderer, rect);
+    if (rect) {
+        SDL_FRect frect{static_cast<float>(rect->x), static_cast<float>(rect->y),
+                        static_cast<float>(rect->w), static_cast<float>(rect->h)};
+        SDL_RenderRect(renderer, &frect);
+    } else {
+        SDL_RenderRect(renderer, nullptr);
+    }
 }
 
+// SDL3: SDL_RenderDrawRectF -> SDL_RenderRect
 inline void renderDrawRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
-    SDL_RenderDrawRectF(renderer, rect);
+    SDL_RenderRect(renderer, rect);
 }
 
 inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
@@ -98,14 +109,22 @@ inline void renderDrawRectF(SDL_Renderer* renderer, float x1, float y1, float x2
     renderDrawRectF(renderer, &rect, color);
 }
 
+// SDL3: SDL_RenderFillRect takes SDL_FRect*
 inline void renderFillRect(SDL_Renderer* renderer, const SDL_Rect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
-    SDL_RenderFillRect(renderer, rect);
+    if (rect) {
+        SDL_FRect frect{static_cast<float>(rect->x), static_cast<float>(rect->y),
+                        static_cast<float>(rect->w), static_cast<float>(rect->h)};
+        SDL_RenderFillRect(renderer, &frect);
+    } else {
+        SDL_RenderFillRect(renderer, nullptr);
+    }
 }
 
+// SDL3: SDL_RenderFillRectF -> SDL_RenderFillRect
 inline void renderFillRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
-    SDL_RenderFillRectF(renderer, rect);
+    SDL_RenderFillRect(renderer, rect);
 }
 
 inline void renderFillRectF(SDL_Renderer* renderer, float x1, float y1, float x2, float y2, uint32_t color) {
@@ -184,6 +203,26 @@ sdl2::surface_ptr cloneSurface(SDL_Surface* source, const SDL_Rect* srcrect);
 sdl2::surface_ptr createTiledSurface(SDL_Surface* tile, int width, int height);
 
 bool drawSurface(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect,
-                 SDL_BlendMode blendMode = SDL_BlendMode::SDL_BLENDMODE_NONE);
+                 SDL_BlendMode blendMode = SDL_BLENDMODE_NONE);
+
+/**
+    This function creates an 8-bit indexed surface with a palette.
+    In SDL3, indexed surfaces don't automatically get a palette, so this function
+    creates the surface and attaches a 256-color palette to it.
+    \param  width      The width of the new surface.
+    \param  height     The height of the new surface.
+    \return The new surface with an attached palette
+*/
+sdl2::surface_ptr createIndexedSurface(int width, int height);
+
+/**
+    Ensures that an indexed surface has a palette attached.
+    In SDL3, indexed surfaces don't automatically get a palette when created.
+    This function checks if a palette exists and creates one if needed.
+    \param  surface    The surface to ensure has a palette.
+    \param  ncolors    The number of colors for the palette (default 256).
+    \return The surface's palette (existing or newly created), or nullptr on failure.
+*/
+SDL_Palette* ensureSurfacePalette(SDL_Surface* surface, int ncolors = 256);
 
 #endif // DRAW_UTIL_H

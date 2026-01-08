@@ -67,8 +67,8 @@ void AboutMenu::resize(uint32_t width, uint32_t height) {
     const auto iHeight = static_cast<int>(height);
 
     const auto planet_size = planetPicture.getSize();
-    windowWidget.setWidgetGeometry(&planetPicture, {(iWidth - planet_size.x) / 2, iHeight / 2 - planet_size.y + 10},
-                                   planet_size);
+    windowWidget.setWidgetGeometry(
+        &planetPicture, {(iWidth - planet_size.x) / 2, iHeight / 2 - planet_size.y + 10}, planet_size);
 
     const auto dune_size = duneLegacy.getSize();
     windowWidget.setWidgetGeometry(&duneLegacy, {(iWidth - dune_size.x) / 2, iHeight / 2 + 28}, dune_size);
@@ -81,7 +81,7 @@ void AboutMenu::resize(uint32_t width, uint32_t height) {
 }
 
 void AboutMenu::doInputImpl(const SDL_Event& event) {
-    if (event.type == SDL_MOUSEBUTTONUP) {
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_UP) {
         quit();
     }
 

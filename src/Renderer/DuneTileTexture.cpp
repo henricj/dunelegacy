@@ -1,6 +1,6 @@
 #include <Renderer/DuneTileTexture.h>
 
-#include <misc/dune_sdl.h>
+#include <misc/dune_sdl.h> // Include compatibility header (Wait, already included? Check if dune_sdl.h includes dune_sdl2to3.h)
 
 #include <span>
 #include <stdexcept>
@@ -17,8 +17,11 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, float tile_width, float t
 
     if (std::cmp_greater(tiles.size(), std::numeric_limits<int>::max())
         || static_cast<int>(tiles.size()) != rows * columns)
-        THROW(std::invalid_argument, "The size of the tiles does not match the rows and columns ({} != {}x{})",
-              tiles.size(), columns, rows);
+        THROW(std::invalid_argument,
+              "The size of the tiles does not match the rows and columns ({} != {}x{})",
+              tiles.size(),
+              columns,
+              rows);
 
 #if _DEBUG
     int w = 0, h = 0;
@@ -27,8 +30,14 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, float tile_width, float t
 
     for (const auto& tile : tiles) {
         if (tile.x + tile.w > w || tile.y + tile.h > h)
-            THROW(std::invalid_argument, "The tile ({}x{} at {}x{}) must be inside the texture ({}x{})", tile.w, tile.h,
-                  tile.x, tile.x, w, h);
+            THROW(std::invalid_argument,
+                  "The tile ({}x{} at {}x{}) must be inside the texture ({}x{})",
+                  tile.w,
+                  tile.h,
+                  tile.x,
+                  tile.x,
+                  w,
+                  h);
     }
 #endif
 

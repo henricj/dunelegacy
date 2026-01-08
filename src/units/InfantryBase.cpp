@@ -35,8 +35,10 @@
 
 namespace {
 // the position on the tile
-constexpr Coord tilePositionOffset[5] = {Coord(0, 0), Coord(-TILESIZE / 4, -TILESIZE / 4),
-                                         Coord(TILESIZE / 4, -TILESIZE / 4), Coord(-TILESIZE / 4, TILESIZE / 4),
+constexpr Coord tilePositionOffset[5] = {Coord(0, 0),
+                                         Coord(-TILESIZE / 4, -TILESIZE / 4),
+                                         Coord(TILESIZE / 4, -TILESIZE / 4),
+                                         Coord(-TILESIZE / 4, TILESIZE / 4),
                                          Coord(TILESIZE / 4, TILESIZE / 4)};
 } // namespace
 
@@ -76,7 +78,8 @@ void InfantryBase::handleCaptureClick(const GameContext& context, int xPos, int 
 
         // capture structure
         context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                            CMDTYPE::CMD_INFANTRY_CAPTURE, objectID_,
+                                                            CMDTYPE::CMD_INFANTRY_CAPTURE,
+                                                            objectID_,
                                                             tempTarget->getObjectID()));
     }
 }
@@ -112,9 +115,13 @@ void InfantryBase::blitToScreen() {
     const auto* const screenborder = dune::globals::screenborder.get();
     const auto zoom                = dune::globals::currentZoomlevel;
 
-    const auto dest =
-        calcSpriteDrawingRect(graphic_[zoom], screenborder->world2screenX(realX_), screenborder->world2screenY(realY_),
-                              numImagesX_, numImagesY_, HAlign::Center, VAlign::Center);
+    const auto dest = calcSpriteDrawingRect(graphic_[zoom],
+                                            screenborder->world2screenX(realX_),
+                                            screenborder->world2screenY(realY_),
+                                            numImagesX_,
+                                            numImagesY_,
+                                            HAlign::Center,
+                                            VAlign::Center);
 
     auto temp = drawnAngle_;
     if (temp == ANGLETYPE::UP) {
@@ -127,8 +134,8 @@ void InfantryBase::blitToScreen() {
         temp = ANGLETYPE::RIGHT;
     }
 
-    const SDL_Rect source = calcSpriteSourceRect(graphic_[zoom], static_cast<int>(temp), numImagesX_,
-                                                 (walkFrame / 10 == 3) ? 1 : walkFrame / 10, numImagesY_);
+    const SDL_Rect source = calcSpriteSourceRect(
+        graphic_[zoom], static_cast<int>(temp), numImagesX_, (walkFrame / 10 == 3) ? 1 : walkFrame / 10, numImagesY_);
 
     Dune_RenderCopyF(dune::globals::renderer.get(), graphic_[zoom], &source, &dest);
 }
@@ -350,7 +357,8 @@ void InfantryBase::destroy(const GameContext& context) {
                 // squashed
                 pTile->assignDeadUnit(game.randomGen.randBool() ? DeadUnit_Infantry_Squashed1
                                                                 : DeadUnit_Infantry_Squashed2,
-                                      owner_->getHouseID(), {realX_.toFloat(), realY_.toFloat()});
+                                      owner_->getHouseID(),
+                                      {realX_.toFloat(), realY_.toFloat()});
 
                 if (isVisible(getOwner()->getTeamID())) {
                     dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Squashed, location_);
@@ -364,9 +372,12 @@ void InfantryBase::destroy(const GameContext& context) {
             pTile->assignDeadUnit(DeadUnit_Infantry, owner_->getHouseID(), {realX_.toFloat(), realY_.toFloat()});
 
             if (isVisible(getOwner()->getTeamID())) {
-                const auto sound_id = dune::globals::pGFXManager->random().getRandOf(
-                    Sound_enum::Sound_Scream1, Sound_enum::Sound_Scream2, Sound_enum::Sound_Scream3,
-                    Sound_enum::Sound_Scream4, Sound_enum::Sound_Scream5, Sound_enum::Sound_Trumpet);
+                const auto sound_id = dune::globals::pGFXManager->random().getRandOf(Sound_enum::Sound_Scream1,
+                                                                                     Sound_enum::Sound_Scream2,
+                                                                                     Sound_enum::Sound_Scream3,
+                                                                                     Sound_enum::Sound_Scream4,
+                                                                                     Sound_enum::Sound_Scream5,
+                                                                                     Sound_enum::Sound_Trumpet);
                 dune::globals::soundPlayer->playSoundAt(sound_id, location_);
             }
         }
@@ -403,9 +414,9 @@ void InfantryBase::move(const GameContext& context) {
             fromDistanceY = FixPoint::abs(location_.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[oldTilePosition].y
                                           - (realY_ - bumpyOffsetY));
             toDistanceX   = FixPoint::abs(nextSpot.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].x
-                                          - (realX_ - bumpyOffsetX));
+                                        - (realX_ - bumpyOffsetX));
             toDistanceY   = FixPoint::abs(nextSpot.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].y
-                                          - (realY_ - bumpyOffsetY));
+                                        - (realY_ - bumpyOffsetY));
 
             // check if unit is half way out of old tile
             if ((abstractDistanceX >= TILESIZE / 2 + epsilon) || (abstractDistanceY >= TILESIZE / 2 + epsilon)) {
@@ -423,9 +434,9 @@ void InfantryBase::move(const GameContext& context) {
             fromDistanceY = FixPoint::abs(oldLocation_.y * TILESIZE + TILESIZE / 2
                                           + tilePositionOffset[oldTilePosition].y - (realY_ - bumpyOffsetY));
             toDistanceX   = FixPoint::abs(location_.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].x
-                                          - (realX_ - bumpyOffsetX));
+                                        - (realX_ - bumpyOffsetX));
             toDistanceY   = FixPoint::abs(location_.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].y
-                                          - (realY_ - bumpyOffsetY));
+                                        - (realY_ - bumpyOffsetY));
 
             Coord wantedReal;
             wantedReal.x = nextSpot.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].x;

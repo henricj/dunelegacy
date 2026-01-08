@@ -24,10 +24,10 @@
 #include "globals.h"
 #include <Definitions.h>
 
-#include <misc/dune_sdl.h>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+#include <misc/dune_sdl.h>
 
 namespace {
 inline constexpr auto SIZE_X = 16;
@@ -184,7 +184,8 @@ Icnfile::~Icnfile() = default;
 sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
     if (indexOfFile >= numFiles) {
         THROW(std::invalid_argument,
-              "Icnfile::getPicture(): Specified index (%ud) is not valid for a icn file with %ud tiles!", indexOfFile,
+              "Icnfile::getPicture(): Specified index (%ud) is not valid for a icn file with %ud tiles!",
+              indexOfFile,
               numFiles);
     }
 
@@ -255,7 +256,8 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
         THROW(
             std::invalid_argument,
             "Icnfile::getPictureArray(): Specified map file index (%ud) is not valid for a map file with %ud tilesets!",
-            mapfileIndex, tilesets.size());
+            mapfileIndex,
+            tilesets.size());
     }
 
     if (tilesX == 0 && tilesY == 0 && tilesN == 0) {
@@ -308,14 +310,20 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
             THROW(std::invalid_argument,
                   "Icnfile::getPictureArray(): Number of tiles for index %ud are %ud which are no multiple of the "
                   "requested number of blocks (%d)!",
-                  mapfileIndex, tilesets[mapfileIndex].numTiles, tilesN);
+                  mapfileIndex,
+                  tilesets[mapfileIndex].numTiles,
+                  tilesN);
         }
     } else {
         if (static_cast<unsigned int>(tilesX * tilesY * tilesN) != tilesets[mapfileIndex].numTiles) {
             THROW(std::invalid_argument,
                   "Icnfile::getPictureArray(): Number of tiles for index %ud are %ud which is not equal to the number "
                   "of requested tiles (%d*%d*%d)!",
-                  mapfileIndex, tilesets[mapfileIndex].numTiles, tilesX, tilesY, tilesN);
+                  mapfileIndex,
+                  tilesets[mapfileIndex].numTiles,
+                  tilesX,
+                  tilesY,
+                  tilesN);
         }
     }
 
@@ -378,7 +386,9 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
     if (startIndex >= numFiles || endIndex >= numFiles || startIndex > endIndex) {
         THROW(std::invalid_argument,
               "Icnfile::getPictureRow(): Invalid start index (%ud) or end index (%ud) for an icn file with %ud tiles!",
-              startIndex, endIndex, numFiles);
+              startIndex,
+              endIndex,
+              numFiles);
     }
 
     const auto numTiles = endIndex - startIndex + 1;
@@ -454,7 +464,8 @@ sdl2::surface_ptr Icnfile::getPictureRow2(std::initializer_list<uint32_t> indexe
         if (indexOfFile >= numFiles) {
             THROW(std::invalid_argument,
                   "Icnfile::getPictureRow2(): Specified index (%ud) is not valid for an icn file with %ud tiles!",
-                  indexOfFile, numFiles);
+                  indexOfFile,
+                  numFiles);
         }
 
         // check if palette is in range

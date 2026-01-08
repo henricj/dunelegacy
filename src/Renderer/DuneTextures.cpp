@@ -17,13 +17,18 @@
 
 #include <Renderer/DuneTextures.h>
 
+#include <FileClasses/SaveTextureAsBmp.h>
 #include <FileClasses/SurfaceLoader.h>
 #include <GUI/ObjectInterfaces/PalaceInterface.h>
 #include <rectpack2D/finders_interface.h>
 
-// #include "FileClasses/SaveTextureAsBmp.h"
+#include <misc/dune_sdl2to3.h> // Include compatibility header
+#include <misc/fnkdat.h>
+
+#include <fmt/format.h> // For diagnostic logging
 
 #include <cstddef>
+#include <filesystem>
 #include <tuple>
 #include <type_traits>
 #include <unordered_set>
@@ -51,11 +56,205 @@ DuneTextures::~DuneTextures() = default;
 namespace {
 inline constexpr bool allow_flip            = false;
 inline constexpr auto runtime_flipping_mode = rectpack2D::flipping_option::DISABLED;
+inline constexpr bool export_sprite_sheets  = false;
 
 inline constexpr auto guard = 1;
 
 using spaces_type = rectpack2D::empty_spaces<allow_flip, rectpack2D::default_empty_spaces>;
 using rect_type   = rectpack2D::output_rect_t<spaces_type>;
+
+void save_texture_atlases(SDL_Renderer* renderer, const std::vector<sdl2::texture_ptr>& textures) {
+    if (!export_sprite_sheets)
+        return;
+
+    const auto [ok, atlas_path] = fnkdat("cache/atlas/", FNKDAT_USER | FNKDAT_CREAT);
+    if (!ok)
+        THROW(std::runtime_error, "Unable to create atlas export directory");
+
+    auto count = 0;
+    for (const auto& texture : textures) {
+        auto path = atlas_path / fmt::format("texture_{}.png", count++);
+        path      = path.lexically_normal().make_preferred();
+
+        SaveTextureAsPng(renderer, texture.get(), path);
+    }
+}
+
+// Helper function to convert an indexed surface with a color key to ARGB8888 with proper alpha
+// SDL3's SDL_ConvertSurface doesn't automatically convert color key pixels to alpha=0
+sdl2::surface_ptr convertIndexedToARGBWithAlpha(SDL_Surface* source, SDL_PixelFormat destFormat) {
+    if (!source)
+        return nullptr;
+
+    // Get source format details
+    const SDL_PixelFormatDetails* srcDetails = SDL_GetPixelFormatDetails(source->format);
+    if (!srcDetails) {
+        return sdl2::surface_ptr{SDL_ConvertSurface(source, destFormat)};
+    }
+
+    // Check if source is an indexed/palette format (8-bit)
+    const bool isIndexed = (srcDetails->bits_per_pixel == 8);
+
+    // For non-indexed surfaces without color keys, just convert normally but check for implicit magenta transparency
+    if (!isIndexed && !SDL_SurfaceHasColorKey(source)) {
+        sdl2::surface_ptr converted{SDL_ConvertSurface(source, destFormat)};
+        if (!converted)
+            return nullptr;
+
+        // Check if we need to fix implicit magenta transparency (common in legacy assets)
+        const SDL_PixelFormatDetails* dstDetails = SDL_GetPixelFormatDetails(converted->format);
+        if (dstDetails && dstDetails->bytes_per_pixel == 4) {
+            // Calculate Magenta in destination format
+            // Use full alpha 255 for the key color comparison
+            Uint32 dstMagenta = SDL_MapRGBA(dstDetails, nullptr, 255, 0, 255, 255);
+
+            // Mask for comparing RGB only
+            const Uint32 rgbMask = dstDetails->Rmask | dstDetails->Gmask | dstDetails->Bmask;
+            const Uint32 keyRGB  = dstMagenta & rgbMask;
+
+            sdl2::surface_lock dstLock{converted.get()};
+            auto* dstPixels     = static_cast<Uint32*>(converted->pixels);
+            const auto dstPitch = converted->pitch / sizeof(Uint32);
+
+            int fixedCount = 0;
+            for (int y = 0; y < converted->h; ++y) {
+                auto* row = dstPixels + y * dstPitch;
+                for (int x = 0; x < converted->w; ++x) {
+                    // Check for magenta (ignoring alpha in the check)
+                    if ((row[x] & rgbMask) == keyRGB) {
+                        row[x] = 0; // Make transparent
+                        ++fixedCount;
+                    }
+                }
+            }
+
+            (void)fixedCount;
+        }
+
+        return converted;
+    }
+
+    // Get the color key from the source (default to 0 for indexed surfaces)
+    Uint32 colorKey  = 0;
+    bool hasColorKey = SDL_SurfaceHasColorKey(source);
+    if (hasColorKey) {
+        SDL_GetSurfaceColorKey(source, &colorKey);
+    }
+
+    // For indexed surfaces, always treat index 0 as transparent even if no explicit color key is set
+    // This is the convention used in this game's graphics
+    if (isIndexed && !hasColorKey) {
+        colorKey    = 0;    // Default transparent color for indexed surfaces
+        hasColorKey = true; // Treat it as having a color key
+    }
+
+    if (isIndexed) {
+        // For indexed surfaces, manually convert to avoid SDL3 palette conversion issues
+        // Create destination surface in the requested format
+        sdl2::surface_ptr converted{SDL_CreateSurface(source->w, source->h, destFormat)};
+        if (!converted)
+            return nullptr;
+
+        // Get the palette from the source surface
+        SDL_Palette* srcPalette = SDL_GetSurfacePalette(source);
+        if (!srcPalette) {
+            // No palette, fall back to standard conversion
+            return sdl2::surface_ptr{SDL_ConvertSurface(source, destFormat)};
+        }
+
+        // Get destination format details
+        const SDL_PixelFormatDetails* dstDetails = SDL_GetPixelFormatDetails(converted->format);
+        if (!dstDetails)
+            return sdl2::surface_ptr{SDL_ConvertSurface(source, destFormat)};
+
+        // Lock both surfaces for pixel access
+        sdl2::surface_lock srcLock{source};
+        sdl2::surface_lock dstLock{converted.get()};
+
+        const auto* srcPixels = static_cast<const Uint8*>(source->pixels);
+        auto* dstPixels       = static_cast<Uint32*>(converted->pixels);
+        const auto srcPitch   = source->pitch;
+        const auto dstPitch   = converted->pitch / sizeof(Uint32);
+        const Uint8 keyIndex  = static_cast<Uint8>(colorKey);
+
+        // Convert pixel by pixel
+        for (int y = 0; y < source->h; ++y) {
+            const auto* srcRow = srcPixels + y * srcPitch;
+            auto* dstRow       = dstPixels + y * dstPitch;
+            for (int x = 0; x < source->w; ++x) {
+                const Uint8 paletteIndex = srcRow[x];
+
+                // Check if this pixel matches the color key palette index
+                if (hasColorKey && paletteIndex == keyIndex) {
+                    // Set entire pixel to 0 (transparent black) to prevent color bleeding
+                    dstRow[x] = 0;
+                } else {
+                    // Look up the color from the palette and convert
+                    const SDL_Color& color = srcPalette->colors[paletteIndex];
+
+                    // Check for implicit magenta transparency (255, 0, 255) in indexed surfaces
+                    if (color.r == 255 && color.g == 0 && color.b == 255) {
+                        dstRow[x] = 0;
+                    } else {
+                        dstRow[x] = SDL_MapRGBA(dstDetails, nullptr, color.r, color.g, color.b, color.a);
+                    }
+                }
+            }
+        }
+
+        return converted;
+    }
+
+    // For non-indexed surfaces with a color key, use standard conversion then fix up
+    sdl2::surface_ptr converted{SDL_ConvertSurface(source, destFormat)};
+    if (!converted)
+        return nullptr;
+
+    // If no color key to process, return the converted surface
+    if (!hasColorKey)
+        return converted;
+
+    // Get destination format details
+    const SDL_PixelFormatDetails* dstDetails = SDL_GetPixelFormatDetails(converted->format);
+    if (!dstDetails)
+        return converted;
+
+    // For non-indexed surfaces with a color key, we need to find and zero matching pixels
+    // Get the RGBA value of the color key in the source format
+    Uint8 keyR = 0, keyG = 0, keyB = 0, keyA = 0;
+    SDL_Palette* srcPalette = SDL_GetSurfacePalette(source);
+    SDL_GetRGBA(colorKey, srcDetails, srcPalette, &keyR, &keyG, &keyB, &keyA);
+
+    // Calculate what the color key looks like in the destination format (with full alpha)
+    Uint32 dstColorKey = SDL_MapRGBA(dstDetails, nullptr, keyR, keyG, keyB, 255);
+
+    // Create a mask for comparing RGB only (ignoring alpha)
+    const Uint32 rgbMask = dstDetails->Rmask | dstDetails->Gmask | dstDetails->Bmask;
+    const Uint32 keyRGB  = dstColorKey & rgbMask;
+
+    // Calculate Magenta in destination format
+    Uint32 dstMagenta       = SDL_MapRGBA(dstDetails, nullptr, 255, 0, 255, 255);
+    const Uint32 magentaRGB = dstMagenta & rgbMask; // Should be equivalent to dstMagenta if alpha is not in mask
+
+    // Lock destination surface for pixel access
+    sdl2::surface_lock dstLock{converted.get()};
+    auto* dstPixels     = static_cast<Uint32*>(converted->pixels);
+    const auto dstPitch = converted->pitch / sizeof(Uint32);
+
+    for (int y = 0; y < converted->h; ++y) {
+        auto* row = dstPixels + y * dstPitch;
+        for (int x = 0; x < converted->w; ++x) {
+            // Compare RGB components only
+            Uint32 pixelRGB = row[x] & rgbMask;
+            if (pixelRGB == keyRGB || pixelRGB == magentaRGB) {
+                // Set entire pixel to 0 (transparent black) to prevent color bleeding
+                row[x] = 0;
+            }
+        }
+    }
+
+    return converted;
+}
 
 std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::vector<rect_type>& rectangles) {
     constexpr auto discard_step = 1;
@@ -70,14 +269,16 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
     }();
 
     const auto result_size = rectpack2D::find_best_packing<spaces_type>(
-        rectangles, make_finder_input(
-                        max_side, discard_step,
-                        []([[maybe_unused]] const auto& rect) { return rectpack2D::callback_result::CONTINUE_PACKING; },
-                        [&failed]([[maybe_unused]] const auto& rect) {
-                            failed = true;
-                            return rectpack2D::callback_result::ABORT_PACKING;
-                        },
-                        runtime_flipping_mode));
+        rectangles,
+        make_finder_input(
+            max_side,
+            discard_step,
+            []([[maybe_unused]] const auto& rect) { return rectpack2D::callback_result::CONTINUE_PACKING; },
+            [&failed]([[maybe_unused]] const auto& rect) {
+                failed = true;
+                return rectpack2D::callback_result::ABORT_PACKING;
+            },
+            runtime_flipping_mode));
 
     if (failed) {
         sdl2::log_info("Packing failed ");
@@ -88,7 +289,9 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
 
     const auto side = static_cast<int>(ceil(sqrt(total_pixels)));
 
-    sdl2::log_info("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
+    sdl2::log_info("Pixels {0} ({1}x{1}) for efficiency {2:.1f}",
+                   total_pixels,
+                   side,
                    100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h));
 
     // for(const auto& r : rectangles) {
@@ -317,59 +520,74 @@ public:
         return ret;
     }
 
-    sdl2::texture_ptr pack(SDL_Renderer* renderer, uint32_t format, int max_side) {
+    sdl2::texture_ptr pack(SDL_Renderer* renderer, SDL_PixelFormat format, int max_side,
+                           [[maybe_unused]] const char* atlasName = nullptr) {
         if (!packer_.pack(max_side))
             return nullptr;
 
         const sdl2::surface_ptr atlas_surface{
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
+        // SDL3: Clear atlas surface to transparent
+        SDL_FillSurfaceRect(atlas_surface.get(), nullptr, 0);
+
         const auto draw = [&](const auto& r, [[maybe_unused]] int s_idx, SDL_Surface* surface) {
             SDL_Rect atlas_rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
-            if (!drawSurface(surface, nullptr, atlas_surface.get(), &atlas_rect)) {
+            // SDL3: Always use our helper that properly converts surfaces with alpha handling
+            // This handles both indexed surfaces (treating index 0 as transparent) and
+            // surfaces with explicit color keys
+            sdl2::surface_ptr converted_surface = convertIndexedToARGBWithAlpha(surface, format);
+            SDL_Surface* surface_to_blit        = converted_surface ? converted_surface.get() : surface;
+
+            // Use SDL_BLENDMODE_NONE to copy pixels directly including alpha values.
+            // The converted surface has proper alpha embedded, so we want a direct copy,
+            // not alpha blending (which would blend with the cleared transparent atlas).
+            if (!drawSurface(surface_to_blit, nullptr, atlas_surface.get(), &atlas_rect, SDL_BLENDMODE_NONE)) {
                 // Retry after converting from palette to 32-bit surface...
-                const sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
+                const sdl2::surface_ptr copy{SDL_ConvertSurface(surface_to_blit, format)};
 
                 if (!copy) {
                     sdl2::log_warn("Unable to copy surface: {}", SDL_GetError());
                     return false;
                 }
 
-                if (!drawSurface(copy.get(), nullptr, atlas_surface.get(), &atlas_rect)) {
+                if (!drawSurface(copy.get(), nullptr, atlas_surface.get(), &atlas_rect, SDL_BLENDMODE_NONE)) {
                     sdl2::log_warn("Unable to draw object");
                     return false;
                 }
             }
 
-            // Copy the edge pixels to the guard.
+            // Copy the edge pixels to the guard (use the converted surface if available)
+            // Use SDL_BLENDMODE_NONE for consistent direct pixel copying
+            SDL_Surface* edge_surface = surface_to_blit;
 
             { // Top
-                const SDL_Rect src{0, 0, surface->w, 1};
+                const SDL_Rect src{0, 0, edge_surface->w, 1};
                 SDL_Rect dst{atlas_rect.x, atlas_rect.y - 1, src.w, 1};
 
-                drawSurface(surface, &src, atlas_surface.get(), &dst);
+                drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
 
             { // Left
-                const SDL_Rect src{0, 0, 1, surface->h};
+                const SDL_Rect src{0, 0, 1, edge_surface->h};
                 SDL_Rect dst{atlas_rect.x - 1, atlas_rect.y, 1, src.h};
 
-                drawSurface(surface, &src, atlas_surface.get(), &dst);
+                drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
 
             { // Bottom
-                const SDL_Rect src{0, surface->h - 1, surface->w, 1};
-                SDL_Rect dst{atlas_rect.x, atlas_rect.y + surface->h, src.w, 1};
+                const SDL_Rect src{0, edge_surface->h - 1, edge_surface->w, 1};
+                SDL_Rect dst{atlas_rect.x, atlas_rect.y + edge_surface->h, src.w, 1};
 
-                drawSurface(surface, &src, atlas_surface.get(), &dst);
+                drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
 
             { // Right
-                const SDL_Rect src{surface->w - 1, 0, 1, surface->h};
-                SDL_Rect dst{atlas_rect.x + surface->w, atlas_rect.y, 1, src.h};
+                const SDL_Rect src{edge_surface->w - 1, 0, 1, edge_surface->h};
+                SDL_Rect dst{atlas_rect.x + edge_surface->w, atlas_rect.y, 1, src.h};
 
-                drawSurface(surface, &src, atlas_surface.get(), &dst);
+                drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
 
             // Fill in the corners
@@ -384,13 +602,13 @@ public:
         // auto [ok, cache_path] = fnkdat("cache/", FNKDAT_USER | FNKDAT_CREAT);
 
         // auto path = cache_path / fmt::format("f23_{}.bmp", texture_identifier);
-        // path      = path.lexically_normal().make_preferred();
+        // path      = path.lexical_normal().make_preferred();
 
         // SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
 
         auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
 
-        if (texture && SDL_SetTextureBlendMode(texture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
+        if (texture && SDL_SetTextureBlendMode(texture.get(), SDL_BLENDMODE_BLEND)) {
             sdl2::log_warn("Unable to set texture atlas blend mode");
         }
 
@@ -651,8 +869,8 @@ public:
     }
 
     void update(AtlasFactory23& factory23, int key, SDL_Texture* texture) {
-        factory23.update<identifier_type>(key, texture,
-                                          [&](auto n) -> DuneTexture& { return textures_.at(surfaces_[n]); });
+        factory23.update<identifier_type>(
+            key, texture, [&](auto n) -> DuneTexture& { return textures_.at(surfaces_[n]); });
     }
 
     void update_duplicates() {
@@ -672,7 +890,7 @@ protected:
 class TinyPicturePacker final : public PackerBase<DuneTextures::tiny_pictures_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
-        for (auto id = 0u; id < textures_.size(); ++id) {
+        for (auto id = 0; id < textures_.size(); ++id) {
             auto* surface = surfaceLoader->getTinyPictureSurface(id);
 
             if (!surface) {
@@ -688,7 +906,7 @@ public:
 class SmallDetailPicsPacker final : public PackerBase<DuneTextures::small_details_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
-        for (auto id = 0u; id < textures_.size(); ++id) {
+        for (auto id = 0; id < textures_.size(); ++id) {
             auto* surface = surfaceLoader->getSmallDetailSurface(id);
 
             if (!surface) {
@@ -736,8 +954,8 @@ public:
     }
 
     void update(AtlasFactory23& factory23, int key, SDL_Texture* texture) {
-        factory23.update<identifier_type>(key, texture,
-                                          [&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
+        factory23.update<identifier_type>(
+            key, texture, [&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
     }
 
     void update_duplicates() {
@@ -757,24 +975,62 @@ private:
     }
 };
 
-namespace {
 std::vector<SDL_Color> get_colors_horizontal(SDL_Surface* surface) {
     std::vector<SDL_Color> colors;
     colors.reserve(surface->w);
 
     const sdl2::surface_lock lock{surface};
 
-    const auto* const RESTRICT pixels = static_cast<Uint32*>(surface->pixels);
+    // SDL3: SDL_GetRGBA requires SDL_PixelFormatDetails and SDL_Palette
+    const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(surface->format);
+    SDL_Palette* palette                  = SDL_GetSurfacePalette(surface);
 
-    for (auto x = 0; x < surface->w; ++x) {
-        Uint8 r = 0, g = 0, b = 0, a = 0;
-        SDL_GetRGBA(pixels[x], surface->format, &r, &g, &b, &a);
+    const bool isIndexed = (details && details->bits_per_pixel == 8);
+
+    if (isIndexed && palette) {
+        // 8-bit indexed surface - read palette indices and look up colors
+        const auto* pixels = static_cast<const Uint8*>(surface->pixels);
+
+        for (auto x = 0; x < surface->w; ++x) {
+            const Uint8 paletteIndex = pixels[x];
+
+            // For transparent pixels (index 0), use transparent black
+            if (paletteIndex == 0) {
+                colors.push_back({0, 0, 0, 0});
+            } else if (paletteIndex < palette->ncolors) {
+                const SDL_Color& c = palette->colors[paletteIndex];
+                // Check for implicit magenta transparency
+                if (c.r == 255 && c.g == 0 && c.b == 255) {
+                    colors.push_back({0, 0, 0, 0});
+                } else {
+                    colors.push_back({c.r, c.g, c.b, c.a});
+                }
+            } else {
+                colors.push_back({0, 0, 0, 255}); // Fallback
+            }
+        }
+    } else {
+        // 32-bit surface - read RGBA values directly
+        const auto* pixels = static_cast<const Uint32*>(surface->pixels);
+
+        for (auto x = 0; x < surface->w; ++x) {
+            Uint8 r = 0, g = 0, b = 0, a = 0;
+            SDL_GetRGBA(pixels[x], details, palette, &r, &g, &b, &a);
+
+            // Check for implicit magenta transparency
+            if (r == 255 && g == 0 && b == 255) {
+                r = 0;
+                g = 0;
+                b = 0;
+                a = 0;
+            }
 
 #ifdef HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
-        colors.emplace_back(r, g, b, a);
+            colors.emplace_back(r, g, b, a);
 #else
-        colors.push_back({r, g, b, a});
+            colors.push_back({r, g, b, a});
 #endif
+        }
     }
 
     return colors;
@@ -786,24 +1042,57 @@ std::vector<SDL_Color> get_colors_vertical(SDL_Surface* surface) {
 
     sdl2::surface_lock lock{surface};
 
-    const auto* const RESTRICT pixels = static_cast<Uint32*>(surface->pixels);
+    // SDL3: SDL_GetRGBA requires SDL_PixelFormatDetails and SDL_Palette
+    const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(surface->format);
+    SDL_Palette* palette                  = SDL_GetSurfacePalette(surface);
 
-    for (auto y = 0; y < surface->h; ++y) {
-        Uint8 r = 0, g = 0, b = 0, a = 0;
-        SDL_GetRGBA(pixels[y * static_cast<ptrdiff_t>(surface->pitch) / sizeof(Uint32)], surface->format, &r, &g, &b,
-                    &a);
+    const bool isIndexed = (details && details->bits_per_pixel == 8);
+
+    if (isIndexed && palette) {
+        // 8-bit indexed surface - read palette indices and look up colors
+        const auto* pixels = static_cast<const Uint8*>(surface->pixels);
+        const auto pitch   = surface->pitch;
+
+        for (auto y = 0; y < surface->h; ++y) {
+            const Uint8 paletteIndex = pixels[y * pitch];
+
+            // For transparent pixels (index 0), use transparent black
+            if (paletteIndex == 0) {
+                colors.push_back({0, 0, 0, 0});
+            } else if (paletteIndex < palette->ncolors) {
+                const SDL_Color& c = palette->colors[paletteIndex];
+                colors.push_back({c.r, c.g, c.b, c.a});
+            } else {
+                colors.push_back({0, 0, 0, 255}); // Fallback
+            }
+        }
+    } else {
+        // 32-bit surface - read RGBA values directly
+        const auto* pixels = static_cast<const Uint32*>(surface->pixels);
+        const auto pitch   = surface->pitch / sizeof(Uint32);
+
+        for (auto y = 0; y < surface->h; ++y) {
+            Uint8 r = 0, g = 0, b = 0, a = 0;
+            SDL_GetRGBA(pixels[y * pitch], details, palette, &r, &g, &b, &a);
+
+            // Check for implicit magenta transparency
+            if (r == 255 && g == 0 && b == 255) {
+                r = 0;
+                g = 0;
+                b = 0;
+                a = 0;
+            }
 
 #ifdef HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
-        colors.emplace_back(r, g, b, a);
+            colors.emplace_back(r, g, b, a);
 #else
-        colors.push_back({r, g, b, a});
+            colors.push_back({r, g, b, a});
 #endif
+        }
     }
 
     return colors;
 }
-
-} // namespace
 
 class BorderStylePicturesPacker final : public PackerBase<DuneTextures::border_style_type, int> {
 public:
@@ -817,27 +1106,16 @@ public:
             surfaces_.add(n++, frame.leftLowerCorner);
             surfaces_.add(n++, frame.rightLowerCorner);
 
-            if (frame.hborder->format->format == SCREEN_FORMAT)
-                hborder[i] = get_colors_vertical(frame.hborder);
-            else {
-                sdl2::surface_ptr surface{SDL_ConvertSurfaceFormat(frame.hborder, SCREEN_FORMAT, 0)};
-
-                hborder[i] = get_colors_vertical(surface.get());
-            }
-
-            if (frame.vborder->format->format == SCREEN_FORMAT)
-                vborder[i] = get_colors_horizontal(frame.vborder);
-            else {
-                sdl2::surface_ptr surface{SDL_ConvertSurfaceFormat(frame.vborder, SCREEN_FORMAT, 0)};
-
-                vborder[i] = get_colors_horizontal(surface.get());
-            }
+            // Always use the original surface for color extraction
+            // get_colors_vertical/horizontal now properly handle both indexed and 32-bit surfaces
+            hborder[i] = get_colors_vertical(frame.hborder);
+            vborder[i] = get_colors_horizontal(frame.vborder);
         }
     }
 
     void update(AtlasFactory23& factory23, int key, SDL_Texture* texture) {
-        factory23.update<identifier_type>(key, texture,
-                                          [&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
+        factory23.update<identifier_type>(
+            key, texture, [&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
     }
 
     void update_duplicates() {
@@ -872,24 +1150,19 @@ private:
 } // namespace
 
 DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surfaceLoader) {
-    SDL_RendererInfo info;
-    SDL_GetRendererInfo(renderer, &info);
+    // SDL3: SDL_RendererInfo removed, use properties
+    SDL_PropertiesID props = SDL_GetRendererProperties(renderer);
 
-    Uint32 format = SCREEN_FORMAT;
-    for (auto i = 0u; i < info.num_texture_formats; ++i) {
-        const auto f = info.texture_formats[i];
-
-        if (SDL_ISPIXELFORMAT_FOURCC(f))
-            continue;
-
-        if (SDL_ISPIXELFORMAT_ALPHA(f)) {
-            format = f;
-            break;
-        }
-    }
+    SDL_PixelFormat format = SCREEN_FORMAT;
+    // Note: SDL3 doesn't expose texture_formats array in properties directly
+    // We'll stick to SCREEN_FORMAT or check max texture size only
 
     const auto max_side = [&] {
-        const auto longest_side = std::min(info.max_texture_width, info.max_texture_height);
+        int max_texture_width =
+            static_cast<int>(SDL_GetNumberProperty(props, SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+        int max_texture_height = max_texture_width; // SDL3 property is single dimension usually
+
+        const auto longest_side = std::min(max_texture_width, max_texture_height);
         if (0 == longest_side)
             return 8192;
         return longest_side;
@@ -941,9 +1214,16 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
         assert(factory23.empty());
 
-        static const std::set<uint32_t> force_combine_ui_graphic = {
-            UI_RadarAnimation,  UI_DuneLegacy,        UI_GameMenu,         UI_MapChoiceMap,         UI_MapChoiceMapOnly,
-            UI_MapChoicePlanet, UI_MapChoiceClickMap, UI_MenuButtonBorder, UI_SelectYourHouseLarge, UI_NewMapWindow};
+        static const std::set<uint32_t> force_combine_ui_graphic = {UI_RadarAnimation,
+                                                                    UI_DuneLegacy,
+                                                                    UI_GameMenu,
+                                                                    UI_MapChoiceMap,
+                                                                    UI_MapChoiceMapOnly,
+                                                                    UI_MapChoicePlanet,
+                                                                    UI_MapChoiceClickMap,
+                                                                    UI_MenuButtonBorder,
+                                                                    UI_SelectYourHouseLarge,
+                                                                    UI_NewMapWindow};
 
         auto combined_ui_graphic = [&](const auto& identifier, SDL_Surface* surface) {
             const auto& [id, h] = identifier;
@@ -1012,7 +1292,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
             const auto dbp_key = decoration_border_packer.add(factory23);
             const auto bsp_key = border_style_pictures_packer.add(factory23);
 
-            auto texture = factory23.pack(renderer, format, max_side);
+            // Enable diagnostic logging for the combined texture (includes border styles)
+            auto texture = factory23.pack(renderer, format, max_side, "CombinedAtlas");
 
             if (!texture)
                 THROW(std::runtime_error, "Unable to create combined texture");
@@ -1041,14 +1322,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         border_style_pictures_packer.update_duplicates();
     }
 
-    // auto count = 0;
-    // for (const auto& texture : textures) {
-    //     auto path = std::filesystem::path{"c:/temp/"} / fmt::format("texture_{}.png", count++);
-
-    //    path = path.lexically_normal().make_preferred();
-
-    //    SaveTextureAsPng(renderer, texture.get(), reinterpret_cast<const char*>(path.u8string().c_str()));
-    //}
+    save_texture_atlases(renderer, textures);
 
     return DuneTextures{std::move(textures),
                         object_picture_packer.object_pictures2(),

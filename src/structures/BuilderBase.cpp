@@ -555,19 +555,24 @@ void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) 
     }
 
     dune::globals::currentGame->getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                                       CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID_,
-                                                                       itemID, static_cast<uint32_t>(multipleMode)));
+                                                                       CMDTYPE::CMD_BUILDER_PRODUCEITEM,
+                                                                       objectID_,
+                                                                       itemID,
+                                                                       static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleCancelItemClick(ItemID_enum itemID, bool multipleMode) {
     dune::globals::currentGame->getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                                       CMDTYPE::CMD_BUILDER_CANCELITEM, objectID_,
-                                                                       itemID, static_cast<uint32_t>(multipleMode)));
+                                                                       CMDTYPE::CMD_BUILDER_CANCELITEM,
+                                                                       objectID_,
+                                                                       itemID,
+                                                                       static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleSetOnHoldClick(bool OnHold) {
     dune::globals::currentGame->getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                                       CMDTYPE::CMD_BUILDER_SETONHOLD, objectID_,
+                                                                       CMDTYPE::CMD_BUILDER_SETONHOLD,
+                                                                       objectID_,
                                                                        static_cast<uint32_t>(OnHold)));
 }
 
@@ -623,7 +628,8 @@ void BuilderBase::doCancelItem(ItemID_enum itemID, bool multipleMode) {
                     bool bCancelCurrentItem = (itemID == currentProducedItem_);
 
                     const auto queueItemIter =
-                        std::find_if(currentProductionQueue_.rbegin(), currentProductionQueue_.rend(),
+                        std::find_if(currentProductionQueue_.rbegin(),
+                                     currentProductionQueue_.rend(),
                                      [&](ProductionQueueItem& queueItem) { return (queueItem.itemID_ == itemID); });
 
                     if (queueItemIter != currentProductionQueue_.rend()) {

@@ -32,13 +32,18 @@
 #include <misc/unique_or_nonowning_ptr.h>
 
 #include <misc/dune_sdl.h>
-#include <misc/dune_sdl_mixer.h>
 
 #include <fmt/printf.h>
 
 #include <cassert>
 #include <memory>
 #include <string_view>
+
+// Forward declarations for SDL_mixer types (avoid including mixer header here)
+struct Mix_Chunk;
+struct Mix_Music;
+extern void Mix_FreeChunk(Mix_Chunk *chunk);
+extern void Mix_FreeMusic(Mix_Music *music);
 
 namespace sdl2 {
 
@@ -58,7 +63,7 @@ public:
         if (!texture_)
             return;
 
-        if (0 == SDL_LockTexture(texture_, nullptr, &pixels_, &pitch_))
+        if (SDL_LockTexture(texture_, nullptr, &pixels_, &pitch_))
             return;
 
         THROW(std::runtime_error, "Unable to lock SDL texture!");
@@ -69,7 +74,7 @@ public:
         if (!texture_)
             return;
 
-        if (0 == SDL_LockTexture(texture_, &rect, &pixels_, &pitch_))
+        if (SDL_LockTexture(texture_, &rect, &pixels_, &pitch_))
             return;
 
         THROW(std::runtime_error, "Unable to lock SDL texture!");
@@ -102,7 +107,7 @@ public:
         if (!surface_)
             return;
 
-        if (0 == SDL_LockSurface(surface_))
+        if (SDL_LockSurface(surface_))
             return;
 
         THROW(std::runtime_error, "Unable to lock SDL surface!");
@@ -133,7 +138,7 @@ public:
         if (!surface_)
             return;
 
-        if (0 == SDL_LockSurface(surface_))
+        if (SDL_LockSurface(surface_))
             return;
 
         surface_ = nullptr;
@@ -180,10 +185,10 @@ using unique_ptr_arg_deleter = std::unique_ptr<T, arg_deleter<T, TArg, Delete>>;
 template<typename T, typename TArg, void (*Delete)(TArg*)>
 using unique_or_nonowning_ptr_arg_deleter = unique_or_nonowning_ptr<T, arg_deleter<T, TArg, Delete>>;
 
-struct RWops_deleter {
-    void operator()(SDL_RWops* RWops) const {
-        if (RWops) {
-            SDL_RWclose(RWops);
+struct IOStream_deleter {
+    void operator()(SDL_IOStream* io) const {
+        if (io) {
+            SDL_CloseIO(io);
         }
     }
 };
@@ -198,16 +203,18 @@ struct RWops_deleter {
 template<typename T>
 using sdl_ptr = implementation::unique_ptr_arg_deleter<T, void, SDL_free>;
 
-using surface_ptr                     = implementation::unique_ptr_deleter<SDL_Surface, SDL_FreeSurface>;
-using surface_unique_or_nonowning_ptr = implementation::unique_or_nonowning_ptr_deleter<SDL_Surface, SDL_FreeSurface>;
+using surface_ptr                     = implementation::unique_ptr_deleter<SDL_Surface, SDL_DestroySurface>;
+using surface_unique_or_nonowning_ptr = implementation::unique_or_nonowning_ptr_deleter<SDL_Surface, SDL_DestroySurface>;
 using texture_ptr                     = implementation::unique_ptr_deleter<SDL_Texture, SDL_DestroyTexture>;
 using texture_unique_or_nonowning_ptr = implementation::unique_or_nonowning_ptr_deleter<SDL_Texture, SDL_DestroyTexture>;
-using palette_ptr                     = implementation::unique_ptr_deleter<SDL_Palette, SDL_FreePalette>;
-using pixel_format_ptr                = implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat>;
+using palette_ptr                     = implementation::unique_ptr_deleter<SDL_Palette, SDL_DestroyPalette>;
 using renderer_ptr                    = implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer>;
 using window_ptr                      = implementation::unique_ptr_deleter<SDL_Window, SDL_DestroyWindow>;
-using cursor_ptr                      = implementation::unique_ptr_deleter<SDL_Cursor, SDL_FreeCursor>;
-using RWops_ptr                       = std::unique_ptr<SDL_RWops, implementation::RWops_deleter>;
+using cursor_ptr                      = implementation::unique_ptr_deleter<SDL_Cursor, SDL_DestroyCursor>;
+using IOStream_ptr                    = std::unique_ptr<SDL_IOStream, implementation::IOStream_deleter>;
+
+// Backwards compatibility alias
+using RWops_ptr = IOStream_ptr;
 
 // SDL_mixer types
 using mix_chunk_ptr = implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk>;
@@ -218,7 +225,7 @@ using mix_music_ptr = implementation::unique_ptr_deleter<Mix_Music, Mix_FreeMusi
 // =============================================================================
 
 template<typename... Args>
-void log_message_args_category(SDL_LogCategory category, SDL_LogPriority priority, fmt::format_string<Args...> format,
+void log_message_args_category(int category, SDL_LogPriority priority, fmt::format_string<Args...> format,
                                Args&&... args) {
     SDL_LogMessage(category, priority, "%s", fmt::format(format, std::forward<Args>(args)...).c_str());
 }
@@ -229,7 +236,7 @@ void log_message_args(SDL_LogPriority priority, fmt::format_string<Args...> form
 }
 
 template<typename... Args>
-void log_info(SDL_LogCategory category, fmt::format_string<Args...> format, Args&&... args) {
+void log_info(int category, fmt::format_string<Args...> format, Args&&... args) {
     log_message_args_category(category, SDL_LOG_PRIORITY_INFO, format, std::forward<decltype(args)>(args)...);
 }
 
@@ -239,7 +246,7 @@ void log_info(fmt::format_string<Args...> format, Args&&... args) {
 }
 
 template<typename... Args>
-void log_warn(SDL_LogCategory category, fmt::format_string<Args...> format, Args&&... args) {
+void log_warn(int category, fmt::format_string<Args...> format, Args&&... args) {
     log_message_args_category(category, SDL_LOG_PRIORITY_WARN, format, std::forward<decltype(args)>(args)...);
 }
 
@@ -249,7 +256,7 @@ void log_warn(fmt::format_string<Args...> format, Args&&... args) {
 }
 
 template<typename... Args>
-void log_error(SDL_LogCategory category, fmt::format_string<Args...> format, Args&&... args) {
+void log_error(int category, fmt::format_string<Args...> format, Args&&... args) {
     log_message_args_category(category, SDL_LOG_PRIORITY_ERROR, format, std::forward<decltype(args)>(args)...);
 }
 
@@ -266,12 +273,12 @@ void log_error(fmt::format_string<Args...> format, Args&&... args) {
 
 // Work-around C++20's half-baked UTF-8 support.
 
-inline SDL_RWops* SDL_RWFromFile(const char8_t* file, const char* mode) {
-    return SDL_RWFromFile(reinterpret_cast<const char*>(file), mode);
+inline SDL_IOStream* SDL_IOFromFile(const char8_t* file, const char* mode) {
+    return SDL_IOFromFile(reinterpret_cast<const char*>(file), mode);
 }
 
-inline SDL_RWops* SDL_RWFromFile(const std::u8string& file, const char* mode) {
-    return SDL_RWFromFile(file.c_str(), mode);
+inline SDL_IOStream* SDL_IOFromFile(const std::u8string& file, const char* mode) {
+    return SDL_IOFromFile(file.c_str(), mode);
 }
 
 #endif // DUNE_LEGACY_SDLPP_H

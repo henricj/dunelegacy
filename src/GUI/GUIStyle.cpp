@@ -76,13 +76,19 @@ void GUIStyle::setLogicalSize(SDL_Renderer* renderer, int physical_width, int ph
 
 sdl2::surface_ptr
 GUIStyle::createEmptySurface(uint32_t width, uint32_t height, [[maybe_unused]] bool transparent) const {
-    sdl2::surface_ptr pSurface{SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)};
+    // SDL3: Use SDL_CreateSurface with ARGB8888 format
+    sdl2::surface_ptr pSurface{
+        SDL_CreateSurface(static_cast<int>(width), static_cast<int>(height), SDL_PIXELFORMAT_ARGB8888)};
 
     if (!pSurface) {
         return nullptr;
     }
-    SDL_FillRect(pSurface.get(), nullptr, COLOR_TRANSPARENT);
-    SDL_SetColorKey(pSurface.get(), SDL_TRUE, COLOR_TRANSPARENT);
+
+    // Fill with transparent color
+    SDL_FillSurfaceRect(pSurface.get(), nullptr, COLOR_TRANSPARENT);
+
+    // SDL3: Set blend mode to enable alpha blending
+    SDL_SetSurfaceBlendMode(pSurface.get(), SDL_BLENDMODE_BLEND);
 
     return pSurface;
 }

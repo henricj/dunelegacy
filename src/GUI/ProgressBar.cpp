@@ -59,15 +59,20 @@ void ProgressBar::draw(Point position) {
     const auto& gui      = GUIStyle::getInstance();
 
     if (bDrawShadow_) {
-        const SDL_FRect dest2{static_cast<float>(position.x + 2), static_cast<float>(position.y + 2),
-                              percent_ * 0.01f * static_cast<float>(size.x), static_cast<float>(size.y)};
+        const SDL_FRect dest2{static_cast<float>(position.x + 2),
+                              static_cast<float>(position.y + 2),
+                              percent_ * 0.01f * static_cast<float>(size.x),
+                              static_cast<float>(size.y)};
         renderFillRectF(renderer, &dest2, COLOR_BLACK);
     } else {
         const auto render_button = [&](const DuneTexture* foreground) {
             gui.RenderButton(renderer,
-                             {static_cast<float>(position.x), static_cast<float>(position.y),
-                              static_cast<float>(size.x), static_cast<float>(size.y)},
-                             foreground, true);
+                             {static_cast<float>(position.x),
+                              static_cast<float>(position.y),
+                              static_cast<float>(size.x),
+                              static_cast<float>(size.y)},
+                             foreground,
+                             true);
         };
 
         if (std::holds_alternative<DuneTextureOwned>(pContent_)) {
@@ -95,7 +100,9 @@ void ProgressBar::draw(Point position) {
         else if (width > full_width)
             width = full_width;
 
-        const SDL_FRect dest{static_cast<float>(position.x) + 2, static_cast<float>(position.y) + 2, width,
+        const SDL_FRect dest{static_cast<float>(position.x) + 2,
+                             static_cast<float>(position.y) + 2,
+                             width,
                              static_cast<float>(size.y) - 4};
 
         setRenderDrawColor(renderer, COLOR_HALF_TRANSPARENT);
@@ -110,8 +117,8 @@ void ProgressBar::draw(Point position) {
         else if (width > full_width)
             width = full_width;
 
-        const SDL_FRect dest = {static_cast<float>(position.x), static_cast<float>(position.y), width,
-                                static_cast<float>(size.y)};
+        const SDL_FRect dest = {
+            static_cast<float>(position.x), static_cast<float>(position.y), width, static_cast<float>(size.y)};
         setRenderDrawColor(renderer, color_);
         SDL_RenderFillRectF(renderer, &dest);
     }

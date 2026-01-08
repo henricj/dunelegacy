@@ -604,6 +604,7 @@ std::string_view TextManager::postProcessString(std::string_view unprocessedStri
 }
 
 void TextManager::addOrigDuneText(std::string_view filename, bool bDecode) {
-    origDuneText_.insert({std::string{filename}, std::make_unique<IndexedTextFile>(
-                                                     dune::globals::pFileManager->openFile(filename).get(), bDecode)});
+    origDuneText_.insert(
+        {std::string{filename},
+         std::make_unique<IndexedTextFile>(dune::globals::pFileManager->openFile(filename).get(), bDecode)});
 }

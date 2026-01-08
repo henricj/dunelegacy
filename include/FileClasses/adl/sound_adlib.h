@@ -65,7 +65,7 @@ class Copl;
  */
 class SoundAdlibPC final {
 public:
-    SoundAdlibPC(SDL_RWops* rwop, int freq = 0);
+    SoundAdlibPC(SDL_IOStream* io, int freq = 0);
     SoundAdlibPC(const SoundAdlibPC& soundAdlibPC)            = delete;
     SoundAdlibPC& operator=(const SoundAdlibPC& soundAdlibPC) = delete;
     ~SoundAdlibPC();
@@ -85,25 +85,25 @@ public:
 private:
     void read(int16_t* data, int samples);
 
-    static std::unique_ptr<CFileProvider> create_provider(SDL_RWops* rwop);
+    static std::unique_ptr<CFileProvider> create_provider(SDL_IOStream* io);
 
     std::unique_ptr<Copl> create_opl();
 
     [[nodiscard]] auto getsampsize() const noexcept {
-        return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
+        return m_channels * (m_format == SDL_AUDIO_U8 || m_format == SDL_AUDIO_S8 ? 1 : 2);
     }
 
     std::unique_ptr<Copl> opl_;
     std::unique_ptr<CPlayer> driver_;
 
-    bool playing_{};
+    bool playing_{false};
     int volume_{MIX_MAX_VOLUME / 2};
 
     int m_channels;
     int m_freq;
-    uint16_t m_format;
+    SDL_AudioFormat m_format;
 
-    float offset_{};
+    float offset_{0.0f};
 };
 
 #endif

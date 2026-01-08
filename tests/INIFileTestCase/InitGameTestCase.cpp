@@ -143,9 +143,10 @@ TEST(INIFileLoader, create_game) {
         {
             auto rwop = file_manager->openFile(std::move(mapFilename));
 
-            map_data.resize(SDL_RWsize(rwop.get()));
+            // SDL3: SDL_RWsize -> SDL_GetIOSize, SDL_RWread -> SDL_ReadIO
+            map_data.resize(SDL_GetIOSize(rwop.get()));
 
-            ASSERT_EQ(1, SDL_RWread(rwop.get(), map_data.data(), map_data.size(), 1));
+            ASSERT_EQ(map_data.size(), SDL_ReadIO(rwop.get(), map_data.data(), map_data.size()));
         }
 
         const GameInitSettings init(std::move(map_name), std::move(map_data), false,

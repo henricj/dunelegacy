@@ -63,8 +63,8 @@ SinglePlayerMenu::SinglePlayerMenu() {
     windowWidget.addWidget(&buttonBorder, dest3);
 
     // set up menu buttons
-    windowWidget.addWidget(&menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64),
-                           Point(160, 111));
+    windowWidget.addWidget(
+        &menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64), Point(160, 111));
 
     campaignButton.setText(_("CAMPAIGN"));
     campaignButton.setOnClick([this] { onCampaign(); });
@@ -183,8 +183,8 @@ void SinglePlayerMenu::resize(uint32_t width, uint32_t height) {
     const auto iHeight = static_cast<int>(height);
 
     const auto planet_size = planetPicture.getSize();
-    windowWidget.setWidgetGeometry(&planetPicture, {(iWidth - planet_size.x) / 2, iHeight / 2 - planet_size.y + 10},
-                                   planet_size);
+    windowWidget.setWidgetGeometry(
+        &planetPicture, {(iWidth - planet_size.x) / 2, iHeight / 2 - planet_size.y + 10}, planet_size);
 
     const auto dune_size = duneLegacy.getSize();
     windowWidget.setWidgetGeometry(&duneLegacy, {(iWidth - dune_size.x) / 2, iHeight / 2 + 28}, dune_size);

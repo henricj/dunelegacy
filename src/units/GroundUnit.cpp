@@ -109,9 +109,10 @@ void GroundUnit::checkPos(const GameContext& context) {
                         setGettingRepaired();
                     } else {
                         // the repair yard is already in use by some other unit => move out
-                        const Coord newDestination =
-                            context.map.findDeploySpot(this, target_.getObjPointer()->getLocation(), getLocation(),
-                                                       pRepairYard->getStructureSize());
+                        const Coord newDestination = context.map.findDeploySpot(this,
+                                                                                target_.getObjPointer()->getLocation(),
+                                                                                getLocation(),
+                                                                                pRepairYard->getStructureSize());
                         doMove2Pos(context, newDestination, true);
                     }
                 }

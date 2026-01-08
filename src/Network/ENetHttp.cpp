@@ -176,7 +176,10 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     enet_socket_destroy(httpSocket);
 
     if (result.substr(9, 3) != "200") {
-        THROW(std::runtime_error, "Server Error: Received status code '{}' from {}: {}", result.substr(9, 3), domain,
+        THROW(std::runtime_error,
+              "Server Error: Received status code '{}' from {}: {}",
+              result.substr(9, 3),
+              domain,
               result.substr(0, result.find(newline)));
     }
 

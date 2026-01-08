@@ -112,7 +112,7 @@ void MentatHelp::drawSpecificStuff() {
 }
 
 void MentatHelp::doInputImpl(const SDL_Event& event) {
-    if (!mentatTopicsList.isVisible() && event.type == SDL_MOUSEBUTTONDOWN) {
+    if (!mentatTopicsList.isVisible() && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         showNextMentatText();
         return;
     }

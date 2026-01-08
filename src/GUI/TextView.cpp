@@ -75,7 +75,8 @@ void TextView::draw(Point position) {
 
         const SDL_Rect src{0, src_y, getWidth(pForeground_.get()), height};
 
-        const SDL_FRect dest = {static_cast<float>(position.x) + 2.f, static_cast<float>(position.y) + 1.f,
+        const SDL_FRect dest = {static_cast<float>(position.x) + 2.f,
+                                static_cast<float>(position.y) + 1.f,
                                 pForeground_.width_,
                                 std::min(pForeground_.height_, static_cast<float>(getSize().y) - 2.f)};
 
@@ -98,7 +99,8 @@ void TextView::resize(uint32_t width, uint32_t height) {
     auto& gui = GUIStyle::getInstance();
 
     const std::vector<std::string> textLines =
-        greedyWordWrap(text_, static_cast<float>(getSize().x - scrollbar_.getSize().x - 4),
+        greedyWordWrap(text_,
+                       static_cast<float>(getSize().x - scrollbar_.getSize().x - 4),
                        [&gui, font = fontSize_](std::string_view tmp) {
                            return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x - 4);
                        });
@@ -123,7 +125,8 @@ void TextView::updateTextures() {
         pBackground_ = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
 
     if (!pForeground_) {
-        const auto textLines = greedyWordWrap(text_, static_cast<float>(getSize().x - scrollbar_.getSize().x - 4),
+        const auto textLines = greedyWordWrap(text_,
+                                              static_cast<float>(getSize().x - scrollbar_.getSize().x - 4),
                                               [&gui, font = fontSize_](std::string_view tmp) {
                                                   return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x - 4);
                                               });
@@ -131,8 +134,15 @@ void TextView::updateTextures() {
         const auto lineHeight  = gui.getTextHeight(fontSize_) + 2.f;
         const auto labelHeight = static_cast<int>(std::ceil(lineHeight * static_cast<float>(textLines.size()) + 2.f));
 
-        pForeground_ = gui.createLabel(renderer, getSize().x - 4, labelHeight, textLines, fontSize_, alignment_,
-                                       text_color_, text_shadow_color_, background_color_);
+        pForeground_ = gui.createLabel(renderer,
+                                       getSize().x - 4,
+                                       labelHeight,
+                                       textLines,
+                                       fontSize_,
+                                       alignment_,
+                                       text_color_,
+                                       text_shadow_color_,
+                                       background_color_);
     }
 }
 

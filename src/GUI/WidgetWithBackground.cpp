@@ -63,8 +63,10 @@ void WidgetWithBackground::draw_background(Point position) {
         if (bSelfGeneratedBackground_) {
             auto& size = getSize();
 
-            const SDL_FRect dest{static_cast<float>(position.x), static_cast<float>(position.y),
-                                 static_cast<float>(size.x), static_cast<float>(size.y)};
+            const SDL_FRect dest{static_cast<float>(position.x),
+                                 static_cast<float>(position.y),
+                                 static_cast<float>(size.x),
+                                 static_cast<float>(size.y)};
 
             GUIStyle::getInstance().drawBackground(renderer, dest);
         }
@@ -72,8 +74,8 @@ void WidgetWithBackground::draw_background(Point position) {
         return;
     }
 
-    SDL_FRect dst{static_cast<float>(position.x), static_cast<float>(position.y), background->width_,
-                  background->height_};
+    SDL_FRect dst{
+        static_cast<float>(position.x), static_cast<float>(position.y), background->width_, background->height_};
 
     if (center_background_) {
         const auto size = getSize();

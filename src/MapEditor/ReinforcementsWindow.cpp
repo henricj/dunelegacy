@@ -281,7 +281,8 @@ void ReinforcementsWindow::onAdd() {
     const ReinforcementInfo reinforcementInfo(
         static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
         static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData()),
-        static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData()), timeTextBox.getValue(),
+        static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData()),
+        timeTextBox.getValue(),
         repeatCheckbox.isChecked());
 
     const auto insert_index = index + 1;
@@ -360,10 +361,12 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
 }
 
 std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& reinforcementInfo) {
-    return fmt::format("{}, {}, {}, {} min{}", getPlayerName(reinforcementInfo.houseID),
+    return fmt::format("{}, {}, {}, {} min{}",
+                       getPlayerName(reinforcementInfo.houseID),
                        resolveItemName(reinforcementInfo.unitID),
                        resolveDropLocationName(reinforcementInfo.dropLocation),
-                       std::to_string(reinforcementInfo.droptime), (reinforcementInfo.bRepeat ? ", +" : ""));
+                       std::to_string(reinforcementInfo.droptime),
+                       (reinforcementInfo.bRepeat ? ", +" : ""));
 }
 
 std::string ReinforcementsWindow::getPlayerName(HOUSETYPE house) {

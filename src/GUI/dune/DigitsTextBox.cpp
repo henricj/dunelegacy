@@ -151,9 +151,11 @@ void DigitsTextBox::onDecrement() {
 void DigitsTextBox::updateSurfaces() {
     const auto* const gfx = dune::globals::pGFXManager.get();
 
-    plusButton_.setTextures(gfx->getUIGraphic(UI_Plus, house_), gfx->getUIGraphic(UI_Plus_Pressed, house_),
+    plusButton_.setTextures(gfx->getUIGraphic(UI_Plus, house_),
+                            gfx->getUIGraphic(UI_Plus_Pressed, house_),
                             gfx->getUIGraphic(UI_Plus_Active, house_));
 
-    minusButton_.setTextures(gfx->getUIGraphic(UI_Minus, house_), gfx->getUIGraphic(UI_Minus_Pressed, house_),
+    minusButton_.setTextures(gfx->getUIGraphic(UI_Minus, house_),
+                             gfx->getUIGraphic(UI_Minus_Pressed, house_),
                              gfx->getUIGraphic(UI_Minus_Active, house_));
 }

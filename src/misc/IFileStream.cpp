@@ -113,7 +113,7 @@ uint16_t IFileStream::readUint16() {
 
     bytePos_ += sizeof(uint16_t);
 
-    return SDL_SwapLE16(tmp);
+    return SDL_Swap16LE(tmp);
 }
 
 uint32_t IFileStream::readUint32() {
@@ -127,7 +127,7 @@ uint32_t IFileStream::readUint32() {
 
     bytePos_ += sizeof(uint32_t);
 
-    return SDL_SwapLE32(tmp);
+    return SDL_Swap32LE(tmp);
 }
 
 uint64_t IFileStream::readUint64() {
@@ -141,7 +141,7 @@ uint64_t IFileStream::readUint64() {
 
     bytePos_ += sizeof(uint64_t);
 
-    return SDL_SwapLE64(tmp);
+    return SDL_Swap64LE(tmp);
 }
 
 bool IFileStream::readBool() {

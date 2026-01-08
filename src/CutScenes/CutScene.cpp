@@ -79,7 +79,7 @@ void CutScene::run() {
             switch (event.type) {
                 case SDL_KEYDOWN: // Look for a keypress
                 {
-                    if (event.key.keysym.sym == SDLK_SPACE || event.key.keysym.sym == SDLK_ESCAPE) {
+                    if (event.key.key == SDLK_SPACE || event.key.key == SDLK_ESCAPE) {
                         // Fixes some flickering
                         auto* const renderer = dune::globals::renderer.get();
 
@@ -152,6 +152,6 @@ std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char*
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2, const char* name3) {
     const auto* const file_manager = dune::globals::pFileManager.get();
 
-    return std::make_unique<Wsafile>(file_manager->openFile(name1).get(), file_manager->openFile(name2).get(),
-                                     file_manager->openFile(name3).get());
+    return std::make_unique<Wsafile>(
+        file_manager->openFile(name1).get(), file_manager->openFile(name2).get(), file_manager->openFile(name3).get());
 }

@@ -93,6 +93,17 @@ PictureFactory::PictureFactory(int width, int height) : width_{width}, height_{h
     simple_frame.hborder = getSubPicture(ChoamPic.get(), 128, 17, 1, 4);
     simple_frame.vborder = getSubPicture(ChoamPic.get(), 120, 25, 4, 1);
 
+    // Copy the palette from ChoamPic to the border surfaces so border colors are read correctly
+    // The getSubPicture function may not preserve the palette from the source surface
+    if (SDL_Palette* srcPalette = SDL_GetSurfacePalette(ChoamPic.get())) {
+        if (SDL_Palette* dstPalette = ensureSurfacePalette(simple_frame.hborder.get(), srcPalette->ncolors)) {
+            SDL_SetPaletteColors(dstPalette, srcPalette->colors, 0, srcPalette->ncolors);
+        }
+        if (SDL_Palette* dstPalette = ensureSurfacePalette(simple_frame.vborder.get(), srcPalette->ncolors)) {
+            SDL_SetPaletteColors(dstPalette, srcPalette->colors, 0, srcPalette->ncolors);
+        }
+    }
+
     // Decoration Frame 1
     auto& decoration_frame = frame[static_cast<int>(DecorationFrame::DecorationFrame1)];
 
@@ -118,6 +129,16 @@ PictureFactory::PictureFactory(int width, int height) : width_{width}, height_{h
 
     decoration_frame.hborder = getSubPicture(ChoamPic.get(), 13, 57, 1, 4);
     decoration_frame.vborder = getSubPicture(ChoamPic.get(), 2, 69, 4, 1);
+
+    // Copy the palette from ChoamPic to the border surfaces so border colors are read correctly
+    if (SDL_Palette* srcPalette = SDL_GetSurfacePalette(ChoamPic.get())) {
+        if (SDL_Palette* dstPalette = ensureSurfacePalette(decoration_frame.hborder.get(), srcPalette->ncolors)) {
+            SDL_SetPaletteColors(dstPalette, srcPalette->colors, 0, srcPalette->ncolors);
+        }
+        if (SDL_Palette* dstPalette = ensureSurfacePalette(decoration_frame.vborder.get(), srcPalette->ncolors)) {
+            SDL_SetPaletteColors(dstPalette, srcPalette->colors, 0, srcPalette->ncolors);
+        }
+    }
 
     // Decoration Frame 2
     auto& decoration_frame2 = frame[static_cast<int>(DecorationFrame::DecorationFrame2)];
@@ -145,6 +166,16 @@ PictureFactory::PictureFactory(int width, int height) : width_{width}, height_{h
 
     decoration_frame2.hborder = getSubPicture(ChoamPic.get(), 133, 41, 1, 4);
     decoration_frame2.vborder = getSubPicture(ChoamPic.get(), 121, 51, 4, 1);
+
+    // Copy the palette from ChoamPic to the border surfaces so border colors are read correctly
+    if (SDL_Palette* srcPalette = SDL_GetSurfacePalette(ChoamPic.get())) {
+        if (SDL_Palette* dstPalette = ensureSurfacePalette(decoration_frame2.hborder.get(), srcPalette->ncolors)) {
+            SDL_SetPaletteColors(dstPalette, srcPalette->colors, 0, srcPalette->ncolors);
+        }
+        if (SDL_Palette* dstPalette = ensureSurfacePalette(decoration_frame2.vborder.get(), srcPalette->ncolors)) {
+            SDL_SetPaletteColors(dstPalette, srcPalette->colors, 0, srcPalette->ncolors);
+        }
+    }
 
     for (auto& f : frame) {
         SDL_SetColorKey(f.leftUpperCorner.get(), SDL_TRUE, 0);
@@ -186,13 +217,15 @@ PictureFactory::PictureFactory(int width, int height) : width_{width}, height_{h
     }
 
     // create builder list upper cap
-    builderListUpperCap = sdl2::surface_ptr{SDL_CreateRGBSurface(0, 112, 21, 8, 0, 0, 0, 0)};
+    // SDL3: Use SDL_CreateSurface with pixel format
+    builderListUpperCap = sdl2::surface_ptr{SDL_CreateSurface(112, 21, SDL_PIXELFORMAT_INDEX8)};
     if (builderListUpperCap == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     dune::globals::palette.applyToSurface(builderListUpperCap.get());
-    assert(builderListUpperCap->format->BitsPerPixel == 8);
-    SDL_FillRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
+    // SDL3: Use SDL_BYTESPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BYTESPERPIXEL(builderListUpperCap->format) == 1);
+    SDL_FillSurfaceRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
         const auto builderListUpperCapLeft = getSubPicture(ChoamPic.get(), 64, 3, 42, 18);
@@ -219,7 +252,8 @@ PictureFactory::PictureFactory(int width, int height) : width_{width}, height_{h
     }
 
     dune::globals::palette.applyToSurface(builderListLowerCap.get());
-    assert(builderListLowerCap->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(builderListLowerCap->format) == 8);
     SDL_FillRect(builderListLowerCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
@@ -323,12 +357,15 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
     }
 
     if (bEditor) {
-        SDL_Rect dest12 = calcDrawingRect(decorationBorder.vspacer.get(), 0, getHeight(sideBar.get()) - 32 - 14,
-                                          HAlign::Left, VAlign::Bottom);
+        SDL_Rect dest12 = calcDrawingRect(
+            decorationBorder.vspacer.get(), 0, getHeight(sideBar.get()) - 32 - 14, HAlign::Left, VAlign::Bottom);
         SDL_BlitSurface(decorationBorder.vspacer.get(), nullptr, sideBar.get(), &dest12);
 
-        drawHLine(sideBar.get(), 0, sideBar->h - 32 - 12 - decorationBorder.vspacer.get()->h - 2,
-                  decorationBorder.vspacer.get()->w - 1, 96);
+        drawHLine(sideBar.get(),
+                  0,
+                  sideBar->h - 32 - 12 - decorationBorder.vspacer.get()->h - 2,
+                  decorationBorder.vspacer.get()->w - 1,
+                  96);
         drawHLine(sideBar.get(), 0, sideBar->h - 32 - 12 - 1, decorationBorder.vspacer.get()->w - 1, 0);
 
         SDL_Rect dest13 = calcDrawingRect(decorationBorder.ball.get(), 0, getHeight(sideBar.get()) - 32 - 12);
@@ -337,8 +374,11 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
         drawHLine(sideBar.get(), 0, sideBar->h - 32 - 1, decorationBorder.vspacer.get()->w - 1, 0);
         SDL_Rect dest14 = calcDrawingRect(decorationBorder.vspacer.get(), 0, getHeight(sideBar.get()) - 32);
         SDL_BlitSurface(decorationBorder.vspacer.get(), nullptr, sideBar.get(), &dest14);
-        drawHLine(sideBar.get(), 0, sideBar->h - 32 + decorationBorder.vspacer.get()->h,
-                  decorationBorder.vspacer.get()->w - 1, 96);
+        drawHLine(sideBar.get(),
+                  0,
+                  sideBar->h - 32 + decorationBorder.vspacer.get()->h,
+                  decorationBorder.vspacer.get()->w - 1,
+                  96);
     } else {
         SDL_Rect dest15 = calcDrawingRect(creditsBorder.get(), 46, 132);
         SDL_BlitSurface(creditsBorder.get(), nullptr, sideBar.get(), &dest15);
@@ -435,14 +475,16 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, DecorationFrame decorationType,
     // hborders
     SDL_Rect dest5 = calcDrawingRect(frame[type].hborder.get(), dest->x, dest->y);
     for (dest5.x = frame[type].leftUpperCorner.get()->w + dest->x;
-         dest5.x <= dest->w - frame[type].rightUpperCorner.get()->w - 1; dest5.x += frame[type].hborder.get()->w) {
+         dest5.x <= dest->w - frame[type].rightUpperCorner.get()->w - 1;
+         dest5.x += frame[type].hborder.get()->w) {
         SDL_Rect tmpDest = dest5;
         SDL_BlitSurface(frame[type].hborder.get(), nullptr, Pic, &tmpDest);
     }
 
     SDL_Rect dest6 = calcDrawingRect(frame[type].hborder.get(), dest->x, dest->h - 1, HAlign::Left, VAlign::Bottom);
     for (dest6.x = frame[type].leftLowerCorner.get()->w + dest->x;
-         dest6.x <= dest->w - frame[type].rightLowerCorner.get()->w - 1; dest6.x += frame[type].hborder.get()->w) {
+         dest6.x <= dest->w - frame[type].rightLowerCorner.get()->w - 1;
+         dest6.x += frame[type].hborder.get()->w) {
         SDL_Rect tmpDest = dest6;
         SDL_BlitSurface(frame[type].hborder.get(), nullptr, Pic, &tmpDest);
     }
@@ -450,14 +492,16 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, DecorationFrame decorationType,
     // vborders
     SDL_Rect dest7 = calcDrawingRect(frame[type].vborder.get(), dest->x, dest->y);
     for (dest7.y = frame[type].leftUpperCorner.get()->h + dest->y;
-         dest7.y <= dest->h - frame[type].leftLowerCorner.get()->h - 1; dest7.y += frame[type].vborder.get()->h) {
+         dest7.y <= dest->h - frame[type].leftLowerCorner.get()->h - 1;
+         dest7.y += frame[type].vborder.get()->h) {
         SDL_Rect tmpDest = dest7;
         SDL_BlitSurface(frame[type].vborder.get(), nullptr, Pic, &tmpDest);
     }
 
     SDL_Rect dest8 = calcDrawingRect(frame[type].vborder.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
     for (dest8.y = frame[type].rightUpperCorner.get()->h + dest->y;
-         dest8.y <= dest->h - frame[type].rightLowerCorner.get()->h - 1; dest8.y += frame[type].vborder.get()->h) {
+         dest8.y <= dest->h - frame[type].rightLowerCorner.get()->h - 1;
+         dest8.y += frame[type].vborder.get()->h) {
         SDL_Rect tmpDest = dest8;
         SDL_BlitSurface(frame[type].vborder.get(), nullptr, Pic, &tmpDest);
     }
@@ -493,8 +537,11 @@ sdl2::surface_ptr PictureFactory::createBackgroundTile() const {
 PictureFactory::DecorationBorderType PictureFactory::createDecorationBorder() const {
     const auto& d = decorationBorder;
 
-    return {copySurface(d.ball.get()), copySurface(d.hspacer.get()), copySurface(d.vspacer.get()),
-            copySurface(d.hborder.get()), copySurface(d.vborder.get())};
+    return {copySurface(d.ball.get()),
+            copySurface(d.hspacer.get()),
+            copySurface(d.vspacer.get()),
+            copySurface(d.hborder.get()),
+            copySurface(d.vborder.get())};
 }
 
 PictureFactory::BorderStyle PictureFactory::createBorderStyle(DecorationFrame type) const {
@@ -505,9 +552,12 @@ PictureFactory::BorderStyle PictureFactory::createBorderStyle(DecorationFrame ty
 
     const auto& f = frame[type_int];
 
-    return {copySurface(f.leftUpperCorner.get()), copySurface(f.rightUpperCorner.get()),
-            copySurface(f.leftLowerCorner.get()), copySurface(f.rightLowerCorner.get()),
-            copySurface(f.hborder.get()),         copySurface(f.vborder.get())};
+    return {copySurface(f.leftUpperCorner.get()),
+            copySurface(f.rightUpperCorner.get()),
+            copySurface(f.leftLowerCorner.get()),
+            copySurface(f.rightLowerCorner.get()),
+            copySurface(f.hborder.get()),
+            copySurface(f.vborder.get())};
 }
 
 sdl2::surface_ptr PictureFactory::createBackgroundTile(SDL_Surface* fame_pic) const {
@@ -565,17 +615,22 @@ sdl2::surface_ptr PictureFactory::createGameStatsBackground(HOUSETYPE House) con
         } break;
 
         default:
-            THROW(std::invalid_argument, "PictureFactory::createGameStatsBackground(): Unknown house %d!",
+            THROW(std::invalid_argument,
+                  "PictureFactory::createGameStatsBackground(): Unknown house %d!",
                   static_cast<int>(House));
     }
 
     pLogo = Scaler::defaultDoubleSurface(pLogo.get());
 
-    auto dest1 = calcDrawingRect(pLogo.get(), getWidth(gameStatsBackground.get()) / 2 - 320 + 2,
+    auto dest1 = calcDrawingRect(pLogo.get(),
+                                 getWidth(gameStatsBackground.get()) / 2 - 320 + 2,
                                  getHeight(gameStatsBackground.get()) / 2 - 200 + 16);
     SDL_BlitSurface(pLogo.get(), nullptr, pSurface.get(), &dest1);
-    auto dest2 = calcDrawingRect(pLogo.get(), getWidth(gameStatsBackground.get()) / 2 + 320 - 3,
-                                 getHeight(gameStatsBackground.get()) / 2 - 200 + 16, HAlign::Right, VAlign::Top);
+    auto dest2 = calcDrawingRect(pLogo.get(),
+                                 getWidth(gameStatsBackground.get()) / 2 + 320 - 3,
+                                 getHeight(gameStatsBackground.get()) / 2 - 200 + 16,
+                                 HAlign::Right,
+                                 VAlign::Top);
     SDL_BlitSurface(pLogo.get(), nullptr, pSurface.get(), &dest2);
 
     return pSurface;
@@ -644,7 +699,8 @@ sdl2::surface_ptr PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) co
     auto Pic = copySurface(HouseChoice);
 
     const SDL_Rect dest{0, 50, getWidth(Pic.get()), getHeight(Pic.get()) - 50};
-    assert(Pic->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(Pic->format) == 8);
     SDL_FillRect(Pic.get(), &dest, PALCOLOR_BLACK);
 
     drawFrame(Pic.get(), DecorationFrame::SimpleFrame, nullptr);
@@ -743,13 +799,14 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
 
     // clear everything in the middle
     static constexpr SDL_Rect clearRect{8, 24, 304, 119};
-    assert(pMapChoiceScreen->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(pMapChoiceScreen->format) == 8);
     SDL_FillRect(pMapChoiceScreen.get(), &clearRect, PALCOLOR_TRANSPARENT);
 
-    pMapChoiceScreen =
-        Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN,
-                                                          dune::globals::houseToPaletteIndex[static_cast<int>(House)])
-                                         .get());
+    pMapChoiceScreen = Scaler::defaultDoubleSurface(
+        mapSurfaceColorRange(
+            pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, dune::globals::houseToPaletteIndex[static_cast<int>(House)])
+            .get());
     auto pFullMapChoiceScreen = copySurface(background.get());
 
     SDL_Rect dest = calcAlignedDrawingRect(pMapChoiceScreen.get(), pFullMapChoiceScreen.get());
@@ -817,13 +874,14 @@ sdl2::surface_ptr PictureFactory::createOrdosLogo() const {
 }
 
 sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
-    assert(heraldHark->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(heraldHark->format) == 8);
 
     auto pRedReplaced = mapSurfaceColorRange(heraldHark, PALCOLOR_HARKONNEN, PALCOLOR_FREMEN);
 
-    assert(pRedReplaced->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(pRedReplaced->format) == 8);
     const auto pBlueReplaced = mapSurfaceColorRange(pRedReplaced.get(), PALCOLOR_ATREIDES, PALCOLOR_FREMEN + 1);
-    pRedReplaced.reset();
 
     replaceColor(pBlueReplaced.get(), 170, 194);
     replaceColor(pBlueReplaced.get(), 173, 195);
@@ -835,12 +893,12 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     pTmp1.reset();
 
     auto pMask = LoadPNG_RW(file_manager->openFile("HeraldFreMask.png").get());
-    SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
+    SDL_SetSurfaceColorKey(pMask.get(), true, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pBlueReplaced.get(), nullptr);
     pMask.reset();
 
-    SDL_SetColorKey(pBlueReplaced.get(), SDL_TRUE, 223);
+    SDL_SetSurfaceColorKey(pBlueReplaced.get(), true, 223);
 
     SDL_BlitSurface(pBlueReplaced.get(), nullptr, pSandworm.get(), nullptr);
 
@@ -848,7 +906,8 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
 }
 
 sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) {
-    assert(heraldOrd->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(heraldOrd->format) == 8);
     const auto pGreenReplaced = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_SARDAUKAR - 1);
 
     replaceColor(pGreenReplaced.get(), 3, 209);
@@ -867,7 +926,8 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
 }
 
 sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) {
-    assert(heraldAtre->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(heraldAtre->format) == 8);
     auto pBlueReplaced = mapSurfaceColorRange(heraldAtre, PALCOLOR_ATREIDES, PALCOLOR_MERCENARY);
 
     const auto pRedReplaced = mapSurfaceColorRange(pBlueReplaced.get(), PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES);
@@ -884,12 +944,12 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
     pSoldier      = getSubPicture(pSoldier.get(), 49, 17, 83, 91);
 
     auto pMask = LoadPNG_RW(file_manager->openFile("HeraldMercMask.png").get());
-    SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
+    SDL_SetSurfaceColorKey(pMask.get(), true, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pFrameAndCurtain.get(), nullptr);
     pMask.reset();
 
-    SDL_SetColorKey(pFrameAndCurtain.get(), SDL_TRUE, 223);
+    SDL_SetSurfaceColorKey(pFrameAndCurtain.get(), true, 223);
 
     SDL_BlitSurface(pFrameAndCurtain.get(), nullptr, pSoldier.get(), nullptr);
 
@@ -906,7 +966,8 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
     SDL_Rect dest{12, 66, getWidth(heraldFre) - 2, getHeight(heraldFre)};
     SDL_BlitSurface(heraldFre, &src, newFrame.get(), &dest);
 
-    assert(newFrame->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(newFrame->format) == 8);
     drawRect(newFrame.get(), 0, 0, newFrame->w - 1, newFrame->h - 1, PALCOLOR_WHITE);
 
     newAnimation->addFrame(std::move(newFrame));
@@ -1019,7 +1080,8 @@ PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation, SDL_Su
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordosMentat) {
-    assert(ordosMentat->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(ordosMentat->format) == 8);
     auto mappedSurface = mapSurfaceColorRange(ordosMentat, PALCOLOR_ORDOS, PALCOLOR_MERCENARY);
 
     static constexpr auto colorMap{[] {
@@ -1050,10 +1112,11 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToFremen(Animation*
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harkonnenMentat) {
-    assert(harkonnenMentat->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(harkonnenMentat->format) == 8);
     auto mappedSurface = mapSurfaceColorRange(harkonnenMentat, PALCOLOR_HARKONNEN, PALCOLOR_SARDAUKAR);
 
-    static constexpr auto colorMap{[] {
+    static constexpr auto colorMap = [] {
         auto map = create_color_map();
 
         map[54]  = 212;
@@ -1067,7 +1130,7 @@ sdl2::surface_ptr PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harko
         map[202] = 213;
 
         return map;
-    }()};
+    }();
 
     mapColor(mappedSurface.get(), colorMap.data());
 
@@ -1101,7 +1164,8 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animati
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToFremen(SDL_Surface* fremenMentat) {
-    assert(fremenMentat->format->BitsPerPixel == 8);
+    // SDL3: Use SDL_BITSPERPIXEL macro instead of format->BitsPerPixel
+    assert(SDL_BITSPERPIXEL(fremenMentat->format) == 8);
     sdl2::surface_ptr mappedSurface{mapSurfaceColorRange(fremenMentat, PALCOLOR_ATREIDES, PALCOLOR_FREMEN)};
 
     static constexpr auto colorMap{[] {

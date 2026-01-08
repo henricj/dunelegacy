@@ -117,7 +117,8 @@ void TurretBase::handleActionCommand(const GameContext& context, int xPos, int y
     if (const auto* tile = map.tryGetTile(xPos, yPos)) {
         const auto* tempTarget = tile->getObject(objectManager);
         game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                    CMDTYPE::CMD_TURRET_ATTACKOBJECT, objectID_,
+                                                    CMDTYPE::CMD_TURRET_ATTACKOBJECT,
+                                                    objectID_,
                                                     tempTarget->getObjectID()));
     }
 }
@@ -163,9 +164,13 @@ void TurretBase::attack(const GameContext& context) {
 
         const auto& [game, map, objectManager] = context;
 
-        map.add_bullet(objectID_, &centerPoint, &targetCenterPoint, turret_constants().bulletType(),
+        map.add_bullet(objectID_,
+                       &centerPoint,
+                       &targetCenterPoint,
+                       turret_constants().bulletType(),
                        game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].weapondamage,
-                       pObject->isAFlyingUnit(), pObject);
+                       pObject->isAFlyingUnit(),
+                       pObject);
 
         map.viewMap(pObject->getOwner()->getHouseID(), location_, 2);
         dune::globals::soundPlayer->playSoundAt(attackSound, location_);

@@ -46,8 +46,8 @@ void DropDownBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) 
         bHover_ = false;
     }
 
-    openListBoxButton_.handleMouseMovement(x - (getSize().x - openListBoxButton_.getSize().x - 1), y - 1,
-                                           insideOverlay);
+    openListBoxButton_.handleMouseMovement(
+        x - (getSize().x - openListBoxButton_.getSize().x - 1), y - 1, insideOverlay);
 
     if (bShowListBox_) {
         listBox_.handleMouseMovement(x, bListBoxAbove_ ? (y + listBox_.getSize().y) : (y - getSize().y), insideOverlay);
@@ -152,7 +152,7 @@ bool DropDownBox::handleKeyPress(const SDL_KeyboardEvent& key) {
         const bool bSavedAutoclose          = bAutocloseListBoxOnSelectionChange_;
         bAutocloseListBoxOnSelectionChange_ = false;
 
-        switch (key.keysym.sym) {
+        switch (key.key) {
             case SDLK_UP: {
                 listBox_.nudgeSelectedItem(false);
             } break;

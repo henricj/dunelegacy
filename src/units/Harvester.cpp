@@ -125,9 +125,13 @@ void Harvester::blitToScreen() {
         const auto sandSource =
             calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle_), NUM_ANGLES, frame, LASTSANDFRAME + 1);
         const auto sandDest = calcSpriteDrawingRectF(
-            pSandGraphic, screenborder->world2screenX(realX_ + harvesterSandOffset[static_cast<int>(drawnAngle_)].x),
-            screenborder->world2screenY(realY_ + harvesterSandOffset[static_cast<int>(drawnAngle_)].y), NUM_ANGLES,
-            LASTSANDFRAME + 1, HAlign::Center, VAlign::Center);
+            pSandGraphic,
+            screenborder->world2screenX(realX_ + harvesterSandOffset[static_cast<int>(drawnAngle_)].x),
+            screenborder->world2screenY(realY_ + harvesterSandOffset[static_cast<int>(drawnAngle_)].y),
+            NUM_ANGLES,
+            LASTSANDFRAME + 1,
+            HAlign::Center,
+            VAlign::Center);
 
         Dune_RenderCopyF(renderer, pSandGraphic, &sandSource, &sandDest);
     }
@@ -162,8 +166,8 @@ void Harvester::checkPos(const GameContext& context) {
                     setReturned(context);
                 } else {
                     // the repair yard is already in use by some other unit => move out
-                    const auto newDestination = map.findDeploySpot(this, target_.getObjPointer()->getLocation(),
-                                                                   getLocation(), pRefinery->getStructureSize());
+                    const auto newDestination = map.findDeploySpot(
+                        this, target_.getObjPointer()->getLocation(), getLocation(), pRefinery->getStructureSize());
                     doMove2Pos(context, newDestination, true);
                     requestCarryall(context);
                 }
@@ -272,7 +276,10 @@ void Harvester::destroy(const GameContext& context) {
             const auto circleRadius = lround(spice / 210);
 
             /* how many regions have sand */
-            map.for_each(xpos - circleRadius, ypos - circleRadius, xpos + circleRadius, ypos + circleRadius,
+            map.for_each(xpos - circleRadius,
+                         ypos - circleRadius,
+                         xpos + circleRadius,
+                         ypos + circleRadius,
                          [xpos, ypos, circleRadius, &availableSandPos](auto& tile) {
                              if (distanceFrom({xpos, ypos}, tile.location_) + 0.0005_fix > circleRadius)
                                  return;
@@ -282,7 +289,10 @@ void Harvester::destroy(const GameContext& context) {
                          });
 
             /* now we can spread spice */
-            map.for_each(xpos - circleRadius, ypos - circleRadius, xpos + circleRadius, ypos + circleRadius,
+            map.for_each(xpos - circleRadius,
+                         ypos - circleRadius,
+                         xpos + circleRadius,
+                         ypos + circleRadius,
                          [xpos, ypos, circleRadius, availableSandPos, spiceSpread](auto& tile) {
                              if (distanceFrom({xpos, ypos}, tile.location_) + 0.0005_fix > circleRadius)
                                  return;
@@ -319,8 +329,11 @@ void Harvester::drawSelectionBox() {
         default: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
     }
 
-    auto dest = calcDrawingRectF(selectionBox, screenborder->world2screenX(realX_), screenborder->world2screenY(realY_),
-                                 HAlign::Center, VAlign::Center);
+    auto dest = calcDrawingRectF(selectionBox,
+                                 screenborder->world2screenX(realX_),
+                                 screenborder->world2screenY(realY_),
+                                 HAlign::Center,
+                                 VAlign::Center);
     Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
 
     const auto zoom = dune::globals::currentZoomlevel;

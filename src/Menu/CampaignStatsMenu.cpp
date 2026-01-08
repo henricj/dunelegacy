@@ -72,8 +72,8 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     yourRankLabel.setAlignment(Alignment_HCenter);
     yourRankLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     yourRankLabel.setText(_("@DUNE.ENG|23#You have attained the rank"));
-    windowWidget.addWidget(&yourRankLabel, size / 2 + Point(-yourRankLabel.getSize().x / 2, -126),
-                           yourRankLabel.getSize());
+    windowWidget.addWidget(
+        &yourRankLabel, size / 2 + Point(-yourRankLabel.getSize().x / 2, -126), yourRankLabel.getSize());
 
     rankLabel.setAlignment(Alignment_HCenter);
     rankLabel.setText(rank_);
@@ -82,13 +82,15 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     spiceHarvestedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     spiceHarvestedByLabel.setAlignment(Alignment_HCenter);
     spiceHarvestedByLabel.setText(_("@DUNE.ENG|26#Spice harvested by"));
-    windowWidget.addWidget(&spiceHarvestedByLabel, size / 2 + Point(-spiceHarvestedByLabel.getSize().x / 2, -40),
+    windowWidget.addWidget(&spiceHarvestedByLabel,
+                           size / 2 + Point(-spiceHarvestedByLabel.getSize().x / 2, -40),
                            spiceHarvestedByLabel.getSize());
 
     unitsDestroyedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     unitsDestroyedByLabel.setAlignment(Alignment_HCenter);
     unitsDestroyedByLabel.setText(_("@DUNE.ENG|24#Units destroyed by"));
-    windowWidget.addWidget(&unitsDestroyedByLabel, size / 2 + Point(-unitsDestroyedByLabel.getSize().x / 2, 34),
+    windowWidget.addWidget(&unitsDestroyedByLabel,
+                           size / 2 + Point(-unitsDestroyedByLabel.getSize().x / 2, 34),
                            unitsDestroyedByLabel.getSize());
 
     buildingsDestroyedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
@@ -207,7 +209,7 @@ int CampaignStatsMenu::showMenuImpl() {
 }
 
 void CampaignStatsMenu::doInputImpl(const SDL_Event& event) {
-    if (event.type == SDL_MOUSEBUTTONUP) {
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_UP) {
         if (currentState_ == CampaignStatsState::State_Finished) {
             quit();
         } else {

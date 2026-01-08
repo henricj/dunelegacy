@@ -22,7 +22,7 @@
 #include "globals.h"
 #include "misc/draw_util.h"
 
-#include <misc/dune_sdl.h>
+#include <misc/dune_sdl.h> // Includes dune_sdl2to3.h for compat macros
 
 #include <cassert>
 #include <cmath>
@@ -55,9 +55,10 @@ void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, flo
             sdl2::log_error("DuneDrawLines failed: {}", SDL_GetError());
 
         // bottom right bit
-        const auto ret4 = DuneDrawLines(renderer, {{x + w - 1 - offset, y + h - 1 - fi},
-                                                   {x + w - 1 - fi, y + h - 1 - fi},
-                                                   {x + w - 1 - fi, y + h - 1 - offset}});
+        const auto ret4 = DuneDrawLines(renderer,
+                                        {{x + w - 1 - offset, y + h - 1 - fi},
+                                         {x + w - 1 - fi, y + h - 1 - fi},
+                                         {x + w - 1 - fi, y + h - 1 - offset}});
         if (0 != ret4)
             sdl2::log_error("DuneDrawLines failed: {}", SDL_GetError());
     }
@@ -69,23 +70,23 @@ RenderClip::RenderClip(SDL_Renderer* renderer, const SDL_Rect& clip)
     : was_clipping_{SDL_RenderIsClipEnabled(renderer)}, renderer_{renderer} {
 
     if (was_clipping_)
-        SDL_RenderGetClipRect(renderer, &old_clip);
+        SDL_GetRenderClipRect(renderer, &old_clip);
 
     SDL_RenderSetClipRect(renderer, &clip);
 }
 
 RenderClip::~RenderClip() {
     if (was_clipping_)
-        SDL_RenderSetClipRect(renderer_, &old_clip);
+        SDL_SetRenderClipRect(renderer_, &old_clip);
     else
-        SDL_RenderSetClipRect(renderer_, nullptr);
+        SDL_SetRenderClipRect(renderer_, nullptr);
 }
 
 } // namespace dune
 
+// Dune_RenderCopyEx wrapper using compat macros from dune_sdl2to3.h
 int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
-                      const SDL_Rect* dstrect, const double angle, const SDL_Point* center,
-                      const SDL_RendererFlip flip) {
+                      const SDL_Rect* dstrect, const double angle, const SDL_Point* center, const SDL_FlipMode flip) {
     assert(texture && texture->texture_);
     assert(texture->source_.x >= 0 && texture->source_.y >= 0 && texture->source_.w > 0 && texture->source_.h > 0);
 
@@ -105,9 +106,10 @@ int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const 
     return SDL_RenderCopyEx(renderer, texture->texture_, &source, dstrect, angle, center, flip);
 }
 
+// Dune_RenderCopyExF wrapper using compat macros from dune_sdl2to3.h
 int Dune_RenderCopyExF(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
                        const SDL_FRect* dstrect, const double angle, const SDL_FPoint* center,
-                       const SDL_RendererFlip flip) {
+                       const SDL_FlipMode flip) {
     assert(texture && texture->texture_);
     assert(texture->source_.x >= 0 && texture->source_.y >= 0 && texture->source_.w > 0 && texture->source_.h > 0);
 
@@ -199,7 +201,9 @@ void DuneRendererImplementation::countRenderCopy(SDL_Texture* texture) {
 void Dune_RenderDump() {
     using namespace DuneRendererImplementation;
 
-    sdl2::log_info("present calls: {}, copy calls: {}, texture changes: {}", render_presents, render_copies,
+    sdl2::log_info("present calls: {}, copy calls: {}, texture changes: {}",
+                   render_presents,
+                   render_copies,
                    render_texture_changes);
 
     auto max_w = 0, max_h = 0;
@@ -211,8 +215,8 @@ void Dune_RenderDump() {
         if (SDL_QueryTexture(it.first, nullptr, nullptr, &w, &h))
             continue;
 
-        sdl2::log_info("texture {} of size {}x{} rendered {} times", reinterpret_cast<intptr_t>(it.first), w, h,
-                       it.second);
+        sdl2::log_info(
+            "texture {} of size {}x{} rendered {} times", reinterpret_cast<intptr_t>(it.first), w, h, it.second);
 
         if (w > max_w)
             max_w = w;
@@ -224,8 +228,8 @@ void Dune_RenderDump() {
 
     const auto square = static_cast<int>(std::ceil(std::sqrt(pixels)));
 
-    sdl2::log_info("{} textures max_w={} max_h={} pixels={} ({}x{})", render_textures.size(), max_w, max_h, pixels,
-                   square, square);
+    sdl2::log_info(
+        "{} textures max_w={} max_h={} pixels={} ({}x{})", render_textures.size(), max_w, max_h, pixels, square, square);
 }
 
 namespace DuneRendererImplementation {

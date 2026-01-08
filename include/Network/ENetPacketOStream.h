@@ -96,19 +96,19 @@ public:
 
     void writeUint16(uint16_t x) override {
         ensureBufferSize(currentPos + sizeof(uint16_t));
-        *reinterpret_cast<uint16_t*>(packet->data + currentPos) = SDL_SwapLE16(x);
+        *reinterpret_cast<uint16_t*>(packet->data + currentPos) = SDL_Swap16LE(x);
         currentPos += sizeof(uint16_t);
     }
 
     void writeUint32(uint32_t x) override {
         ensureBufferSize(currentPos + sizeof(uint32_t));
-        *reinterpret_cast<uint32_t*>(packet->data + currentPos) = SDL_SwapLE32(x);
+        *reinterpret_cast<uint32_t*>(packet->data + currentPos) = SDL_Swap32LE(x);
         currentPos += sizeof(uint32_t);
     }
 
     void writeUint64(uint64_t x) override {
         ensureBufferSize(currentPos + sizeof(uint64_t));
-        *reinterpret_cast<uint64_t*>(packet->data + currentPos) = SDL_SwapLE64(x);
+        *reinterpret_cast<uint64_t*>(packet->data + currentPos) = SDL_Swap64LE(x);
         currentPos += sizeof(uint64_t);
     }
 

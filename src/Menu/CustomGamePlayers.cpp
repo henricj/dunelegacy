@@ -100,13 +100,15 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
         uint32_t magicNum = memStream.readUint32();
         if (magicNum != SAVEMAGIC) {
             sdl2::log_info("CustomGamePlayers: No valid savegame! Expected magic number {:#08X}, but got {:#08X}!",
-                           SAVEMAGIC, magicNum);
+                           SAVEMAGIC,
+                           magicNum);
         }
 
         uint32_t savegameVersion = memStream.readUint32();
         if (savegameVersion != SAVEGAMEVERSION) {
             sdl2::log_info("CustomGamePlayers: No valid savegame! Expected savegame version {}, but got {}!",
-                           SAVEGAMEVERSION, savegameVersion);
+                           SAVEGAMEVERSION,
+                           savegameVersion);
         }
 
         memStream.readString(); // dune legacy version
@@ -414,7 +416,11 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
 
     if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
         if (bServer) {
-            network_manager->startServer(bLANServer, gameInitSettings.getServername(), playername, &gameInitSettings, 1,
+            network_manager->startServer(bLANServer,
+                                         gameInitSettings.getServername(),
+                                         playername,
+                                         &gameInitSettings,
+                                         1,
                                          gameInitSettings.isMultiplePlayersPerHouse() ? numHouses * 2 : numHouses);
         }
 
@@ -588,16 +594,16 @@ ChangeEventList CustomGamePlayers::getChangeEventList() const {
             auto playername = curHouseInfo.player1DropDown.getSelectedEntry();
             changeEventList.changeEventList_.emplace_back(2 * i, std::move(playername));
         } else {
-            changeEventList.changeEventList_.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2 * i,
-                                                          player1);
+            changeEventList.changeEventList_.emplace_back(
+                ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2 * i, player1);
         }
 
         if (player2 == PLAYER_HUMAN) {
             auto playername = curHouseInfo.player2DropDown.getSelectedEntry();
             changeEventList.changeEventList_.emplace_back(2 * i + 1, std::move(playername));
         } else {
-            changeEventList.changeEventList_.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer,
-                                                          2 * i + 1, player2);
+            changeEventList.changeEventList_.emplace_back(
+                ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2 * i + 1, player2);
         }
     }
 
@@ -946,8 +952,8 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
 
     for (int p = 0; p < NUM_HOUSES && currentIndex < NUM_HOUSES; p++) {
         if (pMap->hasSection("Player" + std::to_string(p + 1))) {
-            std::string teamName = strToUpper(pMap->getStringValue("Player" + std::to_string(p + 1), "Brain",
-                                                                   "Team " + std::to_string(currentIndex + p + 1)));
+            std::string teamName = strToUpper(pMap->getStringValue(
+                "Player" + std::to_string(p + 1), "Brain", "Team " + std::to_string(currentIndex + p + 1)));
 
             const auto it = std::ranges::find(teamNames, teamName);
             if (it == teamNames.end()) {
@@ -972,8 +978,8 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
         int selectedHouseID = houseInfo[houseInfoNum].houseDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList_.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeHouse,
-                                                      houseInfoNum, selectedHouseID);
+        changeEventList.changeEventList_.emplace_back(
+            ChangeEventList::ChangeEvent::EventType::ChangeHouse, houseInfoNum, selectedHouseID);
 
         network_manager->sendChangeEventList(changeEventList);
     }
@@ -1086,8 +1092,8 @@ void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseIn
         int selectedTeam = houseInfo[houseInfoNum].teamDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList_.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeTeam, houseInfoNum,
-                                                      selectedTeam);
+        changeEventList.changeEventList_.emplace_back(
+            ChangeEventList::ChangeEvent::EventType::ChangeTeam, houseInfoNum, selectedTeam);
 
         network_manager->sendChangeEventList(changeEventList);
     }
@@ -1103,8 +1109,8 @@ void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnu
         int selectedPlayer = dropDownBox.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList_.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer, boxnum,
-                                                      selectedPlayer);
+        changeEventList.changeEventList_.emplace_back(
+            ChangeEventList::ChangeEvent::EventType::ChangePlayer, boxnum, selectedPlayer);
 
         network_manager->sendChangeEventList(changeEventList);
     }
@@ -1368,8 +1374,8 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
                     currentItemIndex++;
                 } else {
                     if (h == static_cast<int>(house)) {
-                        houseDropDownBox.insertEntry(currentItemIndex, getHouseNameByNumber(static_cast<HOUSETYPE>(h)),
-                                                     h);
+                        houseDropDownBox.insertEntry(
+                            currentItemIndex, getHouseNameByNumber(static_cast<HOUSETYPE>(h)), h);
 
                         if (bSelect) {
                             houseDropDownBox.setSelectedItem(currentItemIndex);

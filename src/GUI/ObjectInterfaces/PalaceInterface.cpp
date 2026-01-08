@@ -13,8 +13,8 @@ sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, [
 
     const auto pText{dune::globals::pFontManager->getFont(12)->createTextSurface(_("READY"), COLOR_WHITE)};
 
-    sdl2::surface_ptr pReady{SDL_CreateRGBSurface(0, getWidth(deathHandSurface), getHeight(deathHandSurface),
-                                                  SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr pReady{SDL_CreateRGBSurface(
+        0, getWidth(deathHandSurface), getHeight(deathHandSurface), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_FillRect(pReady.get(), nullptr, COLOR_TRANSPARENT);
 
     auto dest = calcAlignedDrawingRect(pText.get(), pReady.get());

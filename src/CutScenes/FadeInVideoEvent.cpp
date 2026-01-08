@@ -44,7 +44,12 @@ int FadeInVideoEvent::draw() {
     if (bFadeWhite) {
         // fade from white
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderFillRect(renderer, &dest);
+        // SDL3: SDL_RenderFillRect now takes SDL_FRect*
+        const SDL_FRect destF{static_cast<float>(dest.x),
+                              static_cast<float>(dest.y),
+                              static_cast<float>(dest.w),
+                              static_cast<float>(dest.h)};
+        SDL_RenderFillRect(renderer, &destF);
     }
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);
     Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);

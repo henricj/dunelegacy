@@ -146,18 +146,21 @@ bool LoadMapWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
     }
 
     if (isEnabled() && (pWindowWidget_ != nullptr)) {
-        if (key.keysym.sym == SDLK_RETURN) {
+        // SDL3: keysym.sym renamed to key
+        if (key.key == SDLK_RETURN) {
             onLoad();
             return true;
         }
-        if (key.keysym.sym == SDLK_DELETE) {
+        if (key.key == SDLK_DELETE) {
             const auto index = mapList.getSelectedIndex();
             if (!mapList.isValid(index))
                 return true;
 
             auto* const pQstBox =
                 QstBox::create(fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index)),
-                               _("Yes"), _("No"), QSTBOX_BUTTON1);
+                               _("Yes"),
+                               _("No"),
+                               QSTBOX_BUTTON1);
 
             pQstBox->setTextColor(color);
 

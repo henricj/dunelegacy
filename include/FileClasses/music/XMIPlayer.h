@@ -20,7 +20,7 @@
 
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <SDL2/SDL_mixer.h>
+#include <misc/dune_sdl_mixer.h>
 
 class XMIPlayer final : public MusicPlayer {
 public:

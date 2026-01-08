@@ -129,11 +129,11 @@ FixPoint Ornithopter::getDestinationAngle() const {
 
     if (fly_away) {
         // we already shot at target and now want to fly in the opposite direction
-        angle = destinationAngleRad(destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2,
-                                    realX_, realY_);
+        angle = destinationAngleRad(
+            destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2, realX_, realY_);
     } else {
-        angle = destinationAngleRad(realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2,
-                                    destination_.y * TILESIZE + TILESIZE / 2);
+        angle = destinationAngleRad(
+            realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2);
     }
 
     return angle * (8 / (FixPt_PI << 1));

@@ -156,8 +156,11 @@ void Sandworm::blitToScreen() {
 
             const auto offset = static_cast<float>(shimmerOffset[(shimmerOffsetIndex_ + i) % shimmerOffset.size()] * 2);
 
-            const auto dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(loc.x),
-                                              screenborder->world2screenY(loc.y), HAlign::Center, VAlign::Center);
+            const auto dest = calcDrawingRect(shimmerMaskTex,
+                                              screenborder->world2screenX(loc.x),
+                                              screenborder->world2screenY(loc.y),
+                                              HAlign::Center,
+                                              VAlign::Center);
 
             SDL_SetTextureAlphaMod(shimmerMaskTex->texture_, 4);
             SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_ADD);
@@ -187,9 +190,13 @@ void Sandworm::blitToScreen() {
     if (drawnFrame != INVALID) {
         const auto* graphic = graphic_[zoom];
 
-        const auto dest =
-            calcSpriteDrawingRect(graphic, screenborder->world2screenX(realX_), screenborder->world2screenY(realY_),
-                                  numImagesX_, numImagesY_, HAlign::Center, VAlign::Center);
+        const auto dest   = calcSpriteDrawingRect(graphic,
+                                                screenborder->world2screenX(realX_),
+                                                screenborder->world2screenY(realY_),
+                                                numImagesX_,
+                                                numImagesY_,
+                                                HAlign::Center,
+                                                VAlign::Center);
         const auto source = calcSpriteSourceRect(graphic, 0, numImagesX_, drawnFrame, numImagesY_);
         Dune_RenderCopyF(renderer, graphic, &source, &dest);
     }
@@ -361,8 +368,8 @@ bool Sandworm::update(const GameContext& context) {
                                 const bool wasAlive =
                                     object->isVisible(getOwner()->getTeamID()); // see if unit was alive before attack
                                 const Coord realPos = Coord(lround(realX_), lround(realY_));
-                                map.damage(context, objectID_, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID,
-                                           false);
+                                map.damage(
+                                    context, objectID_, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID, false);
                                 // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive()
                                 // method?
                                 if (wasAlive && target_

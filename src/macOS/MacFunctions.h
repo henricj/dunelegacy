@@ -13,4 +13,4 @@ void getMacApplicationSupportFolder(char* buffer, int len);
 }
 #endif
 
-#endif //MACFUNCTIONS_H
+#endif // MACFUNCTIONS_H

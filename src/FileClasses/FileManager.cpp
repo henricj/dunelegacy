@@ -126,8 +126,18 @@ const std::vector<std::filesystem::path>& FileManager::getSearchPath() {
 
 std::vector<std::string> PakFileConfiguration::getNeededFiles() {
     std::vector<std::string> fileList = {
-        "LEGACY.PAK", "OPENSD2.PAK", "GFXHD.PAK",  "DUNE.PAK",  "SCENARIO.PAK", "MENTAT.PAK",
-        "VOC.PAK",    "MERC.PAK",    "FINALE.PAK", "INTRO.PAK", "INTROVOC.PAK", "SOUND.PAK",
+        "LEGACY.PAK",
+        "OPENSD2.PAK",
+        "GFXHD.PAK",
+        "DUNE.PAK",
+        "SCENARIO.PAK",
+        "MENTAT.PAK",
+        "VOC.PAK",
+        "MERC.PAK",
+        "FINALE.PAK",
+        "INTRO.PAK",
+        "INTROVOC.PAK",
+        "SOUND.PAK",
     };
 
     auto LanguagePakFiles = std::string{dune::globals::pTextManager != nullptr ? _("LanguagePakFiles") : ""};

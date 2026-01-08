@@ -62,9 +62,10 @@ constexpr auto getHeight(SDL_Surface* pSurface) {
     \return the width of pTexture
 */
 inline auto getWidth(SDL_Texture* pTexture) {
-    int w;
-    SDL_QueryTexture(pTexture, nullptr, nullptr, &w, nullptr);
-    return w;
+    // SDL3: SDL_QueryTexture removed, use SDL_GetTextureSize
+    float w;
+    SDL_GetTextureSize(pTexture, &w, nullptr);
+    return static_cast<int>(w);
 }
 
 /**
@@ -73,9 +74,10 @@ inline auto getWidth(SDL_Texture* pTexture) {
     \return the height of pTexture
 */
 inline auto getHeight(SDL_Texture* pTexture) {
-    int h;
-    SDL_QueryTexture(pTexture, nullptr, nullptr, nullptr, &h);
-    return h;
+    // SDL3: SDL_QueryTexture removed, use SDL_GetTextureSize
+    float h;
+    SDL_GetTextureSize(pTexture, nullptr, &h);
+    return static_cast<int>(h);
 }
 
 /**
@@ -131,9 +133,11 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Texture* pTexture, int col, int numCols
     assert(col >= 0 && col < numCols);
     assert(row >= 0 && row < numRows);
 
-    int w;
-    int h;
-    SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
+    // SDL3: SDL_QueryTexture removed, use SDL_GetTextureSize
+    float fw, fh;
+    SDL_GetTextureSize(pTexture, &fw, &fh);
+    int w = static_cast<int>(fw);
+    int h = static_cast<int>(fh);
     const SDL_Rect rect = {col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
     return rect;
 }
@@ -247,8 +251,11 @@ inline auto calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int numCo
     assert(numCols > 0);
     assert(numRows > 0);
 
-    SDL_Rect rect = {x, y, 0, 0};
-    SDL_QueryTexture(pTexture, nullptr, nullptr, &rect.w, &rect.h);
+    // SDL3: SDL_QueryTexture removed, use SDL_GetTextureSize
+    float fw, fh;
+    SDL_GetTextureSize(pTexture, &fw, &fh);
+
+    SDL_Rect rect = {x, y, static_cast<int>(fw), static_cast<int>(fh)};
 
     rect.w /= numCols;
     rect.h /= numRows;
@@ -286,8 +293,12 @@ inline auto calcSpriteDrawingRectF(SDL_Texture* pTexture, int x, int y, int numC
     assert(numCols > 0);
     assert(numRows > 0);
 
-    int w, h;
-    SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
+    // SDL3: SDL_QueryTexture removed, use SDL_GetTextureSize
+    float fw, fh;
+    SDL_GetTextureSize(pTexture, &fw, &fh);
+
+    int w = static_cast<int>(fw);
+    int h = static_cast<int>(fh);
 
     if (numCols > 1)
         w /= numCols;
@@ -541,11 +552,14 @@ constexpr auto calcDrawingRectF(const DuneTexture* pTexture, float x, float y, H
 inline auto getRendererSizePoint() {
     auto* const renderer = dune::globals::renderer.get();
 
+    // SDL3: SDL_RenderGetLogicalSize -> SDL_GetRenderLogicalPresentation
+    // SDL3: SDL_GetRendererOutputSize -> SDL_GetCurrentRenderOutputSize
     int w, h;
-    SDL_RenderGetLogicalSize(renderer, &w, &h);
+    SDL_RendererLogicalPresentation presentation;
+    SDL_GetRenderLogicalPresentation(renderer, &w, &h, &presentation);
 
     if (w == 0 || h == 0)
-        SDL_GetRendererOutputSize(renderer, &w, &h);
+        SDL_GetCurrentRenderOutputSize(renderer, &w, &h);
 
     return SDL_Point{w, h};
 }

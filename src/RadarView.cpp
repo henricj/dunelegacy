@@ -43,7 +43,9 @@ RadarView::RadarView()
         THROW(std::runtime_error, "RadarView::RadarView(): Cannot create new surface!");
     }
 
-    SDL_FillRect(radarSurface.get(), nullptr, SDL_MapRGB(radarSurface->format, 100, 50, 0));
+    // SDL3: SDL_MapRGB now takes SDL_PixelFormatDetails* and SDL_Palette*
+    const auto* formatDetails = SDL_GetPixelFormatDetails(radarSurface->format);
+    SDL_FillSurfaceRect(radarSurface.get(), nullptr, SDL_MapRGB(formatDetails, nullptr, 100, 50, 0));
 
     radarTexture = sdl2::texture_ptr{
         SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128)};
@@ -60,8 +62,8 @@ int RadarView::getMapSizeY() const {
 }
 
 void RadarView::draw(Point position) {
-    const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS,
-                                    RADARWIDTH, RADARHEIGHT};
+    const SDL_Rect radarPosition = {
+        position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
 
     const auto* const screenborder = dune::globals::screenborder.get();
     auto* const renderer           = dune::globals::renderer.get();
@@ -115,21 +117,27 @@ void RadarView::draw(Point position) {
                 radarRect.h = static_cast<float>(radarPosition.h) - offsetFromBottomY - radarRect.y - 1;
             }
 
-            renderDrawRectF(renderer, static_cast<float>(radarPosition.x) + radarRect.x,
+            renderDrawRectF(renderer,
+                            static_cast<float>(radarPosition.x) + radarRect.x,
                             static_cast<float>(radarPosition.y) + radarRect.y,
                             static_cast<float>(radarPosition.x) + (radarRect.x + radarRect.w - 1),
-                            static_cast<float>(radarPosition.y) + (radarRect.y + radarRect.h - 1), COLOR_WHITE);
+                            static_cast<float>(radarPosition.y) + (radarRect.y + radarRect.h - 1),
+                            COLOR_WHITE);
 
         } break;
 
         case RadarMode::AnimationRadarOff:
         case RadarMode::AnimationRadarOn: {
-            const auto source = calcSpriteSourceRect(
-                radarStaticAnimation, animFrame % NUM_STATIC_ANIMATIONS_PER_ROW, NUM_STATIC_ANIMATIONS_PER_ROW,
-                animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
-                (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
-            const auto dest = calcSpriteDrawingRect(radarStaticAnimation, static_cast<float>(radarPosition.x),
-                                                    static_cast<float>(radarPosition.y), NUM_STATIC_ANIMATIONS_PER_ROW,
+            const auto source = calcSpriteSourceRect(radarStaticAnimation,
+                                                     animFrame % NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                     NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                     animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                     (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1)
+                                                         / NUM_STATIC_ANIMATIONS_PER_ROW);
+            const auto dest   = calcSpriteDrawingRect(radarStaticAnimation,
+                                                    static_cast<float>(radarPosition.x),
+                                                    static_cast<float>(radarPosition.y),
+                                                    NUM_STATIC_ANIMATIONS_PER_ROW,
                                                     (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1)
                                                         / NUM_STATIC_ANIMATIONS_PER_ROW);
             Dune_RenderCopyF(renderer, radarStaticAnimation, &source, &dest);

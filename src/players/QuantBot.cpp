@@ -616,7 +616,11 @@ Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
             for (int placeLocationX = existingStartX - newSizeX; placeLocationX <= existingEndX; placeLocationX++) {
                 for (int placeLocationY = existingStartY - newSizeY; placeLocationY <= existingEndY; placeLocationY++) {
                     if (getMap().tileExists(placeLocationX, placeLocationY)) {
-                        if (getMap().okayToPlaceStructure(placeLocationX, placeLocationY, newSizeX, newSizeY, false,
+                        if (getMap().okayToPlaceStructure(placeLocationX,
+                                                          placeLocationY,
+                                                          newSizeX,
+                                                          newSizeY,
+                                                          false,
                                                           (itemID == Structure_ConstructionYard) ? nullptr
                                                                                                  : getHouse())) {
 
@@ -759,9 +763,15 @@ void QuantBot::build(int militaryValue) {
     int money = getHouse()->getCredits();
 
     if (militaryValue > 0 || getHouse()->getNumStructures() > 0) {
-        logDebug(" att: %d  crdt: %d  mVal: %d/%d  built: %d  kill: %d  loss: %d hvstr: %d/%d", attackTimer,
-                 getHouse()->getCredits(), militaryValueLimit, militaryValue, getHouse()->getUnitBuiltValue(),
-                 getHouse()->getKillValue(), getHouse()->getLossValue(), getHouse()->getNumItems(Unit_Harvester),
+        logDebug(" att: %d  crdt: %d  mVal: %d/%d  built: %d  kill: %d  loss: %d hvstr: %d/%d",
+                 attackTimer,
+                 getHouse()->getCredits(),
+                 militaryValueLimit,
+                 militaryValue,
+                 getHouse()->getUnitBuiltValue(),
+                 getHouse()->getKillValue(),
+                 getHouse()->getLossValue(),
+                 getHouse()->getNumItems(Unit_Harvester),
                  harvesterLimit);
     }
 
@@ -872,16 +882,21 @@ void QuantBot::build(int militaryValue) {
     // lets analyse damage inflicted
 
     logDebug("  Tank: %d/%d %f Siege: %d/%d %f Special: %d/%d %f Launch: %d/%d %f Orni: %d/%d %f",
-             getHouse()->getNumItemDamageInflicted(Unit_Tank), getHouse()->getNumLostItems(Unit_Tank) * 300,
-             tankPercent.toDouble(), getHouse()->getNumItemDamageInflicted(Unit_SiegeTank),
-             getHouse()->getNumLostItems(Unit_SiegeTank) * 600, siegePercent.toDouble(),
+             getHouse()->getNumItemDamageInflicted(Unit_Tank),
+             getHouse()->getNumLostItems(Unit_Tank) * 300,
+             tankPercent.toDouble(),
+             getHouse()->getNumItemDamageInflicted(Unit_SiegeTank),
+             getHouse()->getNumLostItems(Unit_SiegeTank) * 600,
+             siegePercent.toDouble(),
              getHouse()->getNumItemDamageInflicted(Unit_SonicTank)
                  + getHouse()->getNumItemDamageInflicted(Unit_Devastator)
                  + getHouse()->getNumItemDamageInflicted(Unit_Deviator),
              getHouse()->getNumLostItems(Unit_SonicTank) * 600 + getHouse()->getNumLostItems(Unit_Devastator) * 800
                  + getHouse()->getNumLostItems(Unit_Deviator) * 750,
-             specialPercent.toDouble(), getHouse()->getNumItemDamageInflicted(Unit_Launcher),
-             getHouse()->getNumLostItems(Unit_Launcher) * 450, launcherPercent.toDouble(),
+             specialPercent.toDouble(),
+             getHouse()->getNumItemDamageInflicted(Unit_Launcher),
+             getHouse()->getNumLostItems(Unit_Launcher) * 450,
+             launcherPercent.toDouble(),
              getHouse()->getNumItemDamageInflicted(Unit_Ornithopter),
              getHouse()->getNumLostItems(Unit_Ornithopter) * data[Unit_Ornithopter][static_cast<int>(houseID)].price,
              ornithopterPercent.toDouble());
@@ -1236,8 +1251,10 @@ void QuantBot::build(int militaryValue) {
                                         && findPlaceLocation(static_cast<ItemID_enum>(i)).isValid()
                                         && !pBuilder->isUpgrading() && pBuilder->getProductionQueueSize() < 1) {
 
-                                        logDebug("***CampAI Build itemID: %o structure count: %o, initial count: %o", i,
-                                                 itemCount[i], initialItemCount[i]);
+                                        logDebug("***CampAI Build itemID: %o structure count: %o, initial count: %o",
+                                                 i,
+                                                 itemCount[i],
+                                                 initialItemCount[i]);
                                         doProduceItem(pBuilder, static_cast<ItemID_enum>(i));
                                         itemCount[i]++;
                                     }
@@ -1364,7 +1381,8 @@ void QuantBot::build(int militaryValue) {
                                            || (money > 1000 + itemCount[Structure_HeavyFactory] * 3000)) {
                                     // If we have a lot of money get more heavy factories
                                     itemID = Structure_HeavyFactory;
-                                    logDebug("Build Factory... active: %d  total: %d", activeHeavyFactoryCount,
+                                    logDebug("Build Factory... active: %d  total: %d",
+                                             activeHeavyFactoryCount,
                                              getHouse()->getNumItems(Structure_HeavyFactory));
                                 } else if (itemCount[Structure_Refinery] * 3.5_fix < itemCount[Unit_Harvester]
                                            && pBuilder->isAvailableToBuild(Structure_Refinery)) {
@@ -1477,8 +1495,11 @@ void QuantBot::attack(int militaryValue) {
         return;
 
     logDebug("Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",
-             static_cast<int>(getHouse()->getHouseID()), static_cast<uint8_t>(difficulty), militaryValue,
-             militaryValueLimit, attackTimer);
+             static_cast<int>(getHouse()->getHouseID()),
+             static_cast<uint8_t>(difficulty),
+             militaryValue,
+             militaryValueLimit,
+             attackTimer);
 
     // overwriting existing logic for the time being
     attackTimer = MILLI2CYCLES(40000);

@@ -114,15 +114,16 @@ void InGameSettingsMenu::init() {
 }
 
 bool InGameSettingsMenu::handleKeyPress(const SDL_KeyboardEvent& key) {
-    switch (key.keysym.sym) {
+    // SDL3: keysym renamed to key
+    switch (key.key) {
         case SDLK_RETURN:
-            if (SDL_GetModState() & KMOD_ALT) {
+            if (SDL_GetModState() & SDL_KMOD_ALT) {
                 toggleFullscreen();
             }
             break;
 
         case SDLK_TAB:
-            if (SDL_GetModState() & KMOD_ALT) {
+            if (SDL_GetModState() & SDL_KMOD_ALT) {
                 SDL_MinimizeWindow(dune::globals::window.get());
             }
             break;

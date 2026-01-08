@@ -23,9 +23,12 @@
 #include <Menu/HouseChoiceInfoMenu.h>
 #include <SoundPlayer.h>
 
-static constexpr HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,
-                                           HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_MERCENARY,
-                                           HOUSETYPE::HOUSE_FREMEN,    HOUSETYPE::HOUSE_SARDAUKAR};
+static constexpr HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES,
+                                           HOUSETYPE::HOUSE_ORDOS,
+                                           HOUSETYPE::HOUSE_HARKONNEN,
+                                           HOUSETYPE::HOUSE_MERCENARY,
+                                           HOUSETYPE::HOUSE_FREMEN,
+                                           HOUSETYPE::HOUSE_SARDAUKAR};
 
 HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
 
@@ -61,8 +64,8 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
     houseLeftButton.setTextures(pArrowLeft, pArrowLeft, pArrowLeftHighlight);
     houseLeftButton.setOnClick([&] { onHouseLeft(); });
     houseLeftButton.setVisible(false);
-    windowWidget.addWidget(&houseLeftButton, {320 - static_cast<int>(getWidth(pArrowLeft)) - 85, 360},
-                           getTextureSize(pArrowLeft));
+    windowWidget.addWidget(
+        &houseLeftButton, {320 - static_cast<int>(getWidth(pArrowLeft)) - 85, 360}, getTextureSize(pArrowLeft));
 
     const auto* const pArrowRight          = gfx->getUIGraphic(UI_Herald_ArrowRightLarge);
     const auto* const pArrowRightHighlight = gfx->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);

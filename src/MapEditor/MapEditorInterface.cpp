@@ -84,8 +84,8 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     windowWidget.addWidget(&bottomBar, calcAlignedDrawingRect(pBottomBarTexture, HAlign::Left, VAlign::Bottom));
 
     // add radar
-    windowWidget.addWidget(&radarView, Point(getRendererWidth() - SIDEBARWIDTH + SIDEBAR_COLUMN_WIDTH, 0),
-                           radarView.getMinimumSize());
+    windowWidget.addWidget(
+        &radarView, Point(getRendererWidth() - SIDEBARWIDTH + SIDEBAR_COLUMN_WIDTH, 0), radarView.getMinimumSize());
     radarView.setOnRadarClick(
         [this](auto position, auto mouse_button, auto drag) { return onRadarClick(position, mouse_button, drag); });
 
@@ -218,7 +218,8 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     topBarHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     // add editor mode buttons
-    windowWidget.addWidget(&editorModeChooserHBox, Point(getRendererWidth() - sideBar.getSize().x + 14, 148),
+    windowWidget.addWidget(&editorModeChooserHBox,
+                           Point(getRendererWidth() - sideBar.getSize().x + 14, 148),
                            Point(sideBar.getSize().x - 15, 30));
 
     terrainButton.setText("T"sv);
@@ -242,7 +243,8 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     // house choice
     houseDropDownBox.setOnSelectionChange([this](auto interactive) { onHouseDropDownChanged(interactive); });
-    windowWidget.addWidget(&houseDropDownBox, Point(getRendererWidth() - sideBar.getSize().x + 14, 179),
+    windowWidget.addWidget(&houseDropDownBox,
+                           Point(getRendererWidth() - sideBar.getSize().x + 14, 179),
                            Point(sideBar.getSize().x - 15, 20));
 
     // setup terrain mode
@@ -790,7 +792,8 @@ void MapEditorInterface::onObjectSelected() {
     const MapEditor::Structure* pStructure = pMapEditor_->getSelectedStructure();
 
     if (pStructure != nullptr) {
-        windowWidget.addWidget(&structureDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
+        windowWidget.addWidget(&structureDetailsHBox,
+                               Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                Point(getRendererWidth() - sideBar.getSize().x, 24));
 
         structureDetailsHealthDropDownBox.setSelectedItem(pStructure->health_ - 1);
@@ -799,7 +802,8 @@ void MapEditorInterface::onObjectSelected() {
     }
 
     if (const auto* pUnit = pMapEditor_->getSelectedUnit()) {
-        windowWidget.addWidget(&unitDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
+        windowWidget.addWidget(&unitDetailsHBox,
+                               Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                Point(getRendererWidth() - sideBar.getSize().x, 24));
 
         unitDetailsHealthDropDownBox.setSelectedItem(pUnit->health_ - 1);
@@ -819,8 +823,9 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
             const MapData& mapdata = pNewMapWindow->getMapData();
 
             if (mapdata.getSizeX() > 0) {
-                pMapEditor_->setMap(mapdata, MapInfo(pNewMapWindow->getMapSeed(), pNewMapWindow->getAuthor(),
-                                                     pNewMapWindow->getLicense()));
+                pMapEditor_->setMap(
+                    mapdata,
+                    MapInfo(pNewMapWindow->getMapSeed(), pNewMapWindow->getAuthor(), pNewMapWindow->getLicense()));
                 onPlayers();
             }
         }
@@ -897,9 +902,13 @@ void MapEditorInterface::onSave() {
         }
     }
 
-    openWindow(LoadSaveWindow::create(true, std::string{_("Save Map")}, std::move(mapDirectories),
-                                      std::move(directoryTitles), pMapEditor_->getMapVersion() < 2 ? "INI" : "ini",
-                                      lastSaveDirectoryIndex, reinterpret_cast<const char*>(mapname.u8string().c_str()),
+    openWindow(LoadSaveWindow::create(true,
+                                      std::string{_("Save Map")},
+                                      std::move(mapDirectories),
+                                      std::move(directoryTitles),
+                                      pMapEditor_->getMapVersion() < 2 ? "INI" : "ini",
+                                      lastSaveDirectoryIndex,
+                                      reinterpret_cast<const char*>(mapname.u8string().c_str()),
                                       color_)
                    .release());
 }
@@ -993,7 +1002,8 @@ void MapEditorInterface::onModeButton(int button) {
 
         case 3: {
             // add units mode
-            windowWidget.addWidget(&editorModeUnits_MainVBox, Point(getRendererWidth() - sideBar.getSize().x + 14, 200),
+            windowWidget.addWidget(&editorModeUnits_MainVBox,
+                                   Point(getRendererWidth() - sideBar.getSize().x + 14, 200),
                                    Point(sideBar.getSize().x - 14, getRendererHeight() - 200));
         } break;
 
@@ -1172,8 +1182,8 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
         currentAngle = normalizeAngle(currentAngle);
         currentAngle = pMapEditor_->getMapMirror()->getAngle(currentAngle, i);
 
-        MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id_, pMirrorUnit->health_, currentAngle,
-                                                     pMirrorUnit->attack_mode_);
+        MapEditorEditUnitOperation editUnitOperation(
+            pMirrorUnit->id_, pMirrorUnit->health_, currentAngle, pMirrorUnit->attack_mode_);
 
         pMapEditor_->addUndoOperation(editUnitOperation.perform(pMapEditor_));
     }
@@ -1211,8 +1221,8 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
         currentAngle = normalizeAngle(currentAngle);
         currentAngle = pMapEditor_->getMapMirror()->getAngle(currentAngle, i);
 
-        MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id_, pMirrorUnit->health_, currentAngle,
-                                                     pMirrorUnit->attack_mode_);
+        MapEditorEditUnitOperation editUnitOperation(
+            pMirrorUnit->id_, pMirrorUnit->health_, currentAngle, pMirrorUnit->attack_mode_);
 
         pMapEditor_->addUndoOperation(editUnitOperation.perform(pMapEditor_));
     }
@@ -1233,7 +1243,9 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
         for (const int selectedUnit : selectedUnits) {
             const MapEditor::Unit* pUnit = pMapEditor_->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(
-                pUnit->id_, pUnit->health_, pUnit->angle_,
+                pUnit->id_,
+                pUnit->health_,
+                pUnit->angle_,
                 static_cast<ATTACKMODE>(unitDetailsAttackModeDropDownBox.getSelectedEntryIntData()));
             pMapEditor_->addUndoOperation(editUnitOperation.perform(pMapEditor_));
         }

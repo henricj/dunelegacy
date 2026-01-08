@@ -53,7 +53,8 @@ BuilderList::BuilderList(uint32_t builderObjectID) : builderObjectID(builderObje
                                downButton.getSize());
     downButton.setOnClick([this] { onDown(); });
 
-    StaticContainer::addWidget(&orderButton, Point(0, ARROWBTN_HEIGHT + BUILDERBTN_SPACING + BUILDERBTN_SPACING),
+    StaticContainer::addWidget(&orderButton,
+                               Point(0, ARROWBTN_HEIGHT + BUILDERBTN_SPACING + BUILDERBTN_SPACING),
                                Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
     orderButton.setOnClick([this] { onOrder(); });
     orderButton.setText(_("Order"));
@@ -126,7 +127,7 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
                 if (getItemIDFromIndex(mouseLeftButton) != ItemID_Invalid) {
                     soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                     pBuilder->handleProduceItemClick(getItemIDFromIndex(mouseLeftButton),
-                                                     SDL_GetModState() & KMOD_SHIFT);
+                                                     SDL_GetModState() & SDL_KMOD_SHIFT);
                 }
             }
         }
@@ -168,7 +169,7 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
                 if (getItemIDFromIndex(mouseRightButton) != ItemID_Invalid) {
                     soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                     pBuilder->handleCancelItemClick(getItemIDFromIndex(mouseRightButton),
-                                                    SDL_GetModState() & KMOD_SHIFT);
+                                                    SDL_GetModState() & SDL_KMOD_SHIFT);
                 }
             }
         }
@@ -200,11 +201,12 @@ void BuilderList::draw(Point position) {
     auto* const currentGame = dune::globals::currentGame.get();
     const auto* const gfx   = dune::globals::pGFXManager.get();
 
-    const SDL_FRect blackRectDest{
-        static_cast<float>(position.x), static_cast<float>(position.y) + ARROWBTN_HEIGHT + BUILDERBTN_SPACING,
-        static_cast<float>(getSize().x),
-        static_cast<float>(getRealHeight(getSize().y)) - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING
-            - ORDERBTN_HEIGHT};
+    const SDL_FRect blackRectDest{static_cast<float>(position.x),
+                                  static_cast<float>(position.y) + ARROWBTN_HEIGHT + BUILDERBTN_SPACING,
+                                  static_cast<float>(getSize().x),
+                                  static_cast<float>(getRealHeight(getSize().y))
+                                      - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING
+                                      - ORDERBTN_HEIGHT};
     renderFillRectF(renderer, &blackRectDest, COLOR_BLACK);
 
     const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
@@ -259,9 +261,13 @@ void BuilderList::draw(Point position) {
                         pLattice->draw(renderer, dest.x + 2, dest.y + 2);
 
                     if (const auto* const pConcrete = gfx->getUIGraphic(UI_StructureSizeConcrete)) {
-                        const SDL_Rect srcConcrete   = {0, 0, 1 + getStructureSize(buildItem.itemID_).x * 6,
+                        const SDL_Rect srcConcrete   = {0,
+                                                        0,
+                                                        1 + getStructureSize(buildItem.itemID_).x * 6,
                                                         1 + getStructureSize(buildItem.itemID_).y * 6};
-                        const SDL_FRect destConcrete = {(dest.x + 2), (dest.y + 2), static_cast<float>(srcConcrete.w),
+                        const SDL_FRect destConcrete = {(dest.x + 2),
+                                                        (dest.y + 2),
+                                                        static_cast<float>(srcConcrete.w),
                                                         static_cast<float>(srcConcrete.h)};
                         Dune_RenderCopyF(renderer, pConcrete, &srcConcrete, &destConcrete);
                     }
@@ -283,7 +289,8 @@ void BuilderList::draw(Point position) {
                     const auto bSoldOut = pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID_) == 0;
 
                     if (!pStarport->okToOrder() || bSoldOut) {
-                        SDL_FRect progressBar = {static_cast<float>(dest.x), static_cast<float>(dest.y),
+                        SDL_FRect progressBar = {static_cast<float>(dest.x),
+                                                 static_cast<float>(dest.y),
                                                  static_cast<float>(BUILDERBTN_WIDTH),
                                                  static_cast<float>(BUILDERBTN_HEIGHT)};
                         renderFillRectF(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
@@ -304,9 +311,11 @@ void BuilderList::draw(Point position) {
                     SDL_FRect progressBar = {dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT};
                     renderFillRectF(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
-                    auto drawLocationAlreadyBuilt =
-                        calcDrawingRect(pAlreadyBuiltTextTexture, dest.x + BUILDERBTN_WIDTH / 2,
-                                        dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
+                    auto drawLocationAlreadyBuilt = calcDrawingRect(pAlreadyBuiltTextTexture,
+                                                                    dest.x + BUILDERBTN_WIDTH / 2,
+                                                                    dest.y + BUILDERBTN_HEIGHT / 2,
+                                                                    HAlign::Center,
+                                                                    VAlign::Center);
                     Dune_RenderCopyF(renderer, pAlreadyBuiltTextTexture.get(), nullptr, &drawLocationAlreadyBuilt);
                 } else if (buildItem.itemID_ == pBuilder->getCurrentProducedItem()) {
                     const auto progress = pBuilder->getProductionProgress();
@@ -368,8 +377,10 @@ void BuilderList::draw(Point position) {
             const auto builderListLowerCapDest =
                 calcDrawingRect(pBuilderListLowerCap, blackRectDest.x - 3, blackRectDest.y + blackRectDest.h - 3 - 4);
 
-            renderDrawVLine(renderer, builderListUpperCapDest.x + builderListUpperCapDest.w - 8,
-                            builderListUpperCapDest.y + builderListUpperCapDest.h, builderListLowerCapDest.y,
+            renderDrawVLine(renderer,
+                            builderListUpperCapDest.x + builderListUpperCapDest.w - 8,
+                            builderListUpperCapDest.y + builderListUpperCapDest.h,
+                            builderListLowerCapDest.y,
                             COLOR_RGB(125, 80, 0));
         }
     }
@@ -411,9 +422,11 @@ void BuilderList::drawOverlay(Point position) {
             tooltipText  = text;
         }
 
-        const auto dest =
-            calcDrawingRect(pLastTooltip, static_cast<float>(position.x + getButtonPosition(btn).x - 6),
-                            static_cast<float>(position.y) + lastMousePos.y, HAlign::Right, VAlign::Center);
+        const auto dest = calcDrawingRect(pLastTooltip,
+                                          static_cast<float>(position.x + getButtonPosition(btn).x - 6),
+                                          static_cast<float>(position.y) + lastMousePos.y,
+                                          HAlign::Right,
+                                          VAlign::Center);
         Dune_RenderCopyF(renderer, pLastTooltip.get(), nullptr, &dest);
     }
 }
@@ -425,8 +438,8 @@ void BuilderList::resize(uint32_t width, uint32_t height) {
                             getRealHeight(height) - ARROWBTN_HEIGHT - ORDERBTN_HEIGHT - BUILDERBTN_SPACING + 2),
                       downButton.getSize());
 
-    setWidgetGeometry(&orderButton, Point(0, getRealHeight(height) - ORDERBTN_HEIGHT + 2),
-                      Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
+    setWidgetGeometry(
+        &orderButton, Point(0, getRealHeight(height) - ORDERBTN_HEIGHT + 2), Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
 
     parent::resize(width, height);
 

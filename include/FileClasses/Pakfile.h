@@ -44,7 +44,7 @@ public:
     [[nodiscard]] bool exists(const std::string& filename) const;
 
 protected:
-    /// Internal structure used by opened SDL_RWop
+    /// Internal structure used by opened SDL_IOStream
     struct RWopData {
         const BasePakfile* curPakfile;
         unsigned int fileIndex;
@@ -57,14 +57,14 @@ protected:
         std::string filename;
     };
 
-    static int64_t SizeFile(SDL_RWops* pRWop);
-    static int64_t SeekFile(SDL_RWops* pRWop, int64_t offset, int whence);
-    static size_t WriteFile(SDL_RWops* pRWop, const void* ptr, size_t size, size_t n);
-    static int CloseFile(SDL_RWops* pRWop);
+    static Sint64 SizeFile(void* userdata);
+    static Sint64 SeekFile(void* userdata, Sint64 offset, SDL_IOWhence whence);
+    static size_t WriteFile(void* userdata, const void* ptr, size_t size, SDL_IOStatus* status);
+    static bool CloseFile(void* userdata);
 
     void readIndex();
 
-    sdl2::RWops_ptr fPakFile;
+    sdl2::IOStream_ptr fPakFile;
     std::filesystem::path filename_;
 
     std::vector<PakFileEntry> fileEntries;
@@ -73,18 +73,18 @@ protected:
 /// A class for reading PAK-Files.
 /**
     This class can be used to read PAK-Files. PAK-Files are archive files used by Dune2.
-    The files inside the PAK-File can an be read through SDL_RWops.
+    The files inside the PAK-File can an be read through SDL_IOStream.
 */
 class Pakfile final : public BasePakfile {
 public:
     explicit Pakfile(const std::filesystem::path& pakfilename);
     ~Pakfile();
 
-    sdl2::RWops_ptr openFile(const std::string& filename) const;
-    sdl2::RWops_ptr openFile(int index) const;
+    sdl2::IOStream_ptr openFile(const std::string& filename) const;
+    sdl2::IOStream_ptr openFile(int index) const;
 
 private:
-    static size_t ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n);
+    static size_t ReadFile(void* userdata, void* ptr, size_t size, SDL_IOStatus* status);
 };
 
 /**
@@ -95,7 +95,7 @@ public:
     explicit OutPakfile(const std::filesystem::path& pakfilename);
     ~OutPakfile();
 
-    void addFile(SDL_RWops* rwop, const std::string& filename);
+    void addFile(SDL_IOStream* io, const std::string& filename);
 
 private:
     char* writeOutData{};

@@ -82,7 +82,7 @@ void Animation::addFrame(sdl2::surface_ptr newFrame, bool bDoublePic, bool bSetC
     }
 
     if (bSetColorKey) {
-        SDL_SetColorKey(newFrame.get(), SDL_TRUE, 0);
+        SDL_SetSurfaceColorKey(newFrame.get(), true, 0);
     }
 
     frames.emplace_back(std::move(newFrame));

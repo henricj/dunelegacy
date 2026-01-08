@@ -24,9 +24,9 @@
 
 #include <misc/SDL2pp.h>
 
-sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop);
+sdl2::surface_ptr LoadPNG_RW(SDL_IOStream* io);
 
-int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop);
+int SavePNG_RW(SDL_Surface* surface, SDL_IOStream* io);
 
 int SavePNG(SDL_Surface* surface, std::filesystem::path file);
 

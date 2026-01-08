@@ -285,7 +285,7 @@ void MentatMenu::update() {
 }
 
 void MentatMenu::doInputImpl(const SDL_Event& event) {
-    if (event.type == SDL_MOUSEBUTTONDOWN) {
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         showNextMentatText();
     }
 
@@ -323,9 +323,16 @@ void MentatMenu::drawSpecificStuff() {
 
 int MentatMenu::getMissionSpecificAnim(int missionnumber) {
 
-    static constexpr int missionnumber2AnimID[] = {
-        Anim_ConstructionYard, Anim_Harvester,    Anim_Radar, Anim_Quad,   Anim_Tank,
-        Anim_RepairYard,       Anim_HeavyFactory, Anim_IX,    Anim_Palace, Anim_Sardaukar};
+    static constexpr int missionnumber2AnimID[] = {Anim_ConstructionYard,
+                                                   Anim_Harvester,
+                                                   Anim_Radar,
+                                                   Anim_Quad,
+                                                   Anim_Tank,
+                                                   Anim_RepairYard,
+                                                   Anim_HeavyFactory,
+                                                   Anim_IX,
+                                                   Anim_Palace,
+                                                   Anim_Sardaukar};
 
     if (missionnumber < 0 || missionnumber > 9) {
         return missionnumber2AnimID[0];

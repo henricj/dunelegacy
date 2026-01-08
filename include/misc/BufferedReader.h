@@ -1,7 +1,7 @@
 #ifndef BUFFEREDREADER_H
 #define BUFFEREDREADER_H
 
-#include <SDL2/SDL.h>
+#include <misc/dune_sdl.h>
 
 #include <algorithm>
 #include <array>
@@ -12,7 +12,7 @@
 template<int BufferSize = 32768>
 class BufferedReader final {
 public:
-    explicit BufferedReader(SDL_RWops* rwop) : rwop_{rwop} { }
+    explicit BufferedReader(SDL_IOStream* io) : io_{io} { }
 
     size_t read(void* data, size_t size, size_t maxnum) {
         if (size < 1 || maxnum < 1)
@@ -52,15 +52,15 @@ public:
         return read_one(&value, sizeof(TValue));
     }
 
-    [[nodiscard]] size_t size() const { return SDL_RWsize(rwop_); }
+    [[nodiscard]] size_t size() const { return static_cast<size_t>(SDL_GetIOSize(io_)); }
 
-    [[nodiscard]] size_t position() const { return SDL_RWtell(rwop_) - pending_.size(); }
+    [[nodiscard]] size_t position() const { return static_cast<size_t>(SDL_TellIO(io_)) - pending_.size(); }
 
     void clear() { pending_ = {}; }
 
     void seek(size_t pos) {
-        const auto current_unbuffered = [rwop = rwop_] {
-            const auto tell = SDL_RWtell(rwop);
+        const auto current_unbuffered = [io = io_] {
+            const auto tell = SDL_TellIO(io);
 
             if (tell < 0)
                 THROW(std::runtime_error, "Unable to get the current position: {}!", SDL_GetError());
@@ -94,7 +94,7 @@ public:
         }
 
         clear();
-        if (-1 == SDL_RWseek(rwop_, pos, SEEK_SET))
+        if (-1 == SDL_SeekIO(io_, static_cast<Sint64>(pos), SDL_IO_SEEK_SET))
             THROW(std::runtime_error, "Unable to seek file.");
     }
 
@@ -123,7 +123,7 @@ public:
         pos -= pending_.size();
         clear();
 
-        if (-1 == SDL_RWseek(rwop_, pos, SEEK_CUR))
+        if (-1 == SDL_SeekIO(io_, pos, SDL_IO_SEEK_CUR))
             THROW(std::runtime_error, "Unable to skip file.");
     }
 
@@ -148,7 +148,8 @@ private:
         assert(pending_size >= 0 && pending_size <= buffer_size);
         assert(remaining > 0);
 
-        const auto actual_read = SDL_RWread(rwop_, buffer_.data() + pending_size, 1, remaining);
+        // SDL3: SDL_ReadIO returns bytes read directly
+        const auto actual_read = SDL_ReadIO(io_, buffer_.data() + pending_size, remaining);
 
         if (0 == actual_read) {
             eof_ = true;
@@ -173,7 +174,8 @@ private:
 
         const auto read_length = size - partial;
 
-        const auto actual = SDL_RWread(rwop_, output.data(), read_length, 1);
+        // SDL3: SDL_ReadIO returns bytes read directly
+        const auto actual = SDL_ReadIO(io_, output.data(), read_length);
 
         if (0 == actual) {
             eof_ = true;
@@ -186,7 +188,7 @@ private:
         return 1;
     }
 
-    SDL_RWops* rwop_;
+    SDL_IOStream* io_;
     bool eof_{};
     std::span<char> pending_;
     std::array<char, BufferSize> buffer_{};
@@ -195,7 +197,7 @@ private:
 template<int BufferSize = 32768>
 class SimpleBufferedReader final {
 public:
-    explicit SimpleBufferedReader(SDL_RWops* rwop) : rwop_{rwop} { }
+    explicit SimpleBufferedReader(SDL_IOStream* io) : io_{io} { }
 
     size_t read(void* data, size_t maxnum) {
         if (maxnum < 1)
@@ -240,20 +242,20 @@ public:
         return c;
     }
 
-    [[nodiscard]] size_t size() const { return SDL_RWsize(rwop_); }
+    [[nodiscard]] size_t size() const { return static_cast<size_t>(SDL_GetIOSize(io_)); }
 
-    [[nodiscard]] size_t position() const { return SDL_RWtell(rwop_) - pending_.size(); }
+    [[nodiscard]] size_t position() const { return static_cast<size_t>(SDL_TellIO(io_)) - pending_.size(); }
 
     void clear() { pending_ = {}; }
 
     void seek(size_t pos) {
         clear();
-        if (-1 == SDL_RWseek(rwop_, pos, SEEK_SET))
+        if (-1 == SDL_SeekIO(io_, static_cast<Sint64>(pos), SDL_IO_SEEK_SET))
             THROW(std::runtime_error, "Unable to seek file.");
     }
 
     void skip(int64_t pos) {
-        if (pos > 0 && pos < pending_.size()) {
+        if (pos > 0 && static_cast<size_t>(pos) < pending_.size()) {
             pending_ = pending_.subspan(pos);
             return;
         }
@@ -261,7 +263,7 @@ public:
         pos -= pending_.size();
         clear();
 
-        if (-1 == SDL_RWseek(rwop_, pos, SEEK_CUR))
+        if (-1 == SDL_SeekIO(io_, pos, SDL_IO_SEEK_CUR))
             THROW(std::runtime_error, "Unable to skip file.");
     }
 
@@ -270,7 +272,8 @@ private:
         if (!pending_.empty())
             return true;
 
-        const auto actual_read = SDL_RWread(rwop_, buffer_.data(), 1, buffer_.size());
+        // SDL3: SDL_ReadIO returns bytes read directly
+        const auto actual_read = SDL_ReadIO(io_, buffer_.data(), buffer_.size());
 
         if (0 == actual_read) {
             eof_ = true;
@@ -282,7 +285,7 @@ private:
         return true;
     }
 
-    SDL_RWops* rwop_;
+    SDL_IOStream* io_;
     bool eof_{};
     std::span<char> pending_;
     std::array<char, BufferSize> buffer_;

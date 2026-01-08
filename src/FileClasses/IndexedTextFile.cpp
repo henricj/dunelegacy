@@ -20,9 +20,9 @@
 #include <misc/exceptions.h>
 #include <misc/string_util.h>
 
-#include <misc/dune_sdl.h>
 #include <algorithm>
 #include <cstdio>
+#include <misc/dune_sdl.h>
 #include <string>
 
 IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {

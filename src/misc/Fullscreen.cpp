@@ -39,14 +39,15 @@ void updateFullscreen() {
 
     const auto window_flags = SDL_GetWindowFlags(window);
 
-    if (window_flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+    // SDL3: SDL_WINDOW_FULLSCREEN_DESKTOP removed, use SDL_WINDOW_FULLSCREEN
+    // SDL3: SDL_SetWindowFullscreen takes a bool, not flags
+    if (window_flags & SDL_WINDOW_FULLSCREEN) {
         // switch to windowed mode
         sdl2::log_info("Switching to windowed mode.");
-        SDL_SetWindowFullscreen(window, window_flags & ~SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(window, false);
     } else {
         // switch to fullscreen mode
         sdl2::log_info("Switching to fullscreen mode.");
-
-        SDL_SetWindowFullscreen(window, window_flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(window, true);
     }
 }

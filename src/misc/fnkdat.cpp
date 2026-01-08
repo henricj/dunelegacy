@@ -205,8 +205,11 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
        is available.
      */
     if (dwFlags
-        && SUCCEEDED(hresult = SHGetFolderPathW(nullptr, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
-                                                nullptr, SHGFP_TYPE_CURRENT, szPath.data()))) {
+        && SUCCEEDED(hresult = SHGetFolderPathW(nullptr,
+                                                dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
+                                                nullptr,
+                                                SHGFP_TYPE_CURRENT,
+                                                szPath.data()))) {
 
         output_path = szPath.data();
         output_path /= L"" PACKAGE;
@@ -322,21 +325,17 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
             output_path /= PACKAGE;
         }
 #    endif
-        }
-        else if (rawflags == FNKDAT_CONF) {
-            output_path = FNKDAT_SYSCONFDIR;
-            output_path /= PACKAGE;
-        }
-        else if (rawflags == (FNKDAT_VAR | FNKDAT_DATA)) {
-            output_path = FNKDAT_PKGLIBDIR;
-        }
-        else if (rawflags == FNKDAT_DATA) {
-            output_path = FNKDAT_PKGDATADIR;
-        }
-        else {
-            errno = EINVAL;
-            return {false, std::filesystem::path{}};
-        }
+    } else if (rawflags == FNKDAT_CONF) {
+        output_path = FNKDAT_SYSCONFDIR;
+        output_path /= PACKAGE;
+    } else if (rawflags == (FNKDAT_VAR | FNKDAT_DATA)) {
+        output_path = FNKDAT_PKGLIBDIR;
+    } else if (rawflags == FNKDAT_DATA) {
+        output_path = FNKDAT_PKGDATADIR;
+    } else {
+        errno = EINVAL;
+        return {false, std::filesystem::path{}};
+    }
 #endif // _WIN32
 
     /* append any given filename */
@@ -359,7 +358,8 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
                                          std::filesystem::perms::owner_all | std::filesystem::perms::group_all
                                              | std::filesystem::perms::others_exec
                                              | std::filesystem::perms::others_read,
-                                         std::filesystem::perm_options::replace, ec);
+                                         std::filesystem::perm_options::replace,
+                                         ec);
             if (ec) {
                 return {false, std::filesystem::path{}};
             }

@@ -383,7 +383,8 @@ MapData generateRandomMap(int sizeX, int sizeY, int randSeed, int rockfields, in
 
     // Using zero will leave the factory initialized from std::random_device
     if (randSeed) {
-        const std::array seed{static_cast<uint8_t>(randSeed & 0xff), static_cast<uint8_t>((randSeed >> 8) & 0xff),
+        const std::array seed{static_cast<uint8_t>(randSeed & 0xff),
+                              static_cast<uint8_t>((randSeed >> 8) & 0xff),
                               static_cast<uint8_t>((randSeed >> 16) & 0xff),
                               static_cast<uint8_t>((randSeed >> 24) & 0xff)};
 

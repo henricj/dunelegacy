@@ -18,7 +18,7 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include <SDL2/SDL_pixels.h>
+#include <misc/dune_sdl.h>
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 inline constexpr auto RMASK = 0xFF000000U;
@@ -50,9 +50,15 @@ constexpr auto COLOR_RGB(Uint32 r, Uint32 g, Uint32 b) {
     return COLOR_RGBA(r, g, b, 255);
 }
 
-inline auto MapRGBA(const SDL_PixelFormat* fmt, Uint32 color) {
-    return SDL_MapRGBA(fmt, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT,
-                       (color & AMASK) >> ASHIFT);
+// SDL3: SDL_MapRGBA now takes SDL_PixelFormatDetails* and SDL_Palette*
+inline auto MapRGBA(SDL_PixelFormat format, Uint32 color) {
+    const auto* details = SDL_GetPixelFormatDetails(format);
+    return SDL_MapRGBA(details,
+                       nullptr,
+                       static_cast<Uint8>((color & RMASK) >> RSHIFT),
+                       static_cast<Uint8>((color & GMASK) >> GSHIFT),
+                       static_cast<Uint8>((color & BMASK) >> BSHIFT),
+                       static_cast<Uint8>((color & AMASK) >> ASHIFT));
 }
 
 constexpr auto SDL2RGB(SDL_Color sdl_color) {
@@ -60,8 +66,10 @@ constexpr auto SDL2RGB(SDL_Color sdl_color) {
 }
 
 constexpr auto RGBA2SDL(Uint32 color) {
-    return SDL_Color{static_cast<Uint8>((color & RMASK) >> RSHIFT), static_cast<Uint8>((color & GMASK) >> GSHIFT),
-                     static_cast<Uint8>((color & BMASK) >> BSHIFT), static_cast<Uint8>((color & AMASK) >> ASHIFT)};
+    return SDL_Color{static_cast<Uint8>((color & RMASK) >> RSHIFT),
+                     static_cast<Uint8>((color & GMASK) >> GSHIFT),
+                     static_cast<Uint8>((color & BMASK) >> BSHIFT),
+                     static_cast<Uint8>((color & AMASK) >> ASHIFT)};
 }
 
 // Palette color indices

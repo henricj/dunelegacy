@@ -180,8 +180,8 @@ DuneStyle::createLabel(SDL_Renderer* renderer, uint32_t width, uint32_t height,
 
     const auto [scaled_width, scaled_height] = getPhysicalSize(width, height);
 
-    const auto surface = createLabelSurface(scaled_width, scaled_height, textLines, fontSize, alignment, textcolor,
-                                            textshadowcolor, backgroundcolor);
+    const auto surface = createLabelSurface(
+        scaled_width, scaled_height, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor);
 
     sdl2::texture_ptr texture{SDL_CreateTextureFromSurface(renderer, surface.get())};
 
@@ -248,12 +248,15 @@ DuneStyle::createCheckboxSurface(uint32_t width, uint32_t height, std::string_vi
     if (!text.empty()) {
         const auto shadowSurface = createSurfaceWithText(text, textshadowcolor, 14);
         SDL_Rect shadowRect{box_x2 + scale_to_physical_integer(4 + 2),
-                            (surface->h - shadowSurface->h) / 2 + scale_to_physical_integer(1), shadowSurface->w,
+                            (surface->h - shadowSurface->h) / 2 + scale_to_physical_integer(1),
+                            shadowSurface->w,
                             shadowSurface->h};
         SDL_BlitSurface(shadowSurface.get(), nullptr, surface.get(), &shadowRect);
 
         const auto textSurface = createSurfaceWithText(text, textcolor, 14);
-        SDL_Rect textRect{box_x2 + scale_to_physical_integer(4 + 1), (surface->h - textSurface->h) / 2, textSurface->w,
+        SDL_Rect textRect{box_x2 + scale_to_physical_integer(4 + 1),
+                          (surface->h - textSurface->h) / 2,
+                          textSurface->w,
                           textSurface->h};
         SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
     }
@@ -354,17 +357,21 @@ DuneSurfaceOwned DuneStyle::createDropDownBoxButton(int size, bool pressed, bool
             drawRect(surface.get(), i, i, surface->w - 1 - i, surface->h - 1 - i, buttonBorderColor);
             drawHLine(surface.get(), one + i, one + i, surface->w - one - 1 - i, buttonEdgeTopLeftColor);
             drawVLine(surface.get(), one + i, one + i, surface->h - one - 1 - i, buttonEdgeTopLeftColor);
-            drawHLine(surface.get(), one + i, surface->h - one - 1 - i, surface->w - one - 1 - i,
-                      buttonEdgeBottomRightColor);
-            drawVLine(surface.get(), surface->w - one - 1 - i, one, surface->h - one - 1 - i,
-                      buttonEdgeBottomRightColor);
+            drawHLine(
+                surface.get(), one + i, surface->h - one - 1 - i, surface->w - one - 1 - i, buttonEdgeBottomRightColor);
+            drawVLine(
+                surface.get(), surface->w - one - 1 - i, one, surface->h - one - 1 - i, buttonEdgeBottomRightColor);
         }
     } else {
         // pressed button mode
         SDL_FillRect(surface.get(), nullptr, pressedButtonBackgroundColor);
         for (auto i = 0; i < one; ++i) {
             drawRect(surface.get(), i, i, surface->w - 1 - i, surface->h - 1 - i, buttonBorderColor);
-            drawRect(surface.get(), one + i, one + i, surface->w - one - 1 - i, surface->h - one - 1 - i,
+            drawRect(surface.get(),
+                     one + i,
+                     one + i,
+                     surface->w - one - 1 - i,
+                     surface->h - one - 1 - i,
                      buttonEdgeBottomRightColor);
         }
     }
@@ -451,16 +458,22 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t height
     if (!text.empty()) {
         const auto shadowSurface = createSurfaceWithText(text, textshadowcolor, fontsize);
         if (shadowSurface) {
-            auto shadowRect = calcDrawingRect(shadowSurface.get(), surface->w / 2 + 2 + (pressed ? 1 : 0),
-                                              surface->h / 2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+            auto shadowRect = calcDrawingRect(shadowSurface.get(),
+                                              surface->w / 2 + 2 + (pressed ? 1 : 0),
+                                              surface->h / 2 + 3 + (pressed ? 1 : 0),
+                                              HAlign::Center,
+                                              VAlign::Center);
             SDL_BlitSurface(shadowSurface.get(), nullptr, surface.get(), &shadowRect);
         }
 
         const auto textSurface = createSurfaceWithText(text, (activated) ? brightenUp(textcolor) : textcolor, fontsize);
 
         if (textSurface) {
-            auto textRect = calcDrawingRect(textSurface.get(), surface->w / 2 + 1 + (pressed ? 1 : 0),
-                                            surface->h / 2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+            auto textRect = calcDrawingRect(textSurface.get(),
+                                            surface->w / 2 + 1 + (pressed ? 1 : 0),
+                                            surface->h / 2 + 2 + (pressed ? 1 : 0),
+                                            HAlign::Center,
+                                            VAlign::Center);
             SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
         }
     }
@@ -479,7 +492,7 @@ void fill_rectangle(SDL_Renderer* renderer, const SDL_FRect& dest, float x, floa
     const SDL_FRect rect = offset_rect(dest, x, y, w, h);
 
     SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-    SDL_RenderFillRectF(renderer, &rect);
+    SDL_RenderFillRect(renderer, &rect);
 }
 
 void draw_rectangle(SDL_Renderer* renderer, const SDL_FRect& dest, float x, float y, float w, float h, Uint32 color) {
@@ -487,7 +500,7 @@ void draw_rectangle(SDL_Renderer* renderer, const SDL_FRect& dest, float x, floa
     const SDL_FRect rect = offset_rect(dest, x, y, w, h);
 
     SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-    SDL_RenderDrawRectF(renderer, &rect);
+    SDL_RenderRect(renderer, &rect);
 }
 
 } // namespace
@@ -620,7 +633,8 @@ DuneSurfaceOwned DuneStyle::createButtonText(uint32_t width, uint32_t height, st
 
     const auto inverse_scale = 1.f / scale;
 
-    return DuneSurfaceOwned{std::move(surface), static_cast<float>(actual_width) * inverse_scale,
+    return DuneSurfaceOwned{std::move(surface),
+                            static_cast<float>(actual_width) * inverse_scale,
                             static_cast<float>(actual_height) * inverse_scale};
 }
 
@@ -801,8 +815,8 @@ DuneTextureOwned DuneStyle::createToolTip(SDL_Renderer* renderer, std::string_vi
     }
 
     // create surfaces
-    const auto surface = sdl2::surface_ptr{SDL_CreateRGBSurface(0, helpTextSurface->w + 5, helpTextSurface->h + 2,
-                                                                SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    const auto surface = sdl2::surface_ptr{SDL_CreateRGBSurface(
+        0, helpTextSurface->w + 5, helpTextSurface->h + 2, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (surface == nullptr) {
         return {};
     }
@@ -818,8 +832,8 @@ DuneTextureOwned DuneStyle::createToolTip(SDL_Renderer* renderer, std::string_vi
 
     const auto scale = 1.f / getActualScale();
 
-    return DuneTextureOwned{std::move(texture), static_cast<float>(surface->w) * scale,
-                            static_cast<float>(surface->h) * scale};
+    return DuneTextureOwned{
+        std::move(texture), static_cast<float>(surface->w) * scale, static_cast<float>(surface->h) * scale};
 }
 
 void DuneStyle::drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType, const SDL_FRect& rect) {
@@ -852,8 +866,9 @@ void DuneStyle::drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType
 
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
-        DuneDrawRects(renderer, {{left_upper_x_w, rect.y + fi, right_upper_x - left_upper_x_w, 1},
-                                 {left_lower_x_w, lower_y, right_lower_x - left_lower_x_w, 1}});
+        DuneDrawRects(renderer,
+                      {{left_upper_x_w, rect.y + fi, right_upper_x - left_upper_x_w, 1},
+                       {left_lower_x_w, lower_y, right_lower_x - left_lower_x_w, 1}});
     }
 
     // vborders
@@ -867,8 +882,9 @@ void DuneStyle::drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType
 
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
-        DuneDrawRects(renderer, {{rect.x + fi, left_upper_y_h, 1, left_lower_y - left_upper_y_h},
-                                 {right_x, right_upper_y_h, 1, right_lower_y - right_upper_y_h}});
+        DuneDrawRects(renderer,
+                      {{rect.x + fi, left_upper_y_h, 1, left_lower_y - left_upper_y_h},
+                       {right_x, right_upper_y_h, 1, right_lower_y - right_upper_y_h}});
     }
 
     // corners
@@ -913,16 +929,18 @@ void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     DuneDrawRects(renderer, {{rect.x, rect.y, rect.w, rect.h}});
 
     setRenderDrawColor(renderer, buttonEdgeTopLeftColor);
-    DuneDrawRects(renderer, {{rect.x + 1, rect.y + 1, rect.w - 2, 1},
-                             {rect.x + 2, rect.y + 2, rect.w - 3, 1},
-                             {rect.x + 1, rect.y + 1, 1, rect.h - 2},
-                             {rect.x + 2, rect.y + 2, 1, rect.h - 3}});
+    DuneDrawRects(renderer,
+                  {{rect.x + 1, rect.y + 1, rect.w - 2, 1},
+                   {rect.x + 2, rect.y + 2, rect.w - 3, 1},
+                   {rect.x + 1, rect.y + 1, 1, rect.h - 2},
+                   {rect.x + 2, rect.y + 2, 1, rect.h - 3}});
 
     setRenderDrawColor(renderer, buttonEdgeBottomRightColor);
-    DuneDrawRects(renderer, {{rect.x + 1, rect.y + rect.h - 2, rect.w - 2, 1},
-                             {rect.x + 2, rect.y + rect.h - 3, rect.w - 3, 1},
-                             {rect.x + rect.w - 2, rect.y + 1, 1, rect.h - 2},
-                             {rect.x + rect.w - 3, rect.y + 2, 1, rect.h - 3}});
+    DuneDrawRects(renderer,
+                  {{rect.x + 1, rect.y + rect.h - 2, rect.w - 2, 1},
+                   {rect.x + 2, rect.y + rect.h - 3, rect.w - 3, 1},
+                   {rect.x + rect.w - 2, rect.y + 1, 1, rect.h - 2},
+                   {rect.x + rect.w - 3, rect.y + 2, 1, rect.h - 3}});
 }
 
 void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {

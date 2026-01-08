@@ -92,8 +92,13 @@ void RocketTurret::attack(const GameContext& context) {
         if (!pObject->isAFlyingUnit()) {
             const auto& turret_data = game.objectData.data[Structure_GunTurret][static_cast<int>(originalHouseID_)];
 
-            map.add_bullet(objectID_, &centerPoint, &targetCenterPoint, Bullet_ShellTurret, turret_data.weapondamage,
-                           false, pObject);
+            map.add_bullet(objectID_,
+                           &centerPoint,
+                           &targetCenterPoint,
+                           Bullet_ShellTurret,
+                           turret_data.weapondamage,
+                           false,
+                           pObject);
 
             map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location_, 2);
             dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location_);
@@ -101,9 +106,13 @@ void RocketTurret::attack(const GameContext& context) {
         }
     } else {
         // we are in normal shooting mode
-        map.add_bullet(objectID_, &centerPoint, &targetCenterPoint, turret_constants().bulletType(),
+        map.add_bullet(objectID_,
+                       &centerPoint,
+                       &targetCenterPoint,
+                       turret_constants().bulletType(),
                        game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].weapondamage,
-                       pObject->isAFlyingUnit(), nullptr);
+                       pObject->isAFlyingUnit(),
+                       nullptr);
 
         map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location_, 2);
         dune::globals::soundPlayer->playSoundAt(attackSound, location_);

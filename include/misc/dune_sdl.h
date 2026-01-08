@@ -26,9 +26,10 @@
  * Do NOT include SDL headers directly in other source files.
  */
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_endian.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_rwops.h>
+#include <SDL3/SDL.h>
+
+// SDL2 to SDL3 compatibility macros for incremental migration.
+// This header will be removed once migration is complete.
+#include <misc/dune_sdl2to3.h>
 
 #endif // DUNE_LEGACY_SDL_H

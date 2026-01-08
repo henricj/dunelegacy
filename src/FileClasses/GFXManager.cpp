@@ -89,11 +89,13 @@ const DuneTexture* GFXManager::getZoomedObjPic(ObjPic_enum id, HOUSETYPE house, 
 
 zoomable_texture GFXManager::getObjPic(ObjPic_enum id, HOUSETYPE house) const {
     if (id >= NUM_OBJPICS) {
-        THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID {} is not available!",
+        THROW(std::invalid_argument,
+              "GFXManager::getObjPic(): Unit Picture with ID {} is not available!",
               static_cast<int>(id));
     }
 
-    return {&duneTextures.get_object_picture(id, house, 0), &duneTextures.get_object_picture(id, house, 1),
+    return {&duneTextures.get_object_picture(id, house, 0),
+            &duneTextures.get_object_picture(id, house, 1),
             &duneTextures.get_object_picture(id, house, 2)};
 }
 
@@ -150,7 +152,8 @@ SDL_Cursor* GFXManager::getCursor(UIGraphics_Enum id) const {
 
 const DuneTexture* GFXManager::getUIGraphic(UIGraphics_Enum id, HOUSETYPE house) const {
     if (id >= NUM_UIGRAPHICS) {
-        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID {} is not available!",
+        THROW(std::invalid_argument,
+              "GFXManager::getUIGraphic(): UI Graphic with ID {} is not available!",
               static_cast<int>(id));
     }
 
@@ -164,15 +167,16 @@ const DuneTexture* GFXManager::getUIGraphic(UIGraphics_Enum id, HOUSETYPE house)
 
 const DuneTexture* GFXManager::getMapChoicePiece(UIGraphics_Enum num, HOUSETYPE house) const {
     if (num >= NUM_MAPCHOICEPIECES) {
-        THROW(std::invalid_argument, "GFXManager::getMapChoicePiece(): Map Piece with number {} is not available!",
+        THROW(std::invalid_argument,
+              "GFXManager::getMapChoicePiece(): Map Piece with number {} is not available!",
               static_cast<int>(num));
     }
 
     const auto& texture = duneTextures.get_map_choice(num, house);
 
     if (!texture)
-        sdl2::log_info("Unable to get map choice piece {} for house {}", static_cast<int>(num),
-                       static_cast<int>(house));
+        sdl2::log_info(
+            "Unable to get map choice piece {} for house {}", static_cast<int>(num), static_cast<int>(house));
 
     return texture ? &texture : nullptr;
 }

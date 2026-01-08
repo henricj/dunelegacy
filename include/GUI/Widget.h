@@ -92,7 +92,10 @@ inline Point getSurfaceSize(SDL_Surface* pSurface) {
 inline Point getTextureSize(SDL_Texture* pTexture) {
     Point p;
     if (pTexture != nullptr) {
-        SDL_QueryTexture(pTexture, nullptr, nullptr, &p.x, &p.y);
+        float w, h;
+        SDL_GetTextureSize(pTexture, &w, &h);
+        p.x = static_cast<int>(w);
+        p.y = static_cast<int>(h);
     }
     return p;
 }
@@ -307,7 +310,8 @@ public:
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
     virtual bool handleKeyPress(const SDL_KeyboardEvent& key) {
-        if (isActive() && (key.keysym.sym == SDLK_TAB)) {
+        // SDL3: key.keysym.sym -> key.key
+        if (isActive() && (key.key == SDLK_TAB)) {
             setInactive();
         }
         return false;

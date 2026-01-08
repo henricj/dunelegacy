@@ -213,13 +213,14 @@ const std::vector<uint8_t>& GameInitSettings::getRandomSeed() noexcept {
 
 std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int mission) {
     if ((static_cast<int>(newHouse) < 0) || (newHouse >= HOUSETYPE::NUM_HOUSES)) {
-        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): Invalid house id {}.",
+        THROW(std::invalid_argument,
+              "GameInitSettings::getScenarioFilename(): Invalid house id {}.",
               static_cast<int>(newHouse));
     }
 
     if ((mission < 0) || (mission > 22)) {
-        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): There is no mission number {}.",
-              mission);
+        THROW(
+            std::invalid_argument, "GameInitSettings::getScenarioFilename(): There is no mission number {}.", mission);
     }
 
     std::string name = "SCEN?0??.INI";
@@ -260,12 +261,14 @@ void GameInitSettings::checkSaveGame(InputStream& stream) {
     }
 
     if (savegameVersion < SAVEGAMEVERSION) {
-        THROW(std::runtime_error, "Cannot load this savegame,\n because it was created with an older version:\n{}",
+        THROW(std::runtime_error,
+              "Cannot load this savegame,\n because it was created with an older version:\n{}",
               duneVersion);
     }
 
     if (savegameVersion > SAVEGAMEVERSION) {
-        THROW(std::runtime_error, "Cannot load this savegame,\n because it was created with a newer version:\n{}",
+        THROW(std::runtime_error,
+              "Cannot load this savegame,\n because it was created with a newer version:\n{}",
               duneVersion);
     }
 }

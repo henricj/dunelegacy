@@ -1,8 +1,10 @@
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2_mixer CONFIG REQUIRED)
-find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
+
+find_package(SDL3 CONFIG REQUIRED)
+find_package(SDL3_mixer CONFIG REQUIRED)
+find_package(SDL3_ttf CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(lodepng CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
@@ -33,9 +35,9 @@ if(APPLE)
 endif()
 
 set(LIBS
-	SDL2_mixer::SDL2_mixer${DUNE_LIBRARY_POSTFIX}
-	SDL2_ttf::SDL2_ttf${DUNE_LIBRARY_POSTFIX}
-	SDL2::SDL2
+	SDL3_mixer::SDL3_mixer
+	SDL3_ttf::SDL3_ttf
+	SDL3::SDL3
 	fmt::fmt
 	lodepng
 	Microsoft.GSL::GSL
@@ -85,6 +87,11 @@ target_sources(dune PRIVATE
 	CommandManager.cpp
 	Explosion.cpp
 	Game.cpp
+	GameInput.cpp
+	GameRender.cpp
+	GameSaveLoad.cpp
+	GameSelection.cpp
+	GameUpdate.cpp
 	GameInitSettings.cpp
 	GameInterface.cpp
 	globals.cpp
@@ -186,7 +193,9 @@ endif()
 # Define Executable
 # Note: main.h and logging.h are in ../include, but belong to the executable
 add_executable(dunelegacy 
-    main.cpp 
+    main.cpp
+    MainConfig.cpp
+    MainVideo.cpp
     logging.cpp
     ../include/main.h 
     ../include/logging.h
@@ -206,7 +215,7 @@ if(WIN32)
 endif()
 
 target_compile_options(dunelegacy PRIVATE ${dune_flags})
-target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main harden_interface)
+target_link_libraries(dunelegacy PRIVATE dune harden_interface)
 
 if(TARGET dune_gitversion)
   target_link_libraries(dunelegacy PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")

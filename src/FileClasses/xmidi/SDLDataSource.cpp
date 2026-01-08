@@ -20,16 +20,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ios>
 
-ISDLDataSource::ISDLDataSource(SDL_RWops* rwop, int freesrc) : rwop(rwop), freesrc(freesrc), reader_{rwop} { }
+ISDLDataSource::ISDLDataSource(SDL_IOStream* io_param, int freesrc)
+    : io(io_param), freesrc(freesrc), reader_{io_param} { }
 
 ISDLDataSource::~ISDLDataSource() {
     close();
 }
 
 void ISDLDataSource::close() {
-    if (freesrc && rwop != nullptr) {
-        SDL_RWclose(rwop);
-        rwop = nullptr;
+    if (freesrc && io != nullptr) {
+        SDL_CloseIO(io);
+        io = nullptr;
     }
 }
 
@@ -54,30 +55,30 @@ std::unique_ptr<IDataSource> ISDLDataSource::makeSource(size_t len) {
     return std::make_unique<IBufferDataSource>(readN(len), len);
 }
 
-OSDLDataSource::OSDLDataSource(SDL_RWops* rwop, int freesrc) : rwop(rwop), freesrc(freesrc) { }
+OSDLDataSource::OSDLDataSource(SDL_IOStream* io_param, int freesrc) : io(io_param), freesrc(freesrc) { }
 
 OSDLDataSource::~OSDLDataSource() {
     close();
 }
 
 void OSDLDataSource::close() {
-    if (freesrc && rwop != nullptr) {
-        SDL_RWclose(rwop);
-        rwop = nullptr;
+    if (freesrc && io != nullptr) {
+        SDL_CloseIO(io);
+        io = nullptr;
     }
 }
 
 void OSDLDataSource::write(const void* b, size_t len) {
-    if (len != SDL_RWwrite(rwop, b, 1, len))
+    if (len != SDL_WriteIO(io, b, len))
         THROW(std::runtime_error, "Unable to write file.");
 }
 
 void OSDLDataSource::seek(size_t pos) {
-    if (-1 == SDL_RWseek(rwop, pos, SEEK_SET))
+    if (-1 == SDL_SeekIO(io, pos, SDL_IO_SEEK_SET))
         THROW(std::runtime_error, "Unable to seek file.");
 }
 
 void OSDLDataSource::skip(std::streamoff pos) {
-    if (-1 == SDL_RWseek(rwop, pos, SEEK_CUR))
+    if (-1 == SDL_SeekIO(io, pos, SDL_IO_SEEK_CUR))
         THROW(std::runtime_error, "Unable to skip file.");
 }

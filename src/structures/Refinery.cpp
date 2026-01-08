@@ -179,7 +179,8 @@ void Refinery::updateStructureSpecificStuff(const GameContext& context) {
         if (unit) {
             sdl2::log_error(
                 "A refinery is extracting spice from object %d, but it is type %d, which is not a harvester!",
-                unit->getObjectID(), static_cast<int>(unit->getItemID()));
+                unit->getObjectID(),
+                static_cast<int>(unit->getItemID()));
 
             deployHarvester(context);
         } else {

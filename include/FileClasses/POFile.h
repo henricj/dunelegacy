@@ -25,6 +25,6 @@
 #include <string>
 #include <unordered_map>
 
-dune::string_unordered_map<std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename = "");
+dune::string_unordered_map<std::string> loadPOFile(SDL_IOStream* io, const std::string& filename = "");
 
 #endif // POFILE_H

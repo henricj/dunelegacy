@@ -144,8 +144,11 @@ void StructureBase::blitToScreen() {
 
     const auto* const texture = graphic_[zoom];
 
-    const auto dest   = calcSpriteDrawingRect(texture, screenborder->world2screenX(realX_),
-                                              screenborder->world2screenY(realY_.toFloat()), numImagesX_, numImagesY_);
+    const auto dest   = calcSpriteDrawingRect(texture,
+                                            screenborder->world2screenX(realX_),
+                                            screenborder->world2screenY(realY_.toFloat()),
+                                            numImagesX_,
+                                            numImagesY_);
     const auto source = calcSpriteSourceRect(texture, indexX, numImagesX_, indexY, numImagesY_);
 
     Dune_RenderCopyF(renderer, texture, &source, &dest);
@@ -155,9 +158,13 @@ void StructureBase::blitToScreen() {
             dune::globals::pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), zoom);
         auto smokeSource = calcSpriteSourceRect(pSmokeTex, 0, 3);
         for (const auto& structureSmoke : smoke) {
-            const auto smokeDest = calcSpriteDrawingRect(
-                pSmokeTex, screenborder->world2screenX(structureSmoke.realPos.x),
-                screenborder->world2screenY(structureSmoke.realPos.y), 3, 1, HAlign::Center, VAlign::Bottom);
+            const auto smokeDest = calcSpriteDrawingRect(pSmokeTex,
+                                                         screenborder->world2screenX(structureSmoke.realPos.x),
+                                                         screenborder->world2screenY(structureSmoke.realPos.y),
+                                                         3,
+                                                         1,
+                                                         HAlign::Center,
+                                                         VAlign::Bottom);
             const auto cycleDiff = dune::globals::currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
 
             auto smokeFrame = static_cast<int>((cycleDiff / 25) % 4);
@@ -196,7 +203,8 @@ void StructureBase::drawSelectionBox() {
 
     // health bar
     const SDL_FRect healthRect{
-        dest.x, dest.y - static_cast<float>(zoom) - 2,
+        dest.x,
+        dest.y - static_cast<float>(zoom) - 2,
         ((getHealth() / getMaxHealth()) * (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1)).toFloat(),
         static_cast<float>(zoom + 1)};
     renderFillRectF(renderer, &healthRect, getHealthColor());
@@ -228,15 +236,22 @@ void StructureBase::drawGatheringPointLine() {
     const auto indicatorPosition = destination_ * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
     const auto structurePosition = getCenterPoint();
 
-    renderDrawLineF(renderer, screenborder->world2screenX(structurePosition.x),
-                    screenborder->world2screenY(structurePosition.y), screenborder->world2screenX(indicatorPosition.x),
-                    screenborder->world2screenY(indicatorPosition.y), COLOR_HALF_TRANSPARENT);
+    renderDrawLineF(renderer,
+                    screenborder->world2screenX(structurePosition.x),
+                    screenborder->world2screenY(structurePosition.y),
+                    screenborder->world2screenX(indicatorPosition.x),
+                    screenborder->world2screenY(indicatorPosition.y),
+                    COLOR_HALF_TRANSPARENT);
 
     const auto* const pUIIndicator = dune::globals::pGFXManager->getUIGraphic(UI_Indicator);
     const auto source              = calcSpriteSourceRect(pUIIndicator, 0, 3);
-    const auto drawLocation =
-        calcSpriteDrawingRect(pUIIndicator, screenborder->world2screenX(indicatorPosition.x),
-                              screenborder->world2screenY(indicatorPosition.y), 3, 1, HAlign::Center, VAlign::Center);
+    const auto drawLocation        = calcSpriteDrawingRect(pUIIndicator,
+                                                    screenborder->world2screenX(indicatorPosition.x),
+                                                    screenborder->world2screenY(indicatorPosition.y),
+                                                    3,
+                                                    1,
+                                                    HAlign::Center,
+                                                    VAlign::Center);
 
     // Render twice
     Dune_RenderCopyF(renderer, pUIIndicator, &source, &drawLocation);
@@ -262,11 +277,17 @@ void StructureBase::handleActionClick(const GameContext& context, int xPos, int 
 
     if ((xPos < location_.x) || (xPos >= (location_.x + getStructureSizeX())) || (yPos < location_.y)
         || (yPos >= (location_.y + getStructureSizeY()))) {
-        command_manager.addCommand(Command(local_player->getPlayerID(), CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION,
-                                           objectID_, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
+        command_manager.addCommand(Command(local_player->getPlayerID(),
+                                           CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION,
+                                           objectID_,
+                                           static_cast<uint32_t>(xPos),
+                                           static_cast<uint32_t>(yPos)));
     } else {
-        command_manager.addCommand(Command(local_player->getPlayerID(), CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION,
-                                           objectID_, static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
+        command_manager.addCommand(Command(local_player->getPlayerID(),
+                                           CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION,
+                                           objectID_,
+                                           static_cast<uint32_t>(NONE_ID),
+                                           static_cast<uint32_t>(NONE_ID)));
     }
 }
 
@@ -395,16 +416,25 @@ void StructureBase::destroy(const GameContext& context) {
     int DestroyedStructureTilesSizeY                   = 0;
     static constexpr int DestroyedStructureTilesWall[] = {DestroyedStructure_Wall};
     static constexpr int DestroyedStructureTiles1x1[]  = {Destroyed1x1Structure};
-    static constexpr int DestroyedStructureTiles2x2[]  = {Destroyed2x2Structure_TopLeft, Destroyed2x2Structure_TopRight,
+    static constexpr int DestroyedStructureTiles2x2[]  = {Destroyed2x2Structure_TopLeft,
+                                                          Destroyed2x2Structure_TopRight,
                                                           Destroyed2x2Structure_BottomLeft,
                                                           Destroyed2x2Structure_BottomRight};
-    static constexpr int DestroyedStructureTiles3x2[]  = {
-        Destroyed3x2Structure_TopLeft,    Destroyed3x2Structure_TopCenter,    Destroyed3x2Structure_TopRight,
-        Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
-    static constexpr int DestroyedStructureTiles3x3[] = {
-        Destroyed3x3Structure_TopLeft,    Destroyed3x3Structure_TopCenter,    Destroyed3x3Structure_TopRight,
-        Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,
-        Destroyed3x3Structure_BottomLeft, Destroyed3x3Structure_BottomCenter, Destroyed3x3Structure_BottomRight};
+    static constexpr int DestroyedStructureTiles3x2[]  = {Destroyed3x2Structure_TopLeft,
+                                                          Destroyed3x2Structure_TopCenter,
+                                                          Destroyed3x2Structure_TopRight,
+                                                          Destroyed3x2Structure_BottomLeft,
+                                                          Destroyed3x2Structure_BottomCenter,
+                                                          Destroyed3x2Structure_BottomRight};
+    static constexpr int DestroyedStructureTiles3x3[]  = {Destroyed3x3Structure_TopLeft,
+                                                          Destroyed3x3Structure_TopCenter,
+                                                          Destroyed3x3Structure_TopRight,
+                                                          Destroyed3x3Structure_CenterLeft,
+                                                          Destroyed3x3Structure_CenterCenter,
+                                                          Destroyed3x3Structure_CenterRight,
+                                                          Destroyed3x3Structure_BottomLeft,
+                                                          Destroyed3x3Structure_BottomCenter,
+                                                          Destroyed3x3Structure_BottomRight};
 
     if (itemID_ == Structure_Wall) {
         pDestroyedStructureTiles     = DestroyedStructureTilesWall;

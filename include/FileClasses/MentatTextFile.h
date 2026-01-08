@@ -47,7 +47,7 @@ public:
         std::string content;
     };
 
-    explicit MentatTextFile(SDL_RWops* rwop);
+    explicit MentatTextFile(SDL_IOStream* io);
     ~MentatTextFile();
 
     MentatTextFile(const MentatTextFile&)            = delete;

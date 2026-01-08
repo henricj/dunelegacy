@@ -32,6 +32,8 @@
 #include <sstream>
 #include <utility>
 
+#include <misc/dune_sdl.h>
+
 MetaServerClient::MetaServerClient(std::string metaServerURL)
     : metaServerURL(std::move(metaServerURL)), availableMetaServerCommandsSemaphore_(SDL_CreateSemaphore(0)) {
 
@@ -124,8 +126,8 @@ void MetaServerClient::update() {
 
     if (serverPort_ != 0) {
         if (dune::dune_clock::now() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
-            enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName_, serverPort_, secret_, mapName_,
-                                                                        numPlayers_, maxPlayers_));
+            enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(
+                serverName_, serverPort_, secret_, mapName_, numPlayers_, maxPlayers_));
             lastAnnounceUpdate = dune::dune_clock::now();
         }
     }
@@ -187,7 +189,7 @@ void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerComman
 
 std::unique_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() {
 
-    while (SDL_SemWait(availableMetaServerCommandsSemaphore_) != 0) { }
+    SDL_WaitSemaphore(availableMetaServerCommandsSemaphore_);
 
     SDL_LockMutex(sharedDataMutex_);
 

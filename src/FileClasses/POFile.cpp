@@ -24,9 +24,20 @@
 #include <string_view>
 
 namespace {
-const std::unordered_map<std::string, std::string> unescape_replacement_map = {
-    {"\\0", "\0"}, {"\\n", "\n"}, {"\\r", "\r"},  {"\\t", "\t"},  {"\\a", "\a"},
-    {"\\b", "\b"}, {"\\?", "\?"}, {"\\\\", "\\"}, {"\\\"", "\""}, {"\\\'", "\'"}};
+
+// clang-format off
+const std::unordered_map<std::string, std::string> unescape_replacement_map =
+   {{"\\0",  "\0"},
+    {"\\n",  "\n"},
+    {"\\r",  "\r"},
+    {"\\t",  "\t"},
+    {"\\a",  "\a"},
+    {"\\b",  "\b"},
+    {"\\?",  "\?"},
+    {"\\\\", "\\"},
+    {"\\\"", "\""},
+    {"\\\'", "\'"}};
+// clang-format on
 
 std::string unescapeString(const std::string& str) {
     return replaceAll(str, unescape_replacement_map);
@@ -101,8 +112,8 @@ dune::string_unordered_map<std::string> loadPOFile(SDL_RWops* rwop, const std::s
 
         if (line.substr(0, msgid_token.size()) == msgid_token) {
             if (msgidMode) {
-                sdl2::log_info("%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(),
-                               lineNum);
+                sdl2::log_info(
+                    "%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(), lineNum);
             } else if (msgstrMode) {
                 // we have finished the previous translation
                 mapping[msgid] = std::move(msgstr);

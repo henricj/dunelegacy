@@ -24,9 +24,9 @@
 /// A class for reading palettes out of PAL-Files.
 /**
     This method can be used to read PAL-Files. PAL-Files are palette files used by Dune2. The read palette is returned.
-    \param  rwop    SDL_RWops to the PAL-File. (can be readonly)
+    \param  io    SDL_IOStream to the PAL-File. (can be readonly)
     \return The Palette in this PAL-File
 */
-Palette LoadPalette_RW(SDL_RWops* rwop);
+Palette LoadPalette_RW(SDL_IOStream* io);
 
 #endif // PALFILE_H

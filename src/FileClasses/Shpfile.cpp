@@ -69,7 +69,8 @@ Shpfile::~Shpfile() = default;
 sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
     if (indexOfFile >= shpfileEntries.size()) {
         THROW(std::invalid_argument,
-              "Shpfile::getPicture(): Requested index %ud is invalid for a shp file with %ud entries!", indexOfFile,
+              "Shpfile::getPicture(): Requested index %ud is invalid for a shp file with %ud entries!",
+              indexOfFile,
               shpfileEntries.size());
     }
 
@@ -189,7 +190,8 @@ Shpfile::getPictureArrayImpl(unsigned int tilesX, unsigned int tilesY, std::span
         if (TILE_GETINDEX(tile) >= shpfileEntries.size()) {
             THROW(std::invalid_argument,
                   "Shpfile::getPictureArray(): Cannot read image %ud as there are only %ud images in this *.shp!",
-                  TILE_GETINDEX(tile), shpfileEntries.size());
+                  TILE_GETINDEX(tile),
+                  shpfileEntries.size());
         }
     }
 
@@ -274,7 +276,8 @@ Shpfile::getPictureArrayImpl(unsigned int tilesX, unsigned int tilesY, std::span
                     for (auto y = 0; y < sizeY; y++) {
                         memcpy(static_cast<char*>(pic->pixels) + static_cast<size_t>(i) * sizeX
                                    + (y + j * static_cast<size_t>(sizeY)) * pic->pitch,
-                               ImageOut.get() + static_cast<ptrdiff_t>(y) * sizeX, sizeX);
+                               ImageOut.get() + static_cast<ptrdiff_t>(y) * sizeX,
+                               sizeX);
                     }
                 } break;
 
@@ -282,7 +285,8 @@ Shpfile::getPictureArrayImpl(unsigned int tilesX, unsigned int tilesY, std::span
                     for (auto y = 0; y < sizeY; y++) {
                         memcpy(static_cast<char*>(pic->pixels) + static_cast<size_t>(i) * sizeX
                                    + (y + static_cast<size_t>(j) * sizeY) * pic->pitch,
-                               ImageOut.get() + (static_cast<ptrdiff_t>(sizeY) - 1 - y) * sizeX, sizeX);
+                               ImageOut.get() + (static_cast<ptrdiff_t>(sizeY) - 1 - y) * sizeX,
+                               sizeX);
                     }
                 } break;
 

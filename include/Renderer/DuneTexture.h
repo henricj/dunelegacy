@@ -19,7 +19,6 @@
 #define DUNETEXTURE_H
 
 #include "misc/SDL2pp.h"
-#include <SDL2/SDL.h>
 
 #include <cassert>
 #include <limits>
@@ -60,9 +59,10 @@ struct DuneTextureRect final {
             return {};
         }
 
-        int w, h;
-        SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
-        return create(0, 0, w, h);
+        // SDL3: SDL_QueryTexture removed, use SDL_GetTextureSize
+        float w, h;
+        SDL_GetTextureSize(texture, &w, &h);
+        return create(0, 0, static_cast<int>(w), static_cast<int>(h));
     }
 
     DuneTextureRect& operator=(const DuneTextureRect&) = default;

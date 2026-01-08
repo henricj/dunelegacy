@@ -80,7 +80,8 @@ bool MCV::doDeploy() {
             setVisible(VIS_ALL, false);
 
             // destroy MCV but with base class method since we want no explosion
-            parent::destroy({*dune::globals::currentGame.get(), *dune::globals::currentGameMap,
+            parent::destroy({*dune::globals::currentGame.get(),
+                             *dune::globals::currentGameMap,
                              dune::globals::currentGame->getObjectManager()});
 
             return true;

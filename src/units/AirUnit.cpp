@@ -105,8 +105,8 @@ void AirUnit::blitToScreen() {
             const auto x = screenborder->world2screenX(realX_);
             const auto y = screenborder->world2screenY(realY_);
 
-            const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX_,
-                                                     drawnFrame, numImagesY_);
+            const auto source = calcSpriteSourceRect(
+                pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX_, drawnFrame, numImagesY_);
             const auto dest =
                 calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX_, numImagesY_, HAlign::Center, VAlign::Center);
 
@@ -161,8 +161,8 @@ void AirUnit::move(const GameContext& context) {
 }
 
 FixPoint AirUnit::getDestinationAngle() const {
-    return destinationAngleRad(realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2,
-                               destination_.y * TILESIZE + TILESIZE / 2)
+    return destinationAngleRad(
+               realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2)
          * 8 / (FixPt_PI << 1);
 }
 

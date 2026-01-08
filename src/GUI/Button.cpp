@@ -91,12 +91,12 @@ bool Button::handleKeyPress(const SDL_KeyboardEvent& key) {
         return true;
     }
 
-    if (key.keysym.sym == SDLK_TAB) {
+    if (key.key == SDLK_TAB) {
         setInactive();
         return true;
     }
 
-    if (key.keysym.sym == SDLK_SPACE) {
+    if (key.key == SDLK_SPACE) {
         if (bToggleButton_) {
             const bool oldState = getToggleState();
             setToggleState(!bToggleState_);
@@ -112,7 +112,7 @@ bool Button::handleKeyPress(const SDL_KeyboardEvent& key) {
         }
     }
 
-    if ((!bToggleButton_) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
+    if ((!bToggleButton_) && (SDL_GetModState() == SDL_KMOD_NONE) && (key.key == SDLK_RETURN)) {
         dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
 
         if (pOnClick_) {
@@ -164,7 +164,9 @@ void Button::draw(Point position) {
     const auto& gui = GUIStyle::getInstance();
 
     const auto& hw = getSize();
-    const SDL_FRect dest{static_cast<float>(position.x), static_cast<float>(position.y), static_cast<float>(hw.x),
+    const SDL_FRect dest{static_cast<float>(position.x),
+                         static_cast<float>(position.y),
+                         static_cast<float>(hw.x),
                          static_cast<float>(hw.y)};
 
     gui.RenderButton(dune::globals::renderer.get(), dest, tex, bPressed_);
@@ -183,8 +185,11 @@ void Button::drawOverlay([[maybe_unused]] Point position) {
     const auto render_w   = static_cast<float>(renderRect.w);
     const auto render_h   = static_cast<float>(renderRect.h);
 
-    auto dest = calcDrawingRect(tooltipTexture_, static_cast<float>(dune::globals::drawnMouseX),
-                                static_cast<float>(dune::globals::drawnMouseY), HAlign::Left, VAlign::Bottom);
+    auto dest = calcDrawingRect(tooltipTexture_,
+                                static_cast<float>(dune::globals::drawnMouseX),
+                                static_cast<float>(dune::globals::drawnMouseY),
+                                HAlign::Left,
+                                VAlign::Bottom);
     if (dest.x + dest.w >= render_w) {
         // do not draw tooltip outside screen
         dest.x = render_w - dest.w;

@@ -18,7 +18,7 @@
 #ifndef DUNE_EVENTS_H
 #define DUNE_EVENTS_H
 
-#include <SDL2/SDL.h>
+#include <misc/dune_sdl.h>
 
 namespace dune {
 bool Dune_WaitEvent(SDL_Event* event, uint32_t timeout);

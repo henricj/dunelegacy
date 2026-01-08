@@ -50,26 +50,33 @@ Palette LoadPalette_RW(SDL_RWops* rwop) {
 
     const auto* RESTRICT p = &buf[0];
 
+    for (auto i = 0U; i < numColors; ++i) {
+        auto& RESTRICT color = colors[i];
+
+        color.r = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
+        color.g = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
+        color.b = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
+        color.a = 0xFF;
+    }
+
+    // SDL3: Index 0 (PALCOLOR_TRANSPARENT) should be fully transparent black.
+    // When SDL_ConvertSurface converts indexed surfaces to ARGB, the palette
+    // alpha may be ignored, but setting RGB to black prevents color bleeding
+    // at the edges of transparent regions during texture filtering.
+    // The convertIndexedToARGBWithAlpha function will then set these pixels
+    // to fully transparent (alpha=0).
     if (numColors > 0) {
-        // The first color is always transparent... (?)
-        // colors[0].r = 0;
-        // colors[0].g = 0;
-        // colors[0].b = 0;
-        // colors[0].a = 0;
-
-        for (auto i = 0U; i < numColors; ++i) {
-            auto& RESTRICT color = colors[i];
-
-            color.r = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
-            color.g = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
-            color.b = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
-            color.a = 0xFF;
-        }
+        colors[0].r = 0;
+        colors[0].g = 0;
+        colors[0].b = 0;
+        colors[0].a = 0; // Also set alpha=0 in case SDL3 does honor it
     }
 
     sdl2::palette_ptr sdl_palette{SDL_AllocPalette(static_cast<int>(numColors))};
 
-    SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, static_cast<int>(numColors));
+    if (!SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, static_cast<int>(numColors))) {
+        THROW(std::runtime_error, "Palfile::Palfile(): SDL_SetPaletteColors failed: {}", SDL_GetError());
+    }
 
     return Palette{std::move(sdl_palette)};
 }

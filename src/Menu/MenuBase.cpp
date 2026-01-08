@@ -43,6 +43,16 @@ void MenuBase::quit(int returnVal) {
     quitting = true;
 }
 
+namespace {
+// SDL3: Convert event coordinates from window space to render logical space
+void convertEventToRenderCoordinates(SDL_Event& event) {
+    auto* renderer = dune::globals::renderer.get();
+    if (renderer) {
+        SDL_ConvertEventToRenderCoordinates(renderer, &event);
+    }
+}
+} // namespace
+
 bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
     using namespace std::chrono_literals;
 
@@ -55,10 +65,12 @@ bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
             return true;
 
         if (dune::Dune_WaitEvent(&event, dune::as_milliseconds<int>(remaining))) {
+            convertEventToRenderCoordinates(event);
             if (!doInput(event))
                 return false;
 
             while (SDL_PollEvent(&event)) {
+                convertEventToRenderCoordinates(event);
                 // check the events
                 if (!doInput(event))
                     return false;
@@ -109,6 +121,8 @@ int MenuBase::showMenuImpl() {
         updateFullscreen();
 
         while (SDL_PollEvent(&event)) {
+            // SDL3: Convert event coordinates from window space to render logical space
+            convertEventToRenderCoordinates(event);
             // check the events
             if (!doInput(event))
                 break;
@@ -143,9 +157,10 @@ void MenuBase::drawSpecificStuff() { }
 
 void MenuBase::doInputImpl(const SDL_Event& event) {
     switch (event.type) {
-        case SDL_KEYDOWN: {
+        // SDL3: SDL_KEYDOWN -> SDL_EVENT_KEY_DOWN
+        case SDL_EVENT_KEY_DOWN: {
             // Look for a keypress
-            switch (event.key.keysym.sym) {
+            switch (event.key.key) {
 
                 case SDLK_ESCAPE: {
                     if (pChildWindow_ == nullptr && bAllowQuitting) {
@@ -184,16 +199,21 @@ void MenuBase::doInputImpl(const SDL_Event& event) {
             }
         } break;
 
-        case SDL_MOUSEMOTION: {
+        // SDL3: SDL_MOUSEMOTION -> SDL_EVENT_MOUSE_MOTION
+        case SDL_EVENT_MOUSE_MOTION: {
             const SDL_MouseMotionEvent* mouse = &event.motion;
 
             const auto actual = getSize();
 
-            dune::globals::drawnMouseX = std::max(0, std::min(mouse->x, actual.x - 1));
-            dune::globals::drawnMouseY = std::max(0, std::min(mouse->y, actual.y - 1));
+            // SDL3: mouse->x and mouse->y are now float, need to cast for std::max/min
+            const int mouseX           = static_cast<int>(mouse->x);
+            const int mouseY           = static_cast<int>(mouse->y);
+            dune::globals::drawnMouseX = std::max(0, std::min(mouseX, actual.x - 1));
+            dune::globals::drawnMouseY = std::max(0, std::min(mouseY, actual.y - 1));
         } break;
 
-        case SDL_QUIT: {
+        // SDL3: SDL_QUIT -> SDL_EVENT_QUIT
+        case SDL_EVENT_QUIT: {
             if (pChildWindow_ == nullptr && bAllowQuitting) {
                 quit();
             }
@@ -226,8 +246,10 @@ void DefaultWindowBase::draw_background(Point position) {
 
     const auto& size = getSize();
 
-    const auto dest = SDL_FRect{static_cast<float>(position.x), static_cast<float>(position.y),
-                                static_cast<float>(size.x), static_cast<float>(size.y)};
+    const auto dest = SDL_FRect{static_cast<float>(position.x),
+                                static_cast<float>(position.y),
+                                static_cast<float>(size.x),
+                                static_cast<float>(size.y)};
 
     gui.drawBackground(dune::globals::renderer.get(), dest);
 }
@@ -251,8 +273,10 @@ void MainMenuBase::draw_background(Point position) {
 
     const auto& size = getSize();
 
-    const auto dest = SDL_FRect{static_cast<float>(position.x), static_cast<float>(position.y),
-                                static_cast<float>(size.x), static_cast<float>(size.y)};
+    const auto dest = SDL_FRect{static_cast<float>(position.x),
+                                static_cast<float>(position.y),
+                                static_cast<float>(size.x),
+                                static_cast<float>(size.y)};
 
     gui.drawMainBackground(dune::globals::renderer.get(), dest);
 }

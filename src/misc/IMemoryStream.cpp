@@ -36,7 +36,7 @@ uint16_t IMemoryStream::readUint16() {
 
     const uint16_t tmp = *reinterpret_cast<const uint16_t*>(pBuffer + currentPos);
     currentPos += sizeof(uint16_t);
-    return SDL_SwapLE16(tmp);
+    return SDL_Swap16LE(tmp);
 }
 
 uint32_t IMemoryStream::readUint32() {
@@ -46,7 +46,7 @@ uint32_t IMemoryStream::readUint32() {
 
     const uint32_t tmp = *reinterpret_cast<const uint32_t*>(pBuffer + currentPos);
     currentPos += sizeof(uint32_t);
-    return SDL_SwapLE32(tmp);
+    return SDL_Swap32LE(tmp);
 }
 
 uint64_t IMemoryStream::readUint64() {
@@ -56,7 +56,7 @@ uint64_t IMemoryStream::readUint64() {
 
     const uint64_t tmp = *reinterpret_cast<const uint64_t*>(pBuffer + currentPos);
     currentPos += sizeof(uint64_t);
-    return SDL_SwapLE64(tmp);
+    return SDL_Swap64LE(tmp);
 }
 
 bool IMemoryStream::readBool() {

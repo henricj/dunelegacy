@@ -27,7 +27,7 @@
 
 #include <globals.h>
 
-#include <SDL2/SDL.h>
+#include <misc/dune_sdl.h>
 
 #include <bitset>
 

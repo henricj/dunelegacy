@@ -19,6 +19,7 @@
 #define GLOBALS_H
 
 #include "FileClasses/GFXConstants.h"
+#include <Bullet.h>
 #include <Colors.h>
 #include <DataTypes.h>
 #include <FileClasses/Palette.h>
@@ -48,7 +49,6 @@ class House;
 class HumanPlayer;
 class UnitBase;
 class StructureBase;
-class Bullet;
 
 namespace dune::globals {
 // SDL stuff
@@ -91,7 +91,11 @@ extern bool debug; ///< is set for debugging purposes
 
 // constants
 inline constexpr auto houseToPaletteIndex =
-    std::to_array({PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR,
+    std::to_array({PALCOLOR_HARKONNEN,
+                   PALCOLOR_ATREIDES,
+                   PALCOLOR_ORDOS,
+                   PALCOLOR_FREMEN,
+                   PALCOLOR_SARDAUKAR,
                    PALCOLOR_MERCENARY}); ///< the base colors for the different houses
 
 static_assert(std::tuple_size_v<decltype(houseToPaletteIndex)> == NUM_HOUSES);

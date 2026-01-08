@@ -33,19 +33,19 @@ inline uint8_t Read1(BufferedReader<>& reader) {
     return value;
 }
 
-inline void Write1(SDL_RWops* rwop, uint8_t value) {
-    if (1 != SDL_RWwrite(rwop, &value, 1, 1))
+inline void Write1(SDL_IOStream* io, uint8_t value) {
+    if (1 != SDL_WriteIO(io, &value, 1))
         THROW(std::runtime_error, "Write failed");
 }
 
 class ISDLDataSource final : public IDataSource {
 private:
-    SDL_RWops* rwop;
+    SDL_IOStream* io;
     int freesrc;
     BufferedReader<> reader_;
 
 public:
-    explicit ISDLDataSource(SDL_RWops* rwop, int freesrc = 0);
+    explicit ISDLDataSource(SDL_IOStream* io, int freesrc = 0);
 
     ~ISDLDataSource() override;
 
@@ -67,7 +67,7 @@ public:
 
     void skip(std::streamoff pos) override;
 
-    [[nodiscard]] size_t getSize() const override { return static_cast<unsigned int>(SDL_RWsize(rwop)); }
+    [[nodiscard]] size_t getSize() const override { return static_cast<unsigned int>(SDL_GetIOSize(io)); }
 
     [[nodiscard]] size_t getPos() const override { return reader_.position(); }
 
@@ -80,25 +80,25 @@ public:
 
 class OSDLDataSource final : public ODataSource {
 private:
-    SDL_RWops* rwop;
+    SDL_IOStream* io;
     int freesrc;
 
 public:
-    explicit OSDLDataSource(SDL_RWops* rwop, int freesrc = 0);
+    explicit OSDLDataSource(SDL_IOStream* io, int freesrc = 0);
 
     ~OSDLDataSource() override;
 
     void close();
 
-    void write1(uint32_t val) override { Write1(rwop, static_cast<uint8_t>(val)); }
+    void write1(uint32_t val) override { Write1(io, static_cast<uint8_t>(val)); }
 
-    void write2(uint16_t val) override { Write2(rwop, val); }
+    void write2(uint16_t val) override { Write2(io, val); }
 
-    void write2high(uint16_t val) override { Write2high(rwop, val); }
+    void write2high(uint16_t val) override { Write2high(io, val); }
 
-    void write4(uint32_t val) override { Write4(rwop, val); }
+    void write4(uint32_t val) override { Write4(io, val); }
 
-    void write4high(uint32_t val) override { Write4high(rwop, val); }
+    void write4high(uint32_t val) override { Write4high(io, val); }
 
     void write(const void* b, size_t len) override;
 
@@ -106,9 +106,9 @@ public:
 
     void skip(std::streamoff pos) override;
 
-    [[nodiscard]] size_t getSize() const override { return static_cast<unsigned int>(SDL_RWsize(rwop)); }
+    [[nodiscard]] size_t getSize() const override { return static_cast<unsigned int>(SDL_GetIOSize(io)); }
 
-    [[nodiscard]] size_t getPos() const override { return static_cast<unsigned int>(SDL_RWtell(rwop)); }
+    [[nodiscard]] size_t getPos() const override { return static_cast<unsigned int>(SDL_TellIO(io)); }
 };
 
 #endif

@@ -28,8 +28,12 @@
 #include "GUI/Spacer.h"
 
 namespace {
-constexpr std::array houseOrder = {HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
-                                   HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
+constexpr std::array houseOrder = {HOUSETYPE::HOUSE_ATREIDES,
+                                   HOUSETYPE::HOUSE_ORDOS,
+                                   HOUSETYPE::HOUSE_HARKONNEN,
+                                   HOUSETYPE::HOUSE_MERCENARY,
+                                   HOUSETYPE::HOUSE_FREMEN,
+                                   HOUSETYPE::HOUSE_SARDAUKAR};
 }
 
 SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
@@ -53,8 +57,8 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     windowWidget.addWidget(&buttonBorder, dest2);
 
     // set up menu buttons
-    windowWidget.addWidget(&menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64),
-                           Point(160, 111));
+    windowWidget.addWidget(
+        &menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64), Point(160, 111));
 
     startButton.setText(_("Start"));
     startButton.setOnClick([&] { onStart(); });
@@ -112,8 +116,8 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     const auto* const pArrowRightHighlight = gfx->getUIGraphic(UI_Herald_ArrowRightHighlight);
     houseRightButton.setTextures(pArrowRight, pArrowRight, pArrowRightHighlight);
     houseRightButton.setOnClick([&] { onHouseRight(); });
-    houseChoiceContainer.addWidget(&houseRightButton, Point(houseChoiceContainer.getSize().x / 2 + 85, 160),
-                                   getTextureSize(pArrowRight));
+    houseChoiceContainer.addWidget(
+        &houseRightButton, Point(houseChoiceContainer.getSize().x / 2 + 85, 160), getTextureSize(pArrowRight));
 
     updateHouseChoice();
 

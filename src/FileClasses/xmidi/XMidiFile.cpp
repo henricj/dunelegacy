@@ -1324,8 +1324,8 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
         int count = ExtractTracksFromXmi(source);
 
         if (count != num_tracks) {
-            sdl2::log_error("Error: unable to extract all ({}) tracks specified from XMidiFile. Only ({})", num_tracks,
-                            count);
+            sdl2::log_error(
+                "Error: unable to extract all ({}) tracks specified from XMidiFile. Only ({})", num_tracks, count);
             DestroyEventList();
             return 0;
         }
@@ -1356,8 +1356,8 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
         const int count = ExtractTracksFromMid(source, ppqn, actual_num, type == 1);
 
         if (count != num_tracks) {
-            sdl2::log_error("Error: unable to extract all ({}) tracks specified from MIDI. Only ({})", num_tracks,
-                            count);
+            sdl2::log_error(
+                "Error: unable to extract all ({}) tracks specified from MIDI. Only ({})", num_tracks, count);
             DestroyEventList();
             return 0;
         }

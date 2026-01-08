@@ -95,9 +95,11 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
             mapSurface = convertSurfaceToDisplayFormat(gfx->getUIGraphicSurface(UI_MapChoicePlanet));
             constexpr SDL_Rect dest{16, 48, 608, 240};
             SDL_FillRect(mapSurface.get(), &dest, COLOR_BLACK);
-            mapTexture =
-                sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT,
-                                                    SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
+            mapTexture = sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(),
+                                                             SCREEN_FORMAT,
+                                                             SDL_TEXTUREACCESS_STREAMING,
+                                                             mapSurface->w,
+                                                             mapSurface->h)};
             SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 
             mapChoiceState = MAPCHOICESTATE_FADEINPLANET;
@@ -310,8 +312,11 @@ void MapChoice::drawSpecificStuff() {
                 assert(arrowFrame >= 0 && arrowFrame < 4);
                 const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 const auto dest = calcSpriteDrawingRectF(
-                    arrow, static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
-                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y), 4, 1);
+                    arrow,
+                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
+                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y),
+                    4,
+                    1);
 
                 Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }
@@ -320,7 +325,8 @@ void MapChoice::drawSpecificStuff() {
         case MAPCHOICESTATE_BLINKING: {
             if (dune::as_milliseconds(dune::dune_clock::now() - selectionTime) % 900 < 450) {
                 if (const auto* const pieceTexture = gfx->getMapChoicePiece(selectedRegion, house)) {
-                    pieceTexture->draw(renderer, static_cast<float>(piecePosition[selectedRegion].x + centerAreaRect.x),
+                    pieceTexture->draw(renderer,
+                                       static_cast<float>(piecePosition[selectedRegion].x + centerAreaRect.x),
                                        static_cast<float>(piecePosition[selectedRegion].y + centerAreaRect.y));
                 }
             }
@@ -337,8 +343,11 @@ void MapChoice::drawSpecificStuff() {
                     static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128 % 4);
                 const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 const auto dest = calcSpriteDrawingRectF(
-                    arrow, static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
-                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y), 4, 1);
+                    arrow,
+                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
+                    static_cast<float>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y),
+                    4,
+                    1);
 
                 Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }
@@ -401,8 +410,8 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
 
     // Load map surface
     mapSurface = convertSurfaceToDisplayFormat(gfx->getUIGraphicSurface(UI_MapChoiceMap));
-    mapTexture = sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT,
-                                                     SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
+    mapTexture = sdl2::texture_ptr{SDL_CreateTexture(
+        dune::globals::renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
     SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 
     if (group.size() < 2)
@@ -483,8 +492,11 @@ void MapChoice::loadINI() {
                 for (auto& strRegion : strRegions) {
                     int value = 0;
                     if (!parseString(strRegion, value))
-                        THROW(std::runtime_error, "File '{}' contains invalid region value '{}' for section [{}]!",
-                              filename, strRegion, strSection);
+                        THROW(std::runtime_error,
+                              "File '{}' contains invalid region value '{}' for section [{}]!",
+                              filename,
+                              strRegion,
+                              strSection);
 
                     group[i].newRegion[static_cast<int>(h)].push_back(static_cast<UIGraphics_Enum>(value));
                 }
@@ -509,8 +521,10 @@ void MapChoice::loadINI() {
 
                 if (strAttackRegion.size() < 4) {
                     THROW(std::runtime_error,
-                          "File '{}' contains invalid value for key [{}]/{}; it has to consist of 4 numbers!", filename,
-                          strSection, strKey);
+                          "File '{}' contains invalid value for key [{}]/{}; it has to consist of 4 numbers!",
+                          filename,
+                          strSection,
+                          strKey);
                 }
 
                 attack_region.regionNum       = parseStringThrows<int>(strAttackRegion[0]);

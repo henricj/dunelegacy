@@ -31,15 +31,17 @@ CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surfa
     pBlendBlitterTargetSurface =
         convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pStartSurface, 1, 1).get());
 
-    pStreamingTexture =
-        sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING,
-                                            pBlendBlitterTargetSurface->w, pBlendBlitterTargetSurface->h)};
+    pStreamingTexture = sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(),
+                                                            SCREEN_FORMAT,
+                                                            SDL_TEXTUREACCESS_STREAMING,
+                                                            pBlendBlitterTargetSurface->w,
+                                                            pBlendBlitterTargetSurface->h)};
 
     const SDL_Rect dest{0, 0, getWidth(pBlendBlitterTargetSurface.get()), getHeight(pBlendBlitterTargetSurface.get())};
     auto pBlendBlitterSourceSurface =
         convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pEndSurface, 1, 1).get());
-    pBlendBlitter = std::make_unique<BlendBlitter>(std::move(pBlendBlitterSourceSurface),
-                                                   pBlendBlitterTargetSurface.get(), dest, 30);
+    pBlendBlitter = std::make_unique<BlendBlitter>(
+        std::move(pBlendBlitterSourceSurface), pBlendBlitterTargetSurface.get(), dest, 30);
 }
 
 CrossBlendVideoEvent::~CrossBlendVideoEvent() = default;
@@ -49,8 +51,8 @@ int CrossBlendVideoEvent::draw() {
         pBlendBlitter.reset();
     }
 
-    SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pBlendBlitterTargetSurface->pixels,
-                      pBlendBlitterTargetSurface->pitch);
+    SDL_UpdateTexture(
+        pStreamingTexture.get(), nullptr, pBlendBlitterTargetSurface->pixels, pBlendBlitterTargetSurface->pitch);
 
     const auto dest =
         calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);

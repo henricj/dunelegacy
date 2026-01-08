@@ -30,7 +30,7 @@
 */
 class IndexedTextFile {
 public:
-    IndexedTextFile(SDL_RWops* rwop, bool bDecode = false);
+    IndexedTextFile(SDL_IOStream* io, bool bDecode = false);
     ~IndexedTextFile();
 
     IndexedTextFile(const IndexedTextFile&)            = delete;

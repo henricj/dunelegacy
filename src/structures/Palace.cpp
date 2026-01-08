@@ -103,8 +103,11 @@ void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos
     if (!map.tileExists(xPos, yPos))
         return;
 
-    game.getCommandManager().addCommand({dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND,
-                                         objectID_, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)});
+    game.getCommandManager().addCommand({dune::globals::pLocalPlayer->getPlayerID(),
+                                         CMDTYPE::CMD_PALACE_DEATHHAND,
+                                         objectID_,
+                                         static_cast<uint32_t>(xPos),
+                                         static_cast<uint32_t>(yPos)});
 }
 
 void Palace::doSpecialWeapon(const GameContext& context) {
@@ -157,8 +160,8 @@ void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
     const auto centerPoint = getCenterPoint();
     const Coord dest(x * TILESIZE + TILESIZE / 2 + deathOffX, y * TILESIZE + TILESIZE / 2 + deathOffY);
 
-    context.map.add_bullet(objectID_, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false,
-                           nullptr);
+    context.map.add_bullet(
+        objectID_, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false, nullptr);
     dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, getLocation());
 
     if (getOwner() != dune::globals::pLocalHouse) {

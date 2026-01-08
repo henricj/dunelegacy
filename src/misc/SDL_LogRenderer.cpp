@@ -24,102 +24,71 @@
 
 #include <fmt/core.h>
 
-template<typename... Args>
-static void
-SDL_snprintfcat(SDL_OUT_Z_CAP(maxlen) char* text, size_t maxlen, fmt::format_string<Args...> fmt, Args&&... args) {
-    const size_t length = SDL_strlen(text);
-
-    if (length >= maxlen)
-        THROW(std::invalid_argument, "Output buffer overflow!");
-
-    text += length;
-    maxlen -= length;
-
-    auto [out, _] = fmt::format_to_n(text, maxlen - 1, fmt, std::forward<Args>(args)...);
-
-    *out = '\0';
-}
-
-static void SDLTest_PrintRendererFlag(char* text, size_t maxlen, uint32_t flag) {
-    switch (flag) {
-        case SDL_RENDERER_SOFTWARE: SDL_snprintfcat(text, maxlen, "Software"); break;
-        case SDL_RENDERER_ACCELERATED: SDL_snprintfcat(text, maxlen, "Accelerated"); break;
-        case SDL_RENDERER_PRESENTVSYNC: SDL_snprintfcat(text, maxlen, "PresentVSync"); break;
-        case SDL_RENDERER_TARGETTEXTURE: SDL_snprintfcat(text, maxlen, "TargetTexturesSupported"); break;
-        default: SDL_snprintfcat(text, maxlen, "{:#08x}", flag); break;
-    }
-}
-
-static void SDLTest_PrintPixelFormat(char* text, size_t maxlen, uint32_t format) {
+static const char* SDLTest_PixelFormatName(SDL_PixelFormat format) {
     switch (format) {
-        case SDL_PIXELFORMAT_UNKNOWN: SDL_snprintfcat(text, maxlen, "Unknown"); break;
-        case SDL_PIXELFORMAT_INDEX1LSB: SDL_snprintfcat(text, maxlen, "Index1LSB"); break;
-        case SDL_PIXELFORMAT_INDEX1MSB: SDL_snprintfcat(text, maxlen, "Index1MSB"); break;
-        case SDL_PIXELFORMAT_INDEX4LSB: SDL_snprintfcat(text, maxlen, "Index4LSB"); break;
-        case SDL_PIXELFORMAT_INDEX4MSB: SDL_snprintfcat(text, maxlen, "Index4MSB"); break;
-        case SDL_PIXELFORMAT_INDEX8: SDL_snprintfcat(text, maxlen, "Index8"); break;
-        case SDL_PIXELFORMAT_RGB332: SDL_snprintfcat(text, maxlen, "RGB332"); break;
-        case SDL_PIXELFORMAT_RGB444: SDL_snprintfcat(text, maxlen, "RGB444"); break;
-        case SDL_PIXELFORMAT_RGB555: SDL_snprintfcat(text, maxlen, "RGB555"); break;
-        case SDL_PIXELFORMAT_BGR555: SDL_snprintfcat(text, maxlen, "BGR555"); break;
-        case SDL_PIXELFORMAT_ARGB4444: SDL_snprintfcat(text, maxlen, "ARGB4444"); break;
-        case SDL_PIXELFORMAT_ABGR4444: SDL_snprintfcat(text, maxlen, "ABGR4444"); break;
-        case SDL_PIXELFORMAT_ARGB1555: SDL_snprintfcat(text, maxlen, "ARGB1555"); break;
-        case SDL_PIXELFORMAT_ABGR1555: SDL_snprintfcat(text, maxlen, "ABGR1555"); break;
-        case SDL_PIXELFORMAT_RGB565: SDL_snprintfcat(text, maxlen, "RGB565"); break;
-        case SDL_PIXELFORMAT_BGR565: SDL_snprintfcat(text, maxlen, "BGR565"); break;
-        case SDL_PIXELFORMAT_RGB24: SDL_snprintfcat(text, maxlen, "RGB24"); break;
-        case SDL_PIXELFORMAT_BGR24: SDL_snprintfcat(text, maxlen, "BGR24"); break;
-        case SDL_PIXELFORMAT_RGB888: SDL_snprintfcat(text, maxlen, "RGB888"); break;
-        case SDL_PIXELFORMAT_BGR888: SDL_snprintfcat(text, maxlen, "BGR888"); break;
-        case SDL_PIXELFORMAT_ARGB8888: SDL_snprintfcat(text, maxlen, "ARGB8888"); break;
-        case SDL_PIXELFORMAT_RGBA8888: SDL_snprintfcat(text, maxlen, "RGBA8888"); break;
-        case SDL_PIXELFORMAT_ABGR8888: SDL_snprintfcat(text, maxlen, "ABGR8888"); break;
-        case SDL_PIXELFORMAT_BGRA8888: SDL_snprintfcat(text, maxlen, "BGRA8888"); break;
-        case SDL_PIXELFORMAT_ARGB2101010: SDL_snprintfcat(text, maxlen, "ARGB2101010"); break;
-        case SDL_PIXELFORMAT_YV12: SDL_snprintfcat(text, maxlen, "YV12"); break;
-        case SDL_PIXELFORMAT_IYUV: SDL_snprintfcat(text, maxlen, "IYUV"); break;
-        case SDL_PIXELFORMAT_YUY2: SDL_snprintfcat(text, maxlen, "YUY2"); break;
-        case SDL_PIXELFORMAT_UYVY: SDL_snprintfcat(text, maxlen, "UYVY"); break;
-        case SDL_PIXELFORMAT_YVYU: SDL_snprintfcat(text, maxlen, "YVYU"); break;
-        case SDL_PIXELFORMAT_NV12: SDL_snprintfcat(text, maxlen, "NV12"); break;
-        case SDL_PIXELFORMAT_NV21: SDL_snprintfcat(text, maxlen, "NV21"); break;
-        default: SDL_snprintfcat(text, maxlen, "0x%8.8x", format); break;
+        case SDL_PIXELFORMAT_UNKNOWN: return "Unknown";
+        case SDL_PIXELFORMAT_INDEX1LSB: return "Index1LSB";
+        case SDL_PIXELFORMAT_INDEX1MSB: return "Index1MSB";
+        case SDL_PIXELFORMAT_INDEX4LSB: return "Index4LSB";
+        case SDL_PIXELFORMAT_INDEX4MSB: return "Index4MSB";
+        case SDL_PIXELFORMAT_INDEX8: return "Index8";
+        case SDL_PIXELFORMAT_RGB332: return "RGB332";
+        case SDL_PIXELFORMAT_XRGB4444: return "RGB444";
+        case SDL_PIXELFORMAT_XRGB1555: return "RGB555";
+        case SDL_PIXELFORMAT_XBGR1555: return "BGR555";
+        case SDL_PIXELFORMAT_ARGB4444: return "ARGB4444";
+        case SDL_PIXELFORMAT_ABGR4444: return "ABGR4444";
+        case SDL_PIXELFORMAT_ARGB1555: return "ARGB1555";
+        case SDL_PIXELFORMAT_ABGR1555: return "ABGR1555";
+        case SDL_PIXELFORMAT_RGB565: return "RGB565";
+        case SDL_PIXELFORMAT_BGR565: return "BGR565";
+        case SDL_PIXELFORMAT_RGB24: return "RGB24";
+        case SDL_PIXELFORMAT_BGR24: return "BGR24";
+        case SDL_PIXELFORMAT_XRGB8888: return "RGB888";
+        case SDL_PIXELFORMAT_XBGR8888: return "BGR888";
+        case SDL_PIXELFORMAT_ARGB8888: return "ARGB8888";
+        case SDL_PIXELFORMAT_RGBA8888: return "RGBA8888";
+        case SDL_PIXELFORMAT_ABGR8888: return "ABGR8888";
+        case SDL_PIXELFORMAT_BGRA8888: return "BGRA8888";
+        case SDL_PIXELFORMAT_ARGB2101010: return "ARGB2101010";
+        case SDL_PIXELFORMAT_YV12: return "YV12";
+        case SDL_PIXELFORMAT_IYUV: return "IYUV";
+        case SDL_PIXELFORMAT_YUY2: return "YUY2";
+        case SDL_PIXELFORMAT_UYVY: return "UYVY";
+        case SDL_PIXELFORMAT_YVYU: return "YVYU";
+        case SDL_PIXELFORMAT_NV12: return "NV12";
+        case SDL_PIXELFORMAT_NV21: return "NV21";
+        default: return "Unknown";
     }
 }
 
-void sdl2::SDL_LogRenderer(const SDL_RendererInfo* info) {
-    std::array<char, 1024> text{};
-
-    sdl2::log_info("  Renderer {}:\n", info->name);
-
-    SDL_snprintfcat(text.data(), text.size(), "    Flags: {:#08X}", info->flags);
-    SDL_snprintfcat(text.data(), text.size(), " (");
-    int count = 0;
-    for (auto i = 0U; i < 8U * sizeof info->flags; ++i) {
-        const auto flag = 1U << i;
-        if (info->flags & flag) {
-            if (count > 0) {
-                SDL_snprintfcat(text.data(), text.size(), " | ");
-            }
-            SDLTest_PrintRendererFlag(text.data(), text.size(), flag);
-            ++count;
-        }
+// SDL3: SDL_RendererInfo was removed. Use SDL_GetRendererName() and SDL_GetRendererProperties() instead.
+void sdl2::SDL_LogRenderer(SDL_Renderer* renderer) {
+    if (!renderer) {
+        sdl2::log_info("  Renderer: (null)\n");
+        return;
     }
-    SDL_snprintfcat(text.data(), text.size(), ")");
-    sdl2::log_info("{}\n", text.data());
 
-    text[0] = '\0';
-    SDL_snprintfcat(text.data(), text.size(), "    Texture formats ({}): ", info->num_texture_formats);
-    for (auto i = 0; i < static_cast<int>(info->num_texture_formats); ++i) {
-        if (i > 0) {
-            SDL_snprintfcat(text.data(), text.size(), ", ");
-        }
-        SDLTest_PrintPixelFormat(text.data(), text.size(), info->texture_formats[i]);
+    const char* name = SDL_GetRendererName(renderer);
+    sdl2::log_info("  Renderer: {}\n", name ? name : "Unknown");
+
+    // Get renderer output size
+    int w = 0, h = 0;
+    if (SDL_GetRenderOutputSize(renderer, &w, &h)) {
+        sdl2::log_info("    Output Size: {}x{}\n", w, h);
     }
-    sdl2::log_info("{}\n", text.data());
 
-    if (info->max_texture_width || info->max_texture_height) {
-        sdl2::log_info("    Max Texture Size: {}x{}\n", info->max_texture_width, info->max_texture_height);
+    // Get current render target info via properties
+    SDL_PropertiesID props = SDL_GetRendererProperties(renderer);
+    if (props) {
+        // Log max texture size if available
+        int maxW = static_cast<int>(SDL_GetNumberProperty(props, SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+        if (maxW > 0) {
+            sdl2::log_info("    Max Texture Size: {}x{}\n", maxW, maxW);
+        }
+
+        // Check if VSync is enabled
+        bool vsync = SDL_GetNumberProperty(props, SDL_PROP_RENDERER_VSYNC_NUMBER, 0) != 0;
+        sdl2::log_info("    VSync: {}\n", vsync ? "Enabled" : "Disabled");
     }
 }

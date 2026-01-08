@@ -196,7 +196,9 @@ int XMidiSequence::playEvent() {
     }
     // SysEx gets sent immediately
     else if (event_->status != 0xFF) {
-        handler->sequenceSendSysEx(sequence_id, event_->status, event_->ex.sysex_data.buffer,
+        handler->sequenceSendSysEx(sequence_id,
+                                   event_->status,
+                                   event_->ex.sysex_data.buffer,
                                    static_cast<uint16_t>(event_->ex.sysex_data.len));
     }
 
@@ -390,8 +392,9 @@ void XMidiSequence::applyShadow(int i) {
     SendController(4, footpedal);
 
     // Volume
-    handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | (7 << 8)
-                                                | (((shadows[i].volumes[0] * vol_multi) / 0xFF) << 16));
+    handler->sequenceSendEvent(sequence_id,
+                               i | (MIDI_STATUS_CONTROLLER << 4) | (7 << 8)
+                                   | (((shadows[i].volumes[0] * vol_multi) / 0xFF) << 16));
     handler->sequenceSendEvent(sequence_id,
                                i | (MIDI_STATUS_CONTROLLER << 4) | (39 << 8) | (shadows[i].volumes[1] << 16));
 
@@ -414,8 +417,9 @@ void XMidiSequence::applyShadow(int i) {
     handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | (93 << 8) | (shadows[i].chorus << 16));
 
     // XMidi Bank
-    handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | (XMIDI_CONTROLLER_BANK_CHANGE << 8)
-                                                | (shadows[i].xbank << 16));
+    handler->sequenceSendEvent(sequence_id,
+                               i | (MIDI_STATUS_CONTROLLER << 4) | (XMIDI_CONTROLLER_BANK_CHANGE << 8)
+                                   | (shadows[i].xbank << 16));
 
     // Bank Select
     if (shadows[i].program != -1)

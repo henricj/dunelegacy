@@ -51,8 +51,8 @@ int MapEditorRadarView::getMapSizeY() const {
 }
 
 void MapEditorRadarView::draw(Point position) {
-    const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS,
-                                    RADARWIDTH, RADARHEIGHT};
+    const SDL_Rect radarPosition = {
+        position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
 
     const MapData& map             = pMapEditor->getMap();
     auto* const renderer           = dune::globals::renderer.get();
@@ -99,8 +99,11 @@ void MapEditorRadarView::draw(Point position) {
         radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
     }
 
-    renderDrawRect(renderer, radarPosition.x + radarRect.x, radarPosition.y + radarRect.y,
-                   radarPosition.x + (radarRect.x + radarRect.w), radarPosition.y + (radarRect.y + radarRect.h),
+    renderDrawRect(renderer,
+                   radarPosition.x + radarRect.x,
+                   radarPosition.y + radarRect.y,
+                   radarPosition.x + (radarRect.x + radarRect.w),
+                   radarPosition.y + (radarRect.y + radarRect.h),
                    COLOR_WHITE);
 }
 

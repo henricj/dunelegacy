@@ -19,7 +19,7 @@
 #define SFXMANAGER_H
 
 #include <DataTypes.h>
-#include <SDL2/SDL_mixer.h>
+#include <misc/dune_sdl_mixer.h>
 #include <misc/sound_util.h>
 
 #include <array>

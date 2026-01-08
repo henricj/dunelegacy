@@ -229,9 +229,16 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
 
         count++;
 
-        if (getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false,
+        if (getMap().okayToPlaceStructure(pos.x,
+                                          pos.y,
+                                          structureSizeX,
+                                          structureSizeY,
+                                          false,
                                           (itemID == Structure_ConstructionYard) ? nullptr : getHouse())
-            && getMap().isAStructureGap(context_, pos.x, pos.y, structureSizeX,
+            && getMap().isAStructureGap(context_,
+                                        pos.x,
+                                        pos.y,
+                                        structureSizeX,
                                         structureSizeY)) { // Code to make a path between buildings
             FixPoint rating;
 
@@ -681,8 +688,8 @@ void SmartBot::build([[maybe_unused]] const GameContext& context) {
                                     startJ = location.y;
                                     incI   = 1;
                                     incJ   = 1;
-                                } else if (getMap().isWithinBuildRange(location.x + getStructureSize(itemID).x - 1,
-                                                                       location.y, getHouse())) {
+                                } else if (getMap().isWithinBuildRange(
+                                               location.x + getStructureSize(itemID).x - 1, location.y, getHouse())) {
                                     startI = location.x + getStructureSize(itemID).x - 1;
                                     startJ = location.y;
                                     incI   = -1;
@@ -742,8 +749,8 @@ void SmartBot::build([[maybe_unused]] const GameContext& context) {
                     if (!placeLocations.empty()) {
                         const Coord location   = placeLocations.front();
                         const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
-                        if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false,
-                                                          pConstYard->getOwner())
+                        if (getMap().okayToPlaceStructure(
+                                location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())
                             && getMap().isAStructureGap(context_, location.x, location.y, itemsize.x, itemsize.y)) {
                             doPlaceStructure(pConstYard, location.x, location.y);
                             placeLocations.pop_front();

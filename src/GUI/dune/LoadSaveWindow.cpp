@@ -161,17 +161,20 @@ bool LoadSaveWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
     }
 
     if (isEnabled() && (pWindowWidget_ != nullptr)) {
-        if (key.keysym.sym == SDLK_RETURN) {
+        // SDL3: keysym.sym renamed to key
+        if (key.key == SDLK_RETURN) {
             onOK();
             return true;
         }
-        if (key.keysym.sym == SDLK_DELETE) {
+        if (key.key == SDLK_DELETE) {
             if (!fileList.isSelected())
                 return true;
 
             auto* const pQstBox =
                 QstBox::create(fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getSelectedEntry()),
-                               _("Yes"), _("No"), QSTBOX_BUTTON1);
+                               _("Yes"),
+                               _("No"),
+                               QSTBOX_BUTTON1);
 
             pQstBox->setTextColor(color_);
 
@@ -218,17 +221,28 @@ LoadSaveWindow::create(bool bSave, std::string caption, std::filesystem::path di
     std::vector<std::string> directoryTitles;
     directoryTitles.emplace_back();
 
-    return create(bSave, std::move(caption), std::move(directories), std::move(directoryTitles), std::move(extension),
-                  0, std::move(preselectedFile), color);
+    return create(bSave,
+                  std::move(caption),
+                  std::move(directories),
+                  std::move(directoryTitles),
+                  std::move(extension),
+                  0,
+                  std::move(preselectedFile),
+                  color);
 }
 
 std::unique_ptr<LoadSaveWindow>
 LoadSaveWindow::create(bool bSave, std::string caption, std::vector<std::filesystem::path> directories,
                        std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex,
                        std::string preselectedFile, Uint32 color) {
-    std::unique_ptr<LoadSaveWindow> dlg{
-        new LoadSaveWindow(bSave, std::move(caption), std::move(directories), std::move(directoryTitles),
-                           std::move(extension), preselectedDirectoryIndex, std::move(preselectedFile), color)};
+    std::unique_ptr<LoadSaveWindow> dlg{new LoadSaveWindow(bSave,
+                                                           std::move(caption),
+                                                           std::move(directories),
+                                                           std::move(directoryTitles),
+                                                           std::move(extension),
+                                                           preselectedDirectoryIndex,
+                                                           std::move(preselectedFile),
+                                                           color)};
     dlg->pAllocated_ = true;
     return dlg;
 }

@@ -28,8 +28,8 @@
 #include <GUI/ObjectInterfaces/ObjectInterface.h>
 #include <ObjectBase.h>
 
-#include <misc/dune_sdlpp.h>
 #include <misc/draw_util.h>
+#include <misc/dune_sdlpp.h>
 
 #include <vector>
 
@@ -51,7 +51,8 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
     const auto* const pTopBarTex = gfx->getUIGraphic(UI_TopBar, house_id);
     topBar.setTexture(pTopBarTex);
     windowWidget.addWidget(
-        &topBar, {},
+        &topBar,
+        {},
         {static_cast<int>(std::ceil(getWidth(pTopBarTex))), static_cast<int>(std::ceil(getHeight(pTopBarTex))) - 12});
 
     // side bar
@@ -80,8 +81,8 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
     topBarHBox.addWidget(create<Spacer>().release());
 
     // add radar
-    windowWidget.addWidget(&radarView, {width - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0},
-                           radarView.getMinimumSize());
+    windowWidget.addWidget(
+        &radarView, {width - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0}, radarView.getMinimumSize());
     radarView.setOnRadarClick([&](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
         return context_.game.onRadarClick(context_, worldPosition, bRightMouseButton, bDrag);
     });
@@ -207,14 +208,14 @@ void GameInterface::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetGeometry(&topBarHBox, {5, 5}, {iWidth - sideBarX, topBar.getSize().y - 10});
 
-    windowWidget.setWidgetGeometry(&radarView, {iWidth - sideBarX + SIDEBAR_COLUMN_WIDTH, 0},
-                                   radarView.getMinimumSize());
+    windowWidget.setWidgetGeometry(
+        &radarView, {iWidth - sideBarX + SIDEBAR_COLUMN_WIDTH, 0}, radarView.getMinimumSize());
 
     windowWidget.setWidgetGeometry(&chatManager, {20, 60}, {iWidth - sideBarX, 360});
 
     if (pObjectContainer) {
-        windowWidget.setWidgetGeometry(pObjectContainer.get(), {iWidth - sideBarX + 24, 146},
-                                       {sideBarX - 25, static_cast<int>(height) - 148});
+        windowWidget.setWidgetGeometry(
+            pObjectContainer.get(), {iWidth - sideBarX + 24, 146}, {sideBarX - 25, static_cast<int>(height) - 148});
     }
 }
 
@@ -250,7 +251,8 @@ void GameInterface::updateObjectInterface() {
             if (pObjectContainer != nullptr) {
                 objectID = selected_object_id;
 
-                windowWidget.addWidget(pObjectContainer.get(), {renderer_width - sideBar.getSize().x + 24, 146},
+                windowWidget.addWidget(pObjectContainer.get(),
+                                       {renderer_width - sideBar.getSize().x + 24, 146},
                                        {sideBar.getSize().x - 25, getRendererHeight() - 148});
             }
 
@@ -270,7 +272,8 @@ void GameInterface::updateObjectInterface() {
 
         pObjectContainer = create<MultiUnitInterface>(context_);
 
-        windowWidget.addWidget(pObjectContainer.get(), {renderer_width - sideBar.getSize().x + 24, 146},
+        windowWidget.addWidget(pObjectContainer.get(),
+                               {renderer_width - sideBar.getSize().x + 24, 146},
                                {sideBar.getSize().x - 25, getRendererHeight() - 148});
     } else {
         if (!pObjectContainer->update()) {

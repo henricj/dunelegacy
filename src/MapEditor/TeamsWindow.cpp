@@ -269,7 +269,8 @@ void TeamsWindow::onAdd() {
     AITeamInfo aiteamInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
                           static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData()),
                           static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData()),
-                          minUnitsTextBox.getValue(), maxUnitsTextBox.getValue());
+                          minUnitsTextBox.getValue(),
+                          maxUnitsTextBox.getValue());
 
     auto description = getDescribingString(aiteamInfo);
 
@@ -380,9 +381,12 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
 }
 
 std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) const {
-    return fmt::format("{}, {}, {}, {}, {}", getPlayerName(aiteamInfo.houseID),
+    return fmt::format("{}, {}, {}, {}, {}",
+                       getPlayerName(aiteamInfo.houseID),
                        getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior),
-                       getAITeamTypeNameByID(aiteamInfo.aiTeamType), aiteamInfo.minUnits, aiteamInfo.maxUnits);
+                       getAITeamTypeNameByID(aiteamInfo.aiTeamType),
+                       aiteamInfo.minUnits,
+                       aiteamInfo.maxUnits);
 }
 
 std::string TeamsWindow::getPlayerName(HOUSETYPE house) const {

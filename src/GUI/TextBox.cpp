@@ -50,12 +50,14 @@ void TextBox::updateTextures() {
 
         const auto size = getSize();
 
-        pTextureWithoutCaret_ = gui.createTextBoxSurface(size.x, size.y, text_, false, fontSize_, Alignment_Left,
-                                                         text_color_, text_shadow_color_)
-                                    .createTexture(renderer);
-        pTextureWithCaret_ = gui.createTextBoxSurface(size.x, size.y, text_, true, fontSize_, Alignment_Left,
-                                                      text_color_, text_shadow_color_)
-                                 .createTexture(renderer);
+        pTextureWithoutCaret_ =
+            gui.createTextBoxSurface(
+                   size.x, size.y, text_, false, fontSize_, Alignment_Left, text_color_, text_shadow_color_)
+                .createTexture(renderer);
+        pTextureWithCaret_ =
+            gui.createTextBoxSurface(
+                   size.x, size.y, text_, true, fontSize_, Alignment_Left, text_color_, text_shadow_color_)
+                .createTexture(renderer);
     }
 }
 
@@ -103,19 +105,19 @@ bool TextBox::handleKeyPress(const SDL_KeyboardEvent& key) {
     if (!isVisible() || !isEnabled() || !isActive())
         return true;
 
-    if (key.keysym.sym == SDLK_TAB) {
+    if (key.key == SDLK_TAB) {
         setInactive();
         return true;
     }
 
-    if (key.keysym.sym == SDLK_BACKSPACE) {
+    if (key.key == SDLK_BACKSPACE) {
         if (!text_.empty()) {
             text_ = utf8Substr(text_, 0, utf8Length(text_) - 1);
             if (pOnTextChange_) {
                 pOnTextChange_(true);
             }
         }
-    } else if (key.keysym.sym == SDLK_RETURN) {
+    } else if (key.key == SDLK_RETURN) {
         if (pOnReturn_) {
             pOnReturn_();
         }
