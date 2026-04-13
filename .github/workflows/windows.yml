@@ -138,7 +138,7 @@ jobs:
 
       - name: Create Release
         if: needs.build.outputs.is_release == 'True'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: "Windows dunelegacy ${{needs.build.outputs.git_describe}}"
           files: |
