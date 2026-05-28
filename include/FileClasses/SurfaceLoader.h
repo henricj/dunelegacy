@@ -47,6 +47,8 @@ public:
     SDL_Surface* getZoomedObjSurface(unsigned int id, unsigned int z) {
         return getZoomedObjSurface(id, HOUSETYPE::HOUSE_HARKONNEN, z);
     }
+    [[nodiscard]] Coord getObjPicTiles(unsigned int id) const;
+    [[nodiscard]] Coord getZoomedObjSurfaceTiles(unsigned int id, HOUSETYPE house, unsigned int z) const;
 
     SDL_Surface* getSmallDetailSurface(unsigned int id);
     SDL_Surface* getTinyPictureSurface(unsigned int id);
@@ -94,6 +96,7 @@ private:
 
     // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
     std::array<std::array<std::array<sdl2::surface_ptr, NUM_ZOOMLEVEL>, NUM_HOUSES>, NUM_OBJPICS> objPic;
+    std::array<std::array<std::array<Coord, NUM_ZOOMLEVEL>, NUM_HOUSES>, NUM_OBJPICS> objPicTilesPerSurface{};
     std::array<std::array<sdl2::surface_ptr, NUM_HOUSES>, NUM_UIGRAPHICS> uiGraphic;
     std::array<std::array<sdl2::surface_ptr, NUM_HOUSES>, NUM_MAPCHOICEPIECES> mapChoicePieces;
     std::array<std::unique_ptr<Animation>, NUM_ANIMATION> animation{};

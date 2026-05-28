@@ -93,11 +93,13 @@ int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const 
     DuneRendererImplementation::countRenderCopy(texture->texture_);
 
     if (srcrect) {
-        assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
-        assert(srcrect->x + srcrect->w <= texture->source_.w);
-        assert(srcrect->y + srcrect->h <= texture->source_.h);
-
-        const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        SDL_Rect offset{};
+        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+            assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
+            assert(srcrect->x + srcrect->w <= texture->source_.w);
+            assert(srcrect->y + srcrect->h <= texture->source_.h);
+            offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        }
 
         return SDL_RenderCopyEx(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
     }
@@ -116,11 +118,13 @@ int Dune_RenderCopyExF(SDL_Renderer* renderer, const DuneTexture* texture, const
     DuneRendererImplementation::countRenderCopy(texture->texture_);
 
     if (srcrect) {
-        assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
-        assert(srcrect->x + srcrect->w <= texture->source_.w);
-        assert(srcrect->y + srcrect->h <= texture->source_.h);
-
-        const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        SDL_Rect offset{};
+        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+            assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
+            assert(srcrect->x + srcrect->w <= texture->source_.w);
+            assert(srcrect->y + srcrect->h <= texture->source_.h);
+            offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        }
 
         return SDL_RenderCopyExF(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
     }
@@ -137,11 +141,13 @@ void Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, const S
     DuneRendererImplementation::countRenderCopy(texture->texture_);
 
     if (srcrect) {
-        assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
-        assert(srcrect->x + srcrect->w <= texture->source_.w);
-        assert(srcrect->y + srcrect->h <= texture->source_.h);
-
-        const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        SDL_Rect offset{};
+        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+            assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
+            assert(srcrect->x + srcrect->w <= texture->source_.w);
+            assert(srcrect->y + srcrect->h <= texture->source_.h);
+            offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        }
 
         if (0 != SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect))
             sdl2::log_error("RenderCopy failed: {}", SDL_GetError());
@@ -160,11 +166,13 @@ void Dune_RenderCopyF(SDL_Renderer* renderer, const DuneTexture* texture, const 
     DuneRendererImplementation::countRenderCopy(texture->texture_);
 
     if (srcrect) {
-        assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
-        assert(srcrect->x + srcrect->w <= texture->source_.w);
-        assert(srcrect->y + srcrect->h <= texture->source_.h);
-
-        const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        SDL_Rect offset{};
+        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+            assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
+            assert(srcrect->x + srcrect->w <= texture->source_.w);
+            assert(srcrect->y + srcrect->h <= texture->source_.h);
+            offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        }
 
         if (0 != SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect))
             sdl2::log_error("RenderCopyF failed: {}", SDL_GetError());

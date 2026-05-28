@@ -47,8 +47,52 @@ void DuneTexture::reset() {
     texture_ = nullptr;
     source_  = DuneTextureRect{};
 
-    width_  = 0;
-    height_ = 0;
+    width_       = 0;
+    height_      = 0;
+    sprite_cols_ = 0;
+    sprite_rows_ = 0;
+    sprite_frames_.reset();
+}
+
+void DuneTexture::set_sprite_frames(short cols, short rows,
+                                    std::shared_ptr<const std::vector<DuneTextureRect>> frames) noexcept {
+    assert(cols > 0 && rows > 0);
+    assert(frames);
+    assert(static_cast<int>(frames->size()) == static_cast<int>(cols) * static_cast<int>(rows));
+
+    sprite_cols_   = cols;
+    sprite_rows_   = rows;
+    sprite_frames_ = std::move(frames);
+}
+
+bool DuneTexture::map_sprite_source_rect(const SDL_Rect& source, SDL_Rect& mapped) const noexcept {
+    if (!has_sprite_frames()) {
+        return false;
+    }
+
+    const auto frame_w = static_cast<int>(width_) / sprite_cols_;
+    const auto frame_h = static_cast<int>(height_) / sprite_rows_;
+    if (frame_w <= 0 || frame_h <= 0) {
+        return false;
+    }
+
+    if (source.w != frame_w || source.h != frame_h) {
+        return false;
+    }
+
+    if ((source.x % frame_w) != 0 || (source.y % frame_h) != 0) {
+        return false;
+    }
+
+    const auto col = source.x / frame_w;
+    const auto row = source.y / frame_h;
+    if (col < 0 || col >= sprite_cols_ || row < 0 || row >= sprite_rows_) {
+        return false;
+    }
+
+    const auto frame_index = row * sprite_cols_ + col;
+    mapped                 = sprite_frames_->at(frame_index).as_sdl();
+    return true;
 }
 
 void DuneTexture::draw(SDL_Renderer* renderer, float x, float y) const noexcept {
@@ -73,10 +117,14 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect&
         return;
     }
 
-    const SDL_Rect src{source_.x + source.x, source_.y + source.y, source.w, source.h};
+    SDL_Rect src{};
+    const auto mapped = map_sprite_source_rect(source, src);
+    if (!mapped) {
+        src = SDL_Rect{source_.x + source.x, source_.y + source.y, source.w, source.h};
+    }
     const SDL_FRect dst{x, y, width_, height_};
 
-    if (src.x + src.w > source_.x + source_.w || src.y + src.h > source_.y + source_.h) {
+    if (!mapped && (src.x + src.w > source_.x + source_.w || src.y + src.h > source_.y + source_.h)) {
         sdl2::log_error("DuneTexture::draw() source rectangle out of bounds");
         return;
     }

@@ -332,6 +332,14 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
 
     constexpr auto harkIdx = static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN);
 
+    for (auto id = 0u; id < NUM_OBJPICS; ++id) {
+        for (auto house = 0; house < NUM_HOUSES; ++house) {
+            for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
+                objPicTilesPerSurface[id][house][zoom] = objPicTiles[id];
+            }
+        }
+    }
+
     // load object pics in the original resolution
     objPic[ObjPic_Tank_Base][harkIdx][0]       = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(0));
     objPic[ObjPic_Tank_Gun][harkIdx][0]        = units2->getPictureArray(8, 1, GROUNDUNIT_ROW(5));
@@ -1334,9 +1342,19 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
 
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 windtrap = generateWindtrapAnimationFrames(windtrap.get());
+                objPicTilesPerSurface[ObjPic_Windtrap][h][zoom] =
+                    Coord{NUM_WINDTRAP_ANIMATIONS_PER_ROW,
+                          (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1)
+                              / NUM_WINDTRAP_ANIMATIONS_PER_ROW};
 
                 replace_color(ObjPic_Windtrap, house, zoom, COLOR_BLACK, COLOR_FOG_TRANSPARENT);
             }
+        }
+    }
+
+    for (auto house = 0; house < NUM_HOUSES; ++house) {
+        for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
+            objPicTilesPerSurface[ObjPic_Radar][house][zoom] = Coord{6, 1};
         }
     }
 
@@ -1397,6 +1415,27 @@ SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house
     }
 
     return surface.get();
+}
+
+Coord SurfaceLoader::getObjPicTiles(unsigned int id) const {
+    if (id >= NUM_OBJPICS) {
+        THROW(std::invalid_argument, "SurfaceLoader::getObjPicTiles(): Unit Picture with ID {} is not available!", id);
+    }
+
+    return objPicTiles.at(id);
+}
+
+Coord SurfaceLoader::getZoomedObjSurfaceTiles(unsigned int id, HOUSETYPE house, unsigned int z) const {
+    if (id >= NUM_OBJPICS) {
+        THROW(std::invalid_argument,
+              "SurfaceLoader::getZoomedObjSurfaceTiles(): Unit Picture with ID {} is not available!",
+              id);
+    }
+    if (z >= NUM_ZOOMLEVEL) {
+        THROW(std::invalid_argument, "SurfaceLoader::getZoomedObjSurfaceTiles(): Zoom level {} is not available!", z);
+    }
+
+    return objPicTilesPerSurface[id][static_cast<int>(house)][z];
 }
 
 SDL_Surface* SurfaceLoader::getSmallDetailSurface(unsigned int id) {

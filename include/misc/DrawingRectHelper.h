@@ -151,16 +151,15 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Texture* pTexture, int col, int numCols
     \param  numRows     the number of sprites per column in pTexture (default is 1)
     \return the rectangle for drawing the specified sprite from pTexture when passed to SDL_RenderCopy
 */
-constexpr auto calcSpriteSourceRect(const DuneTexture* pTexture, int col, int numCols, int row = 0, int numRows = 1) {
+inline SDL_Rect calcSpriteSourceRect(const DuneTexture* pTexture, int col, int numCols, int row = 0, int numRows = 1) {
     assert(numCols > 0);
     assert(numRows > 0);
     assert(col >= 0 && col < numCols);
     assert(row >= 0 && row < numRows);
 
-    const auto w        = pTexture->source_.w;
-    const auto h        = pTexture->source_.h;
-    const SDL_Rect rect = {col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
-    return rect;
+    const auto w = static_cast<int>(pTexture->width_);
+    const auto h = static_cast<int>(pTexture->height_);
+    return SDL_Rect{col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
 }
 
 /**

@@ -27,8 +27,11 @@
 
 #include <fmt/format.h> // For diagnostic logging
 
+#include <algorithm>
 #include <cstddef>
 #include <filesystem>
+#include <limits>
+#include <map>
 #include <tuple>
 #include <type_traits>
 #include <unordered_set>
@@ -384,29 +387,29 @@ public:
 
 class PackableSet {
 public:
-    using packer_set_type = std::vector<std::tuple<int, int, SDL_Surface*>>;
+    using packer_set_type = std::vector<std::tuple<int, int, SDL_Surface*, SDL_Rect>>;
 
     PackableSet(packer_set_type&& set) : set_{std::move(set)} { }
 
     template<typename F>
     void for_each(const Packer& packer, F&& f) {
         for (const auto& s : set_) {
-            const auto& [rect_idx, s_idx, surface] = s;
+            const auto& [rect_idx, s_idx, surface, source] = s;
 
             const auto& r = packer[rect_idx];
 
-            f(r, s_idx, surface);
+            f(r, s_idx, surface, source);
         }
     }
 
     template<typename F>
     void for_each(const Packer& packer, F&& f) const {
         for (const auto& s : set_) {
-            const auto& [rect_idx, s_idx, surface] = s;
+            const auto& [rect_idx, s_idx, surface, source] = s;
 
             const auto& r = packer[rect_idx];
 
-            f(r, s_idx, surface);
+            f(r, s_idx, surface, source);
         }
     }
 
@@ -419,6 +422,7 @@ class PackableSurfaces {
     struct record {
         Identifier identifier;
         SDL_Surface* surface;
+        SDL_Rect source;
     };
 
     std::vector<record> surfaces_;
@@ -433,7 +437,22 @@ public:
 
         const auto idx = static_cast<int>(surfaces_.size());
 
-        surfaces_.push_back({identifier, surface});
+        surfaces_.push_back({identifier, surface, SDL_Rect{0, 0, surface->w, surface->h}});
+
+        return idx;
+    }
+
+    int add(Identifier identifier, SDL_Surface* surface, const SDL_Rect& source) {
+        if (nullptr == surface)
+            THROW(std::invalid_argument, "PackerSurfaces: Cannot use an invalid surface!");
+        if (source.x < 0 || source.y < 0 || source.w <= 0 || source.h <= 0 || source.x + source.w > surface->w
+            || source.y + source.h > surface->h) {
+            THROW(std::invalid_argument, "PackerSurfaces: Invalid source rectangle!");
+        }
+
+        const auto idx = static_cast<int>(surfaces_.size());
+
+        surfaces_.push_back({identifier, surface, source});
 
         return idx;
     }
@@ -443,9 +462,9 @@ public:
         for (auto i = 0u; i < surfaces_.size(); ++i) {
             const auto& record = surfaces_[i];
 
-            const auto idx = packer.add(record.surface->w, record.surface->h);
+            const auto idx = packer.add(record.source.w, record.source.h);
 
-            output.emplace_back(static_cast<int>(idx), i, record.surface);
+            output.emplace_back(static_cast<int>(idx), i, record.surface, record.source);
         }
 
         return PackableSet{std::move(output)};
@@ -462,9 +481,9 @@ public:
             if (!predicate(record.identifier, record.surface))
                 continue;
 
-            const auto idx = packer.add(record.surface->w, record.surface->h);
+            const auto idx = packer.add(record.source.w, record.source.h);
 
-            output.emplace_back(static_cast<int>(idx), i, record.surface);
+            output.emplace_back(static_cast<int>(idx), i, record.surface, record.source);
         }
 
         return PackableSet{std::move(output)};
@@ -531,7 +550,7 @@ public:
         // SDL3: Clear atlas surface to transparent
         SDL_FillSurfaceRect(atlas_surface.get(), nullptr, 0);
 
-        const auto draw = [&](const auto& r, [[maybe_unused]] int s_idx, SDL_Surface* surface) {
+        const auto draw = [&](const auto& r, [[maybe_unused]] int s_idx, SDL_Surface* surface, const SDL_Rect& source) {
             SDL_Rect atlas_rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
             // SDL3: Always use our helper that properly converts surfaces with alpha handling
@@ -543,7 +562,7 @@ public:
             // Use SDL_BLENDMODE_NONE to copy pixels directly including alpha values.
             // The converted surface has proper alpha embedded, so we want a direct copy,
             // not alpha blending (which would blend with the cleared transparent atlas).
-            if (!drawSurface(surface_to_blit, nullptr, atlas_surface.get(), &atlas_rect, SDL_BLENDMODE_NONE)) {
+            if (!drawSurface(surface_to_blit, &source, atlas_surface.get(), &atlas_rect, SDL_BLENDMODE_NONE)) {
                 // Retry after converting from palette to 32-bit surface...
                 const sdl2::surface_ptr copy{SDL_ConvertSurface(surface_to_blit, format)};
 
@@ -552,7 +571,7 @@ public:
                     return false;
                 }
 
-                if (!drawSurface(copy.get(), nullptr, atlas_surface.get(), &atlas_rect, SDL_BLENDMODE_NONE)) {
+                if (!drawSurface(copy.get(), &source, atlas_surface.get(), &atlas_rect, SDL_BLENDMODE_NONE)) {
                     sdl2::log_warn("Unable to draw object");
                     return false;
                 }
@@ -563,29 +582,29 @@ public:
             SDL_Surface* edge_surface = surface_to_blit;
 
             { // Top
-                const SDL_Rect src{0, 0, edge_surface->w, 1};
+                const SDL_Rect src{source.x, source.y, source.w, 1};
                 SDL_Rect dst{atlas_rect.x, atlas_rect.y - 1, src.w, 1};
 
                 drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
 
             { // Left
-                const SDL_Rect src{0, 0, 1, edge_surface->h};
+                const SDL_Rect src{source.x, source.y, 1, source.h};
                 SDL_Rect dst{atlas_rect.x - 1, atlas_rect.y, 1, src.h};
 
                 drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
 
             { // Bottom
-                const SDL_Rect src{0, edge_surface->h - 1, edge_surface->w, 1};
-                SDL_Rect dst{atlas_rect.x, atlas_rect.y + edge_surface->h, src.w, 1};
+                const SDL_Rect src{source.x, source.y + source.h - 1, source.w, 1};
+                SDL_Rect dst{atlas_rect.x, atlas_rect.y + source.h, src.w, 1};
 
                 drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
 
             { // Right
-                const SDL_Rect src{edge_surface->w - 1, 0, 1, edge_surface->h};
-                SDL_Rect dst{atlas_rect.x + edge_surface->w, atlas_rect.y, 1, src.h};
+                const SDL_Rect src{source.x + source.w - 1, source.y, 1, source.h};
+                SDL_Rect dst{atlas_rect.x + source.w, atlas_rect.y, 1, src.h};
 
                 drawSurface(edge_surface, &src, atlas_surface.get(), &dst, SDL_BLENDMODE_NONE);
             }
@@ -621,11 +640,22 @@ public:
 
         const auto& set = surface_sets_.at(key);
 
-        set.for_each(packer_, [&](const auto& r, auto s_idx, [[maybe_unused]] auto* surface) {
-            const SDL_Rect rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
+        set.for_each(packer_,
+                     [&](const auto& r, auto s_idx, [[maybe_unused]] auto* surface, [[maybe_unused]] const SDL_Rect&) {
+                         const SDL_Rect rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
-            lookup(s_idx) = DuneTexture{texture, rect};
-        });
+                         lookup(s_idx) = DuneTexture{texture, rect};
+                     });
+    }
+
+    template<typename F>
+    void for_each_rect(int key, F&& f) {
+        const auto& set = surface_sets_.at(key);
+        set.for_each(packer_,
+                     [&](const auto& r, auto s_idx, [[maybe_unused]] auto* surface, [[maybe_unused]] const SDL_Rect&) {
+                         const SDL_Rect rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
+                         f(s_idx, rect);
+                     });
     }
 
     void clear() {
@@ -643,8 +673,9 @@ private:
 
 class ObjectPicturePacker final {
 public:
-    using identifier_type = std::tuple<uint32_t, HOUSETYPE, int>;
+    using identifier_type = std::tuple<uint32_t, HOUSETYPE, int, int>;
     using textures_type   = DuneTextures::object_pictures_type;
+    using object_key_type = std::tuple<uint32_t, HOUSETYPE, int>;
 
     void initialize(SurfaceLoader* surfaceLoader) {
 
@@ -655,13 +686,8 @@ public:
             const auto harkonnen_only = harkonnen_only_.contains(id);
 
             for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
-                SDL_Surface* harkonnen = nullptr;
-                auto harkonnen_key     = 0;
-
                 for_each_housetype([&](auto house) {
-                    const auto is_harkonnen = house == HOUSETYPE::HOUSE_HARKONNEN;
-
-                    if (harkonnen_only && !is_harkonnen)
+                    if (harkonnen_only && house != HOUSETYPE::HOUSE_HARKONNEN)
                         return;
 
                     auto* const surface = surfaceLoader->getZoomedObjSurface(id, house, zoom);
@@ -669,14 +695,25 @@ public:
                     if (!surface)
                         return;
 
-                    if (is_harkonnen) {
-                        harkonnen     = surface;
-                        harkonnen_key = surfaces_.add({id, house, zoom}, surface);
-                    } else if (harkonnen && compare_surfaces(harkonnen, surface)) {
-                        // We are identical to the Harkonnen image, so let it find the Harkonnen version.
-                        surfaces_.add_duplicate(harkonnen_key, {id, house, zoom});
-                    } else {
-                        surfaces_.add({id, house, zoom}, surface);
+                    const auto tiles        = surfaceLoader->getZoomedObjSurfaceTiles(id, house, zoom);
+                    const auto frames_x     = std::max(1, tiles.x);
+                    const auto frames_y     = std::max(1, tiles.y);
+                    const auto frame_width  = surface->w / frames_x;
+                    const auto frame_height = surface->h / frames_y;
+
+                    const object_key_type object_key{id, house, zoom};
+                    object_meta_[object_key] = {static_cast<short>(frames_x),
+                                                static_cast<short>(frames_y),
+                                                static_cast<short>(frame_width),
+                                                static_cast<short>(frame_height)};
+
+                    for (auto row = 0; row < frames_y; ++row) {
+                        for (auto col = 0; col < frames_x; ++col) {
+                            const auto frame_index = row * frames_x + col;
+                            const SDL_Rect source{col * frame_width, row * frame_height, frame_width, frame_height};
+
+                            surfaces_.add({id, house, zoom, frame_index}, surface, source);
+                        }
                     }
                 });
             }
@@ -689,29 +726,77 @@ public:
     }
 
     void update(AtlasFactory23& factory23, int key, SDL_Texture* texture) {
-        factory23.update<identifier_type>(key, texture, [&](auto n) -> DuneTexture& { return lookup_dune_texture(n); });
-    }
+        struct BuildEntry {
+            short frames_x{};
+            short frames_y{};
+            short frame_width{};
+            short frame_height{};
+            std::vector<DuneTextureRect> frames{};
+        };
 
-    void update_duplicates() {
-        surfaces_.update_duplicates([&](const auto& identifier) -> DuneTexture& {
-            const auto& [id, house, zoom] = identifier;
+        std::map<object_key_type, BuildEntry> build_map;
 
-            return dune_textures_.at(zoom).at(id).at(static_cast<int>(house));
+        factory23.for_each_rect(key, [&](int n, const SDL_Rect& atlas_rect) {
+            const auto& [id, house, zoom, frame_index] = surfaces_[n];
+            const object_key_type object_key{id, house, zoom};
+
+            const auto meta_it = object_meta_.find(object_key);
+            if (meta_it == object_meta_.end()) {
+                return;
+            }
+
+            auto& entry = build_map[object_key];
+            if (entry.frames.empty()) {
+                entry.frames_x     = meta_it->second.frames_x;
+                entry.frames_y     = meta_it->second.frames_y;
+                entry.frame_width  = meta_it->second.frame_width;
+                entry.frame_height = meta_it->second.frame_height;
+                entry.frames.resize(static_cast<size_t>(entry.frames_x) * static_cast<size_t>(entry.frames_y));
+            }
+
+            entry.frames.at(frame_index) = DuneTextureRect{atlas_rect};
         });
+
+        for (const auto& [object_key, entry] : build_map) {
+            const auto& [id, house, zoom] = object_key;
+
+            auto min_x = std::numeric_limits<int>::max();
+            auto min_y = std::numeric_limits<int>::max();
+            auto max_x = 0;
+            auto max_y = 0;
+            for (const auto& frame : entry.frames) {
+                const auto rect = frame.as_sdl();
+                min_x           = std::min(min_x, rect.x);
+                min_y           = std::min(min_y, rect.y);
+                max_x           = std::max(max_x, rect.x + rect.w);
+                max_y           = std::max(max_y, rect.y + rect.h);
+            }
+
+            auto& target  = dune_textures_.at(zoom).at(id).at(static_cast<int>(house));
+            target        = DuneTexture{texture, SDL_Rect{min_x, min_y, max_x - min_x, max_y - min_y}};
+            target.width_ = static_cast<float>(static_cast<int>(entry.frames_x) * static_cast<int>(entry.frame_width));
+            target.height_ =
+                static_cast<float>(static_cast<int>(entry.frames_y) * static_cast<int>(entry.frame_height));
+            target.set_sprite_frames(
+                entry.frames_x, entry.frames_y, std::make_shared<const std::vector<DuneTextureRect>>(entry.frames));
+        }
     }
+
+    void update_duplicates() { }
 
     [[nodiscard]] DuneTextures::object_pictures_type object_pictures2() const { return dune_textures_; }
 
 private:
-    [[nodiscard]] DuneTexture& lookup_dune_texture(int n) {
-        const auto identifier = surfaces_[n];
-
-        const auto& [id, house, zoom] = identifier;
-
-        return dune_textures_.at(zoom).at(id).at(static_cast<int>(house));
-    }
+    struct ObjectMeta {
+        short frames_x{};
+        short frames_y{};
+        short frame_width{};
+        short frame_height{};
+    };
 
     PackableSurfaces<identifier_type> surfaces_;
+
+    std::map<object_key_type, ObjectMeta> object_meta_;
 
     textures_type dune_textures_;
 
@@ -1195,7 +1280,10 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
             const auto opp_key = object_picture_packer.add(
                 factory23, [&](const auto& identifier, [[maybe_unused]] SDL_Surface* surface) {
-                    const auto& [id, h, z] = identifier;
+                    const auto& [id, h, z, frame] = identifier;
+                    (void)id;
+                    (void)h;
+                    (void)frame;
 
                     return zoom == z;
                 });

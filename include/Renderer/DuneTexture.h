@@ -22,6 +22,8 @@
 
 #include <cassert>
 #include <limits>
+#include <memory>
+#include <vector>
 
 struct SDL_Renderer;
 
@@ -74,6 +76,9 @@ struct DuneTexture final {
     DuneTextureRect source_{};
     float width_{};
     float height_{};
+    short sprite_cols_{};
+    short sprite_rows_{};
+    std::shared_ptr<const std::vector<DuneTextureRect>> sprite_frames_{};
 
     DuneTexture()                   = default;
     DuneTexture(const DuneTexture&) = default;
@@ -91,6 +96,10 @@ struct DuneTexture final {
     operator bool() const noexcept { return nullptr != texture_; }
 
     [[nodiscard]] SDL_Rect source_rect() const noexcept { return source_.as_sdl(); }
+    [[nodiscard]] bool has_sprite_frames() const noexcept { return sprite_frames_ && sprite_cols_ > 0 && sprite_rows_ > 0; }
+    void set_sprite_frames(
+        short cols, short rows, std::shared_ptr<const std::vector<DuneTextureRect>> frames) noexcept;
+    [[nodiscard]] bool map_sprite_source_rect(const SDL_Rect& source, SDL_Rect& mapped) const noexcept;
 
     void reset();
 
