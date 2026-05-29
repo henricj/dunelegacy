@@ -55,7 +55,7 @@ void DuneTexture::reset() {
 }
 
 void DuneTexture::set_sprite_frames(short cols, short rows,
-                                    std::shared_ptr<const std::vector<DuneTextureRect>> frames) noexcept {
+                                    std::shared_ptr<const std::vector<DuneTextureSpriteFrame>> frames) noexcept {
     assert(cols > 0 && rows > 0);
     assert(frames);
     assert(static_cast<int>(frames->size()) == static_cast<int>(cols) * static_cast<int>(rows));
@@ -65,7 +65,7 @@ void DuneTexture::set_sprite_frames(short cols, short rows,
     sprite_frames_ = std::move(frames);
 }
 
-bool DuneTexture::map_sprite_source_rect(const SDL_Rect& source, SDL_Rect& mapped) const noexcept {
+bool DuneTexture::map_sprite_source_rect(const SDL_Rect& source, SDL_Rect& mapped, SDL_FlipMode* flip) const noexcept {
     if (!has_sprite_frames()) {
         return false;
     }
@@ -91,7 +91,11 @@ bool DuneTexture::map_sprite_source_rect(const SDL_Rect& source, SDL_Rect& mappe
     }
 
     const auto frame_index = row * sprite_cols_ + col;
-    mapped                 = sprite_frames_->at(frame_index).as_sdl();
+    const auto& frame      = sprite_frames_->at(frame_index);
+    mapped                 = frame.source.as_sdl();
+    if (flip) {
+        *flip = frame.flip;
+    }
     return true;
 }
 
@@ -118,7 +122,8 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect&
     }
 
     SDL_Rect src{};
-    const auto mapped = map_sprite_source_rect(source, src);
+    SDL_FlipMode mapped_flip{SDL_FlipMode::SDL_FLIP_NONE};
+    const auto mapped = map_sprite_source_rect(source, src, &mapped_flip);
     if (!mapped) {
         src = SDL_Rect{source_.x + source.x, source_.y + source.y, source.w, source.h};
     }
@@ -129,8 +134,12 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect&
         return;
     }
 
-    if (SDL_RenderCopyF(renderer, texture_, &src, &dst))
+    if (mapped && mapped_flip != SDL_FlipMode::SDL_FLIP_NONE) {
+        if (SDL_RenderCopyExF(renderer, texture_, &src, &dst, 0.0, nullptr, mapped_flip))
+            sdl2::log_error("DuneTexture::draw() SDL_RenderCopyExF failed: {}", SDL_GetError());
+    } else if (SDL_RenderCopyF(renderer, texture_, &src, &dst)) {
         sdl2::log_error("DuneTexture::draw() SDL_RenderCopyF failed: {}", SDL_GetError());
+    }
 }
 
 void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, double angle) const noexcept {

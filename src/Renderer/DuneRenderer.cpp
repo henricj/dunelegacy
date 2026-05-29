@@ -84,6 +84,12 @@ RenderClip::~RenderClip() {
 
 } // namespace dune
 
+namespace {
+[[nodiscard]] constexpr SDL_FlipMode compose_flips(SDL_FlipMode a, SDL_FlipMode b) {
+    return static_cast<SDL_FlipMode>(static_cast<int>(a) ^ static_cast<int>(b));
+}
+} // namespace
+
 // Dune_RenderCopyEx wrapper using compat macros from dune_sdl2to3.h
 int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
                       const SDL_Rect* dstrect, const double angle, const SDL_Point* center, const SDL_FlipMode flip) {
@@ -94,14 +100,16 @@ int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const 
 
     if (srcrect) {
         SDL_Rect offset{};
-        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+        SDL_FlipMode mapped_flip{SDL_FlipMode::SDL_FLIP_NONE};
+        if (!texture->map_sprite_source_rect(*srcrect, offset, &mapped_flip)) {
             assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
             assert(srcrect->x + srcrect->w <= texture->source_.w);
             assert(srcrect->y + srcrect->h <= texture->source_.h);
             offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
         }
 
-        return SDL_RenderCopyEx(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
+        return SDL_RenderCopyEx(
+            renderer, texture->texture_, &offset, dstrect, angle, center, compose_flips(flip, mapped_flip));
     }
 
     const auto source = texture->source_rect();
@@ -119,14 +127,16 @@ int Dune_RenderCopyExF(SDL_Renderer* renderer, const DuneTexture* texture, const
 
     if (srcrect) {
         SDL_Rect offset{};
-        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+        SDL_FlipMode mapped_flip{SDL_FlipMode::SDL_FLIP_NONE};
+        if (!texture->map_sprite_source_rect(*srcrect, offset, &mapped_flip)) {
             assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
             assert(srcrect->x + srcrect->w <= texture->source_.w);
             assert(srcrect->y + srcrect->h <= texture->source_.h);
             offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
         }
 
-        return SDL_RenderCopyExF(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
+        return SDL_RenderCopyExF(
+            renderer, texture->texture_, &offset, dstrect, angle, center, compose_flips(flip, mapped_flip));
     }
 
     const auto source = texture->source_rect();
@@ -142,15 +152,20 @@ void Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, const S
 
     if (srcrect) {
         SDL_Rect offset{};
-        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+        SDL_FlipMode mapped_flip{SDL_FlipMode::SDL_FLIP_NONE};
+        if (!texture->map_sprite_source_rect(*srcrect, offset, &mapped_flip)) {
             assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
             assert(srcrect->x + srcrect->w <= texture->source_.w);
             assert(srcrect->y + srcrect->h <= texture->source_.h);
             offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
         }
 
-        if (0 != SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect))
+        if (mapped_flip != SDL_FlipMode::SDL_FLIP_NONE) {
+            if (0 != SDL_RenderCopyEx(renderer, texture->texture_, &offset, dstrect, 0.0, nullptr, mapped_flip))
+                sdl2::log_error("RenderCopyEx failed: {}", SDL_GetError());
+        } else if (0 != SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect)) {
             sdl2::log_error("RenderCopy failed: {}", SDL_GetError());
+        }
     } else {
         const auto src = texture->source_.as_sdl();
         if (0 != SDL_RenderCopy(renderer, texture->texture_, &src, dstrect))
@@ -167,15 +182,20 @@ void Dune_RenderCopyF(SDL_Renderer* renderer, const DuneTexture* texture, const 
 
     if (srcrect) {
         SDL_Rect offset{};
-        if (!texture->map_sprite_source_rect(*srcrect, offset)) {
+        SDL_FlipMode mapped_flip{SDL_FlipMode::SDL_FLIP_NONE};
+        if (!texture->map_sprite_source_rect(*srcrect, offset, &mapped_flip)) {
             assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
             assert(srcrect->x + srcrect->w <= texture->source_.w);
             assert(srcrect->y + srcrect->h <= texture->source_.h);
             offset = SDL_Rect{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
         }
 
-        if (0 != SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect))
+        if (mapped_flip != SDL_FlipMode::SDL_FLIP_NONE) {
+            if (0 != SDL_RenderCopyExF(renderer, texture->texture_, &offset, dstrect, 0.0, nullptr, mapped_flip))
+                sdl2::log_error("RenderCopyExF failed: {}", SDL_GetError());
+        } else if (0 != SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect)) {
             sdl2::log_error("RenderCopyF failed: {}", SDL_GetError());
+        }
     } else {
         const auto src = texture->source_.as_sdl();
         if (0 != SDL_RenderCopyF(renderer, texture->texture_, &src, dstrect))

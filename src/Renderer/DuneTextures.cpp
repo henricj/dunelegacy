@@ -28,12 +28,18 @@
 #include <fmt/format.h> // For diagnostic logging
 
 #include <algorithm>
+#include <array>
+#include <chrono>
 #include <cstddef>
 #include <filesystem>
+#include <functional>
+#include <future>
 #include <limits>
 #include <map>
+#include <thread>
 #include <tuple>
 #include <type_traits>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -65,6 +71,43 @@ inline constexpr auto guard = 1;
 
 using spaces_type = rectpack2D::empty_spaces<allow_flip, rectpack2D::default_empty_spaces>;
 using rect_type   = rectpack2D::output_rect_t<spaces_type>;
+
+[[nodiscard]] constexpr auto makeFlipDedupTable() {
+    std::array<bool, NUM_OBJPICS> table{};
+
+    table[ObjPic_Tank_Base]           = true;
+    table[ObjPic_Tank_Gun]            = true;
+    table[ObjPic_Siegetank_Base]      = true;
+    table[ObjPic_Siegetank_Gun]       = true;
+    table[ObjPic_Devastator_Base]     = true;
+    table[ObjPic_Devastator_Gun]      = true;
+    table[ObjPic_Sonictank_Gun]       = true;
+    table[ObjPic_Launcher_Gun]        = true;
+    table[ObjPic_Quad]                = true;
+    table[ObjPic_Trike]               = true;
+    table[ObjPic_Harvester]           = true;
+    table[ObjPic_Harvester_Sand]      = true;
+    table[ObjPic_MCV]                 = true;
+    table[ObjPic_Carryall]            = true;
+    table[ObjPic_CarryallShadow]      = true;
+    table[ObjPic_Frigate]             = true;
+    table[ObjPic_FrigateShadow]       = true;
+    table[ObjPic_Ornithopter]         = true;
+    table[ObjPic_OrnithopterShadow]   = true;
+    table[ObjPic_Trooper]             = true;
+    table[ObjPic_Troopers]            = true;
+    table[ObjPic_Soldier]             = true;
+    table[ObjPic_Infantry]            = true;
+    table[ObjPic_Saboteur]            = true;
+    table[ObjPic_Bullet_SmallRocket]  = true;
+    table[ObjPic_Bullet_MediumRocket] = true;
+    table[ObjPic_Bullet_LargeRocket]  = true;
+    table[ObjPic_Bullet_Sonic]        = true;
+
+    return table;
+}
+
+inline constexpr auto flip_dedup_allowed = makeFlipDedupTable();
 
 void save_texture_atlases(SDL_Renderer* renderer, const std::vector<sdl2::texture_ptr>& textures) {
     if (!export_sprite_sheets)
@@ -346,6 +389,39 @@ bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
     return true;
 }
 
+bool compare_surface_rects(SDL_Surface* surface, const SDL_Rect& a, const SDL_Rect& b, SDL_FlipMode flip) {
+    if (!surface || a.w != b.w || a.h != b.h || a.w <= 0 || a.h <= 0) {
+        return false;
+    }
+
+    const auto* const details = SDL_GetPixelFormatDetails(surface->format);
+    if (!details || details->bytes_per_pixel <= 0) {
+        return false;
+    }
+    const auto bpp = details->bytes_per_pixel;
+
+    const sdl2::surface_lock lock{surface};
+    const auto* const pixels = static_cast<const uint8_t*>(lock.pixels());
+
+    const auto flip_bits = static_cast<int>(flip);
+    for (int y = 0; y < a.h; ++y) {
+        const auto sy = ((flip_bits & static_cast<int>(SDL_FlipMode::SDL_FLIP_VERTICAL)) != 0) ? (a.h - 1 - y) : y;
+        for (int x = 0; x < a.w; ++x) {
+            const auto sx =
+                ((flip_bits & static_cast<int>(SDL_FlipMode::SDL_FLIP_HORIZONTAL)) != 0) ? (a.w - 1 - x) : x;
+
+            const auto* const pa = pixels + (a.y + y) * lock.pitch() + (a.x + x) * bpp;
+            const auto* const pb = pixels + (b.y + sy) * lock.pitch() + (b.x + sx) * bpp;
+
+            if (0 != memcmp(pa, pb, static_cast<size_t>(bpp))) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 class Packer final {
     std::vector<rect_type> rectangles_;
 
@@ -544,6 +620,8 @@ public:
         if (!packer_.pack(max_side))
             return nullptr;
 
+        std::unordered_map<SDL_Surface*, sdl2::surface_ptr> converted_surface_cache;
+
         const sdl2::surface_ptr atlas_surface{
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
@@ -553,11 +631,18 @@ public:
         const auto draw = [&](const auto& r, [[maybe_unused]] int s_idx, SDL_Surface* surface, const SDL_Rect& source) {
             SDL_Rect atlas_rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
-            // SDL3: Always use our helper that properly converts surfaces with alpha handling
-            // This handles both indexed surfaces (treating index 0 as transparent) and
-            // surfaces with explicit color keys
-            sdl2::surface_ptr converted_surface = convertIndexedToARGBWithAlpha(surface, format);
-            SDL_Surface* surface_to_blit        = converted_surface ? converted_surface.get() : surface;
+            SDL_Surface* surface_to_blit = surface;
+            if (const auto it = converted_surface_cache.find(surface); it != converted_surface_cache.end()) {
+                if (it->second)
+                    surface_to_blit = it->second.get();
+            } else {
+                auto converted_surface = convertIndexedToARGBWithAlpha(surface, format);
+
+                if (converted_surface) {
+                    surface_to_blit = converted_surface.get();
+                    converted_surface_cache.emplace(surface, std::move(converted_surface));
+                }
+            }
 
             // Use SDL_BLENDMODE_NONE to copy pixels directly including alpha values.
             // The converted surface has proper alpha embedded, so we want a direct copy,
@@ -700,19 +785,76 @@ public:
                     const auto frames_y     = std::max(1, tiles.y);
                     const auto frame_width  = surface->w / frames_x;
                     const auto frame_height = surface->h / frames_y;
+                    const auto frame_count  = frames_x * frames_y;
 
                     const object_key_type object_key{id, house, zoom};
-                    object_meta_[object_key] = {static_cast<short>(frames_x),
-                                                static_cast<short>(frames_y),
-                                                static_cast<short>(frame_width),
-                                                static_cast<short>(frame_height)};
+                    auto& meta          = object_meta_[object_key];
+                    meta.frames_x       = static_cast<short>(frames_x);
+                    meta.frames_y       = static_cast<short>(frames_y);
+                    meta.frame_width    = static_cast<short>(frame_width);
+                    meta.frame_height   = static_cast<short>(frame_height);
+                    meta.logical_frames = std::vector<ObjectMeta::LogicalFrame>(static_cast<size_t>(frame_count));
+
+                    struct CanonicalFrame {
+                        int frame_index{};
+                        SDL_Rect source{};
+                    };
+                    std::vector<CanonicalFrame> canonical_frames;
+                    const bool allow_flips = flip_dedup_allowed[id];
 
                     for (auto row = 0; row < frames_y; ++row) {
                         for (auto col = 0; col < frames_x; ++col) {
                             const auto frame_index = row * frames_x + col;
                             const SDL_Rect source{col * frame_width, row * frame_height, frame_width, frame_height};
+                            auto mapped       = false;
+                            auto mapped_flip  = SDL_FlipMode::SDL_FLIP_NONE;
+                            auto mapped_frame = frame_index;
 
-                            surfaces_.add({id, house, zoom, frame_index}, surface, source);
+                            for (const auto& canonical : canonical_frames) {
+                                if (compare_surface_rects(
+                                        surface, source, canonical.source, SDL_FlipMode::SDL_FLIP_NONE)) {
+                                    mapped       = true;
+                                    mapped_flip  = SDL_FlipMode::SDL_FLIP_NONE;
+                                    mapped_frame = canonical.frame_index;
+                                    break;
+                                }
+
+                                if (allow_flips) {
+                                    if (compare_surface_rects(
+                                            surface, source, canonical.source, SDL_FlipMode::SDL_FLIP_HORIZONTAL)) {
+                                        mapped       = true;
+                                        mapped_flip  = SDL_FlipMode::SDL_FLIP_HORIZONTAL;
+                                        mapped_frame = canonical.frame_index;
+                                        break;
+                                    }
+
+                                    if (compare_surface_rects(
+                                            surface, source, canonical.source, SDL_FlipMode::SDL_FLIP_VERTICAL)) {
+                                        mapped       = true;
+                                        mapped_flip  = SDL_FlipMode::SDL_FLIP_VERTICAL;
+                                        mapped_frame = canonical.frame_index;
+                                        break;
+                                    }
+
+                                    constexpr auto both_flips =
+                                        static_cast<SDL_FlipMode>(static_cast<int>(SDL_FlipMode::SDL_FLIP_HORIZONTAL)
+                                                                  | static_cast<int>(SDL_FlipMode::SDL_FLIP_VERTICAL));
+                                    if (compare_surface_rects(surface, source, canonical.source, both_flips)) {
+                                        mapped       = true;
+                                        mapped_flip  = both_flips;
+                                        mapped_frame = canonical.frame_index;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            meta.logical_frames.at(frame_index) =
+                                ObjectMeta::LogicalFrame{static_cast<short>(mapped_frame), mapped_flip};
+
+                            if (!mapped) {
+                                canonical_frames.push_back({frame_index, source});
+                                surfaces_.add({id, house, zoom, frame_index}, surface, source);
+                            }
                         }
                     }
                 });
@@ -731,7 +873,7 @@ public:
             short frames_y{};
             short frame_width{};
             short frame_height{};
-            std::vector<DuneTextureRect> frames{};
+            std::vector<DuneTextureSpriteFrame> frames{};
         };
 
         std::map<object_key_type, BuildEntry> build_map;
@@ -754,18 +896,27 @@ public:
                 entry.frames.resize(static_cast<size_t>(entry.frames_x) * static_cast<size_t>(entry.frames_y));
             }
 
-            entry.frames.at(frame_index) = DuneTextureRect{atlas_rect};
+            entry.frames.at(frame_index).source = DuneTextureRect{atlas_rect};
         });
 
         for (const auto& [object_key, entry] : build_map) {
             const auto& [id, house, zoom] = object_key;
+            const auto& remap             = object_meta_.at(object_key).logical_frames;
+
+            std::vector<DuneTextureSpriteFrame> final_frames(remap.size());
+            for (size_t logical = 0; logical < remap.size(); ++logical) {
+                const auto& map       = remap[logical];
+                auto frame            = entry.frames.at(map.packed_frame);
+                frame.flip            = map.flip;
+                final_frames[logical] = frame;
+            }
 
             auto min_x = std::numeric_limits<int>::max();
             auto min_y = std::numeric_limits<int>::max();
             auto max_x = 0;
             auto max_y = 0;
-            for (const auto& frame : entry.frames) {
-                const auto rect = frame.as_sdl();
+            for (const auto& frame : final_frames) {
+                const auto rect = frame.source.as_sdl();
                 min_x           = std::min(min_x, rect.x);
                 min_y           = std::min(min_y, rect.y);
                 max_x           = std::max(max_x, rect.x + rect.w);
@@ -778,7 +929,9 @@ public:
             target.height_ =
                 static_cast<float>(static_cast<int>(entry.frames_y) * static_cast<int>(entry.frame_height));
             target.set_sprite_frames(
-                entry.frames_x, entry.frames_y, std::make_shared<const std::vector<DuneTextureRect>>(entry.frames));
+                entry.frames_x,
+                entry.frames_y,
+                std::make_shared<const std::vector<DuneTextureSpriteFrame>>(std::move(final_frames)));
         }
     }
 
@@ -788,10 +941,16 @@ public:
 
 private:
     struct ObjectMeta {
+        struct LogicalFrame {
+            short packed_frame{};
+            SDL_FlipMode flip{SDL_FlipMode::SDL_FLIP_NONE};
+        };
+
         short frames_x{};
         short frames_y{};
         short frame_width{};
         short frame_height{};
+        std::vector<LogicalFrame> logical_frames{};
     };
 
     PackableSurfaces<identifier_type> surfaces_;
@@ -1235,6 +1394,8 @@ private:
 } // namespace
 
 DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surfaceLoader) {
+    const auto start = std::chrono::steady_clock::now();
+
     // SDL3: SDL_RendererInfo removed, use properties
     SDL_PropertiesID props = SDL_GetRendererProperties(renderer);
 
@@ -1262,14 +1423,36 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     DecorationBorderPicturesPacker decoration_border_packer;
     BorderStylePicturesPacker border_style_pictures_packer;
 
-    object_picture_packer.initialize(surfaceLoader);
-    ui_graphic_packer.initialize(surfaceLoader);
-    map_choice_packer.initialize(surfaceLoader);
-    tiny_picture_packer.initialize(surfaceLoader);
-    small_detail_pics_packer.initialize(surfaceLoader);
-    generated_pictures_packer.initialize(surfaceLoader);
-    decoration_border_packer.initialize(surfaceLoader);
-    border_style_pictures_packer.initialize(surfaceLoader);
+    // Parallelize packer initialization in bounded async batches.
+    {
+        using init_task_type = std::pair<const char*, std::function<void()>>;
+        std::array<init_task_type, 8> init_tasks{{
+            {"ObjectPicturePacker", [&] { object_picture_packer.initialize(surfaceLoader); }},
+            {"UiGraphicPacker", [&] { ui_graphic_packer.initialize(surfaceLoader); }},
+            {"MapChoicePacker", [&] { map_choice_packer.initialize(surfaceLoader); }},
+            {"TinyPicturePacker", [&] { tiny_picture_packer.initialize(surfaceLoader); }},
+            {"SmallDetailPicsPacker", [&] { small_detail_pics_packer.initialize(surfaceLoader); }},
+            {"GeneratedPicturesPacker", [&] { generated_pictures_packer.initialize(surfaceLoader); }},
+            {"DecorationBorderPicturesPacker", [&] { decoration_border_packer.initialize(surfaceLoader); }},
+            {"BorderStylePicturesPacker", [&] { border_style_pictures_packer.initialize(surfaceLoader); }},
+        }};
+
+        const auto hw_threads  = std::max(1u, std::thread::hardware_concurrency());
+        const auto max_workers = std::min(init_tasks.size(), static_cast<std::size_t>(hw_threads));
+
+        for (std::size_t begin = 0; begin < init_tasks.size(); begin += max_workers) {
+            const auto end = std::min(begin + max_workers, init_tasks.size());
+
+            std::vector<std::future<void>> futures;
+            futures.reserve(end - begin);
+
+            for (std::size_t i = begin; i < end; ++i)
+                futures.emplace_back(std::async(std::launch::async, [&, i] { init_tasks[i].second(); }));
+
+            for (auto& f : futures)
+                f.get();
+        }
+    }
 
     std::vector<sdl2::texture_ptr> textures;
 
@@ -1277,7 +1460,6 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         AtlasFactory23 factory23;
 
         for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
-
             const auto opp_key = object_picture_packer.add(
                 factory23, [&](const auto& identifier, [[maybe_unused]] SDL_Surface* surface) {
                     const auto& [id, h, z, frame] = identifier;
@@ -1380,8 +1562,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
             const auto dbp_key = decoration_border_packer.add(factory23);
             const auto bsp_key = border_style_pictures_packer.add(factory23);
 
-            // Enable diagnostic logging for the combined texture (includes border styles)
-            auto texture = factory23.pack(renderer, format, max_side, "CombinedAtlas");
+            auto texture = factory23.pack(renderer, format, max_side);
 
             if (!texture)
                 THROW(std::runtime_error, "Unable to create combined texture");
@@ -1411,6 +1592,9 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     }
 
     save_texture_atlases(renderer, textures);
+
+    const auto elapsed = std::chrono::steady_clock::now() - start;
+    sdl2::log_info("DuneTextures create time: {}", std::chrono::duration<double>(elapsed).count());
 
     return DuneTextures{std::move(textures),
                         object_picture_packer.object_pictures2(),

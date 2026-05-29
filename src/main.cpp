@@ -156,6 +156,8 @@ struct MIX_handle final {
 } // namespace
 
 bool run_game(int argc, char* argv[]) {
+    const auto startup_start = std::chrono::steady_clock::now();
+
     bool bExitGame       = false;
     bool bFirstInit      = true;
     bool bFirstGamestart = false;
@@ -325,6 +327,8 @@ bool run_game(int argc, char* argv[]) {
 
             bFirstInit = false;
 
+            sdl2::log_info("Startup time: {:.3f}s",
+                           std::chrono::duration<double>(std::chrono::steady_clock::now() - startup_start).count());
             sdl2::log_info("Starting main menu...");
 
             { // Scope
