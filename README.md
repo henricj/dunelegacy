@@ -31,14 +31,14 @@ is unknown if the CMake Visual Studio generators produce usable `vcxproj` files.
 - [ENet](http://enet.bespin.org/) has been updated and is no longer a
 normal part of the tree but is included as a [Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
 instead.
-- [vcpkg](https://github.com/microsoft/vcpkg) is used to provide [SDL2](https://www.libsdl.org/),
+- [vcpkg](https://github.com/microsoft/vcpkg) is used to provide [SDL3](https://www.libsdl.org/),
 [googletest](https://github.com/google/googletest), [fmt](https://fmt.dev/), [lodepng](https://lodev.org/lodepng/),
  [soxr](https://sourceforge.net/projects/soxr/), and [ms-gsl](https://github.com/microsoft/GSL).
 - Pausing after the mission has completed but before the statistics page is displayed will let the user
 explore the map for as long as they like.
 - On Windows, DirectX 11 is now the preferred renderer. An option has been added to the INI file to configure
 the preferred renderer.  Add `Renderer = direct3d` or `Renderer = software` under the `[Video]` section
-to request [SDL2](https://www.libsdl.org/)'s DX9 or software renderer, respectively.
+to request [SDL3](https://www.libsdl.org/)'s DX9 or software renderer, respectively.
 - A texture atlas (sprite-sheet) is created during startup that drastically reduces the number of texture
 switches during rendering.  Some more work needs to be done for it to not fail when faced with an older
 GPU.  To improve startup times, these texture atlases should probably be cached on disk.
@@ -114,8 +114,7 @@ linking with another) can cause linker errors like `unresolved external symbol _
 Install the required packages. On Debian/Ubuntu:
 
 ```sh
-sudo apt-get install build-essential git ninja-build cmake pkg-config \
-    libsdl2-dev libsdl2-mixer-dev libsdl2-ttf-dev libsoxr-dev
+sudo apt-get install build-essential git ninja-build cmake pkg-config
 ```
 
 Clone the repository with submodules:
