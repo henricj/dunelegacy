@@ -1134,7 +1134,7 @@ protected:
 class TinyPicturePacker final : public PackerBase<DuneTextures::tiny_pictures_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
-        for (auto id = 0; id < textures_.size(); ++id) {
+        for (auto id = 0u; id < textures_.size(); ++id) {
             auto* surface = surfaceLoader->getTinyPictureSurface(id);
 
             if (!surface) {
@@ -1150,7 +1150,7 @@ public:
 class SmallDetailPicsPacker final : public PackerBase<DuneTextures::small_details_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
-        for (auto id = 0; id < textures_.size(); ++id) {
+        for (auto id = 0u; id < textures_.size(); ++id) {
             auto* surface = surfaceLoader->getSmallDetailSurface(id);
 
             if (!surface) {
