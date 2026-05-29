@@ -285,5 +285,8 @@ add_custom_target(
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# Extract SOURCES from the dune target for locale extraction
+get_target_property(SOURCES dune SOURCES)
+
 include(locale-update)
 
