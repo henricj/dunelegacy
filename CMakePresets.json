@@ -383,9 +383,6 @@
       "inherits": "default",
       "displayName": "macOS default",
       "description": "Default macOS build",
-      "cacheVariables": {
-        "VCPKG_MANIFEST_DIR": "${sourceDir}/external/vcpkg/config-macos"
-      },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
           "hostOS": [
