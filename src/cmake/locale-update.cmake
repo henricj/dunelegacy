@@ -124,7 +124,7 @@ if(GETTEXT_FOUND)
 
         list(APPEND generated_po_files "${generated_english_po}")
 
-        add_custom_target(generate_locale ALL DEPENDS ${generated_po_files})
+        add_custom_target(generate_locale DEPENDS ${generated_po_files})
 
         ##########
         # Add the update_locale target to actually modify the source locale files.
