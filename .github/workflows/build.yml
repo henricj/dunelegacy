@@ -45,7 +45,13 @@ jobs:
 
       - name: Install packages
         if: runner.os == 'Linux'
-        run: sudo apt update && sudo apt install -y libx11-dev
+        run: >
+          sudo apt update &&
+          sudo apt install -y
+          libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev
+          libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev
+          libwayland-dev libxkbcommon-dev libegl1-mesa-dev
+          libibus-1.0-dev
 
       - name: Fetch repo
         uses: actions/checkout@v6

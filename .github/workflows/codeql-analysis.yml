@@ -71,11 +71,13 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: external/vcpkg/vcpkg
-          vcpkgJsonGlob: cmake/vcpkg.json
+          vcpkgJsonGlob: external/vcpkg/config-sdl3/vcpkg.json
           prependedCacheKey: "build-${{ runner.os }}-release"
 
       - name: Configure
-        run: cmake --preset=release
+        run: >
+          cmake --preset=release
+          -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/external/vcpkg/config-sdl3"
 
       - name: Block cache on failure
         if: ${{ failure() || cancelled() }}

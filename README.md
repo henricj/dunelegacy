@@ -114,7 +114,11 @@ linking with another) can cause linker errors like `unresolved external symbol _
 Install the required packages. On Debian/Ubuntu:
 
 ```sh
-sudo apt-get install build-essential git ninja-build cmake pkg-config
+sudo apt install build-essential git ninja-build cmake pkg-config \
+  libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
+  libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev \
+  libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
+  libibus-1.0-dev
 ```
 
 Clone the repository with submodules:
