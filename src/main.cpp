@@ -92,6 +92,31 @@ inline std::string demangleSymbol(const char* symbolname) {
 namespace {
 int currentDisplayIndex = SCREEN_DEFAULT_DISPLAYINDEX;
 
+const char* displayEnvOrUnset(const char* name) {
+    const auto* value = SDL_getenv(name);
+    return value != nullptr ? value : "(unset)";
+}
+
+const char* sdlValueOrUnset(const char* value) {
+    return value != nullptr ? value : "(unset)";
+}
+
+void logSDLVideoDiagnostics() {
+    sdl2::log_info("SDL requested video driver hint: {}", sdlValueOrUnset(SDL_GetHint(SDL_HINT_VIDEO_DRIVER)));
+    sdl2::log_info("SDL_VIDEO_DRIVER: {}", displayEnvOrUnset("SDL_VIDEO_DRIVER"));
+    sdl2::log_info("DISPLAY: {}", displayEnvOrUnset("DISPLAY"));
+    sdl2::log_info("WAYLAND_DISPLAY: {}", displayEnvOrUnset("WAYLAND_DISPLAY"));
+    sdl2::log_info("XDG_SESSION_TYPE: {}", displayEnvOrUnset("XDG_SESSION_TYPE"));
+    sdl2::log_info("XAUTHORITY: {}", displayEnvOrUnset("XAUTHORITY"));
+
+    const auto numVideoDrivers = SDL_GetNumVideoDrivers();
+    sdl2::log_info("SDL compiled video drivers: {}", numVideoDrivers);
+
+    for (int i = 0; i < numVideoDrivers; ++i) {
+        sdl2::log_info("   SDL video driver[{}]: {}", i, SDL_GetVideoDriver(i));
+    }
+}
+
 template<typename TPtr>
 class GlobalCleanup final {
 public:
@@ -132,6 +157,10 @@ struct SDL_handle final {
     SDL_handle(SDL_InitFlags flags) {
         if (!SDL_Init(flags))
             THROW(sdl_error, "Couldn't initialize SDL: {}!", SDL_GetError());
+
+        if ((flags & SDL_INIT_VIDEO) != 0) {
+            sdl2::log_info("SDL current video driver: {}", sdlValueOrUnset(SDL_GetCurrentVideoDriver()));
+        }
     }
     ~SDL_handle() { SDL_Quit(); }
 };
@@ -421,6 +450,7 @@ int main(int argc, char* argv[]) {
         srand(seed);
 
         sdl2::log_info("Initializing SDL...");
+        logSDLVideoDiagnostics();
 
         SDL_handle sdl_handle{SDL_INIT_VIDEO};
 
