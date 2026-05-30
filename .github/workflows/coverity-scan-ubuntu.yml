@@ -1,6 +1,5 @@
 name: Coverity Scan
 
-# We only want to test official release code, not every pull request.
 on:
   push:
     branches: [modernize]
@@ -20,26 +19,35 @@ jobs:
       security-events: write
 
     steps:
-      - name: Tools
-        run: |
-          #sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get update
-          sudo apt-get dist-upgrade -y
-          sudo apt-get install -y gcc-14 g++-14 gettext
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 50
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 50
-
-      - name: Get cmake and ninja
-        uses: lukka/get-cmake@latest
-
-      - uses: actions/checkout@v6
+      - name: Fetch repo
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
-      - name: Configure
+      - name: Get cmake and ninja
+        uses: lukka/get-cmake@v4.3.3
+
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: external/vcpkg/vcpkg
+          vcpkgJsonGlob: external/vcpkg/config-sdl3/vcpkg.json
+          prependedCacheKey: "coverity/${{ runner.os }}"
+
+      - name: Tools
         run: |
-          cmake --preset=linux-release -B build -S . \
-            -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/external/vcpkg/config-sdl3"
+          sudo apt-get update
+          sudo apt-get install -y \
+            gettext \
+            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
+            libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev \
+            libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
+            libibus-1.0-dev
+
+      - name: Configure
+        run: >
+          cmake --preset=linux-release -B build -S .
+          -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/external/vcpkg/config-sdl3"
 
       - name: Coverity Scan
         uses: vapier/coverity-scan-action@v1

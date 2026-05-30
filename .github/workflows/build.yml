@@ -30,6 +30,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Fetch repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
       - name: Find MSVC (Windows)
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
@@ -41,7 +47,7 @@ jobs:
           xcode-version: latest
 
       - name: Get cmake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v4.3.3
 
       - name: Install packages
         if: runner.os == 'Linux'
@@ -52,12 +58,6 @@ jobs:
           libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev
           libwayland-dev libxkbcommon-dev libegl1-mesa-dev
           libibus-1.0-dev
-
-      - name: Fetch repo
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v11

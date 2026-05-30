@@ -21,8 +21,8 @@ jobs:
     outputs:
       is_release: ${{ steps.export.outputs.is_release }}
       git_describe: ${{ steps.export.outputs.git_describe }}
+
     strategy:
-      #fail-fast: false
       matrix:
         include:
           - name: Windows x64
@@ -42,6 +42,7 @@ jobs:
             platform: arm64
             arch: amd64_arm64
             preset: windows-arm64-release
+
     steps:
       - name: Fetch repo
         uses: actions/checkout@v6
@@ -50,17 +51,17 @@ jobs:
           submodules: recursive
 
       - name: Get cmake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v4.3.3
 
       - name: Find MSVC (on Windows)
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          arch: ${{matrix.arch}}
+          arch: ${{ matrix.arch }}
 
       - name: Export Environment
         id: export
         shell: pwsh
-        run: .\.github\scripts\windows-environment.ps1 '${{matrix.platform}}${{matrix.name_postfix}}'
+        run: .\.github\scripts\windows-environment.ps1 '${{ matrix.platform }}${{ matrix.name_postfix }}'
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v11
@@ -71,14 +72,16 @@ jobs:
 
       - name: Configure
         shell: cmd
-        run: |
-          cmake -G Ninja --preset "${{matrix.preset}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -S "%PROJECT_SOURCE%" -B "${{env.PROJECT_BUILD}}"
+        run: >
+          cmake -G Ninja --preset "${{ matrix.preset }}"
+          "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%"
+          -S "%PROJECT_SOURCE%"
+          -B "${{ env.PROJECT_BUILD }}"
 
       - name: Compile
         shell: cmd
         working-directory: "${{ env.PROJECT_BUILD }}"
-        run: |
-          cmake --build .
+        run: cmake --build .
 
       - name: Block cache on failure
         if: ${{ failure() || cancelled() }}
@@ -86,29 +89,21 @@ jobs:
         run: echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
 
       - name: Test
-        shell: cmd
         if: matrix.platform != 'arm64'
+        shell: cmd
         working-directory: "${{ env.PROJECT_BUILD }}"
-        run: |
-          cmake --build . --target test
+        run: cmake --build . --target test
 
       - name: Build Installer
         shell: cmd
         working-directory: "${{ env.PROJECT_BUILD }}"
-        run: |
-          cpack -G ZIP -v
+        run: cpack -G ZIP -v
 
       - name: Upload Binaries Artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{env.PROJECT_ZIP_NAME}}
-          path: ${{env.PROJECT_ZIP}}
-
-      #- name: Upload Installer Artifact
-      #uses: actions/upload-artifact@v7
-      #with:
-      #name: Setup ${{env.PROJECT_OUTPUT_NAME}}
-      #path: ${{env.PROJECT_INSTALLER}}
+          name: ${{ env.PROJECT_ZIP_NAME }}
+          path: ${{ env.PROJECT_ZIP }}
 
   release:
     needs: build
@@ -126,11 +121,11 @@ jobs:
 
       - name: Create Prerelease
         if: contains(github.ref, 'modernize')
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v3
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: latest-windows
-          title: "Latest CI/canary Windows dunelegacy ${{needs.build.outputs.git_describe}}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          tag_name: latest-windows
+          name: "Latest CI/canary Windows dunelegacy ${{ needs.build.outputs.git_describe }}"
           draft: false
           prerelease: true
           files: |
@@ -140,7 +135,8 @@ jobs:
         if: needs.build.outputs.is_release == 'True'
         uses: softprops/action-gh-release@v3
         with:
-          name: "Windows dunelegacy ${{needs.build.outputs.git_describe}}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          name: "Windows dunelegacy ${{ needs.build.outputs.git_describe }}"
           files: |
             **/*.zip
           draft: true

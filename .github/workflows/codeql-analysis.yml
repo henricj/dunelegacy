@@ -1,28 +1,12 @@
-# For most projects, this workflow file will not need changing; you simply need
-# to commit it to your repository.
-#
-# You may wish to alter this file to override the set of languages analyzed,
-# or to provide custom queries or build logic.
-#
-# ******** NOTE ********
-# We have attempted to detect the languages in your repository. Please check
-# the `language` matrix defined below to confirm you have the correct set of
-# supported CodeQL languages.
-#
 name: "CodeQL"
 
 on:
   push:
     branches: [modernize, master]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [modernize]
   schedule:
     - cron: "20 19 * * 1"
-
-env:
-  CC: gcc-12
-  CXX: g++-12
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,8 +18,8 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+
     permissions:
-      actions: read
       contents: read
       security-events: write
 
@@ -43,75 +27,50 @@ jobs:
       fail-fast: false
       matrix:
         language: ["cpp"]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Learn more about CodeQL language support at https://git.io/codeql-language-support
 
     steps:
-      - name: Get cmake and ninja
-        uses: lukka/get-cmake@latest
-
-      - name: Find MSVC (Windows)
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: "apt-get (Linux)"
-        if: runner.os == 'Linux'
-        run: |
-          #sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get update
-          sudo apt-get dist-upgrade -y
-          sudo apt-get install -y gettext
-
-      - name: Checkout repository
+      - name: Fetch repo
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: recursive
+
+      - name: Get cmake and ninja
+        uses: lukka/get-cmake@v4.3.3
+
+      - name: Install packages
+        run: >
+          sudo apt-get update &&
+          sudo apt-get install -y
+          libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev
+          libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev
+          libwayland-dev libxkbcommon-dev libegl1-mesa-dev
+          libibus-1.0-dev
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: external/vcpkg/vcpkg
           vcpkgJsonGlob: external/vcpkg/config-sdl3/vcpkg.json
-          prependedCacheKey: "build-${{ runner.os }}-release"
+          prependedCacheKey: "build-linux-release-sdl3"
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
 
       - name: Configure
         run: >
-          cmake --preset=release
+          cmake --preset=linux-release
           -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/external/vcpkg/config-sdl3"
+
+      - name: Build
+        run: cmake --build out/build/linux-release
 
       - name: Block cache on failure
         if: ${{ failure() || cancelled() }}
         shell: bash
         run: echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
-
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
-          # queries: ./path/to/local/query, your-org/your-repo/queries@main
-
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-      # If this step fails, then you should remove it and run the build manually (see below)
-      #- name: Autobuild
-      #  uses: github/codeql-action/autobuild@v2
-
-      # ℹ️ Command-line programs to run using the OS shell.
-      # 📚 https://git.io/JvXDl
-
-      # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-      #    and modify them (or add more) to build your code if your project
-      #    uses a compiled language
-
-      #- run: |
-      #   make bootstrap
-      #   make release
-
-      - name: Build
-        run: cmake --build out/build/release
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
