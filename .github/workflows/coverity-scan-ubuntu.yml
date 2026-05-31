@@ -1,5 +1,8 @@
 name: Coverity Scan
 
+# Coverity seems to be donw more than it is up.
+if: false
+
 on:
   push:
     branches: [modernize]
