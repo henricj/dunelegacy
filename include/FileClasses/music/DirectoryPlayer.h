@@ -18,9 +18,9 @@
 #ifndef DIRECTORYPLAYER_H
 #define DIRECTORYPLAYER_H
 
+#include <Audio/AudioEngine.h>
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <misc/dune_sdl_mixer.h>
 #include <filesystem>
 #include <vector>
 
@@ -28,6 +28,11 @@ class DirectoryPlayer final : public MusicPlayer {
 public:
     DirectoryPlayer();
     ~DirectoryPlayer() override;
+
+    DirectoryPlayer(const DirectoryPlayer&)            = delete;
+    DirectoryPlayer(DirectoryPlayer&&)                 = delete;
+    DirectoryPlayer& operator=(const DirectoryPlayer&) = delete;
+    DirectoryPlayer& operator=(DirectoryPlayer&&)      = delete;
 
     /*!
         change type of current music
@@ -56,10 +61,7 @@ public:
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-    void setMusicVolume(int newVolume) override {
-        MusicPlayer::setMusicVolume(newVolume);
-        Mix_VolumeMusic(newVolume);
-    }
+    void setMusicVolume(int newVolume) override;
 
 private:
     /*!
@@ -71,7 +73,8 @@ private:
 
     std::array<std::vector<std::filesystem::path>, MUSIC_NUM_MUSIC_TYPES> musicFileList;
 
-    sdl2::mix_music_ptr music;
+    mix_track_ptr track_;
+    mix_audio_ptr audio_;
 };
 
 #endif // DIRECTORYPLAYER_H

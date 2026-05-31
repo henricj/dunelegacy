@@ -17,25 +17,70 @@
 
 #include <FileClasses/music/ADLPlayer.h>
 
+#include <Audio/AudioEngine.h>
 #include <globals.h>
 
 #include "FileClasses/adl/sound_adlib.h"
-#include "FileClasses/music/MusicPlayer.h"
 
 #include <FileClasses/FileManager.h>
 
+namespace {
+
+SDL_PropertiesID create_loop_options(int loops) {
+    const auto options = SDL_CreateProperties();
+    if (options != 0) {
+        SDL_SetNumberProperty(options, MIX_PROP_PLAY_LOOPS_NUMBER, loops);
+    }
+    return options;
+}
+
+} // namespace
+
 ADLPlayer::ADLPlayer()
-    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "ADLPlayer") { }
+    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "ADLPlayer") {
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine == nullptr) {
+        return;
+    }
+
+    SDL_AudioSpec spec{};
+    if (!audio_engine->getFormat(spec)) {
+        spec.freq = 44100;
+    }
+    playbackFrequency_ = spec.freq;
+
+    track_ = audio_engine->createTrack();
+    if (!track_) {
+        sdl2::log_warn("ADLPlayer: Unable to create music track: {}", SDL_GetError());
+        return;
+    }
+
+    if (!audio_engine->tagTrack(track_.get(), AudioEngine::kMusicTag)) {
+        sdl2::log_warn("ADLPlayer: Unable to tag music track: {}", SDL_GetError());
+    }
+    audio_engine->setTrackGain(track_.get(), volumeToGain(musicVolume));
+}
 
 ADLPlayer::~ADLPlayer() {
     setMusic(false);
+
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine != nullptr && track_) {
+        audio_engine->untagTrack(track_.get(), AudioEngine::kMusicTag);
+    }
 }
 
 void ADLPlayer::changeMusic(MUSICTYPE musicType) {
     int musicNum = -1;
     std::string filename;
 
-    if (currentMusicType == musicType && pSoundAdlibPC != nullptr && pSoundAdlibPC->isPlaying()) {
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine == nullptr || !track_) {
+        currentMusicType = musicType;
+        return;
+    }
+
+    if (currentMusicType == musicType && audio_engine->isTrackPlaying(track_.get())) {
         return;
     }
 
@@ -279,20 +324,44 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType) {
     currentMusicType = musicType;
 
     if (musicOn && !filename.empty()) {
-
-        Mix_HookMusic(nullptr, nullptr);
-        pSoundAdlibPC.reset();
-
         auto rwop = dune::globals::pFileManager->openFile(filename);
+        if (!rwop) {
+            sdl2::log_info("Unable to open {}!", filename);
+            return;
+        }
 
-        pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get());
-        pSoundAdlibPC->setVolume(musicVolume);
+        SoundAdlibPC decoder{rwop.get(), playbackFrequency_};
+        decoder.setVolume(musicVolume);
 
-        pSoundAdlibPC->playTrack(musicNum);
+        auto pcm_chunk = decoder.getSubsong(musicNum);
+        if (pcm_chunk == nullptr || pcm_chunk->abuf == nullptr || pcm_chunk->alen == 0) {
+            sdl2::log_info("Unable to decode {}!", filename);
+            return;
+        }
 
-        Mix_HookMusic(SoundAdlibPC::callback, pSoundAdlibPC.get());
+        audio_engine->stopMusic();
+        audio_.reset();
 
-        sdl2::log_info("Now playing {}!", filename);
+        SDL_AudioSpec input_spec{};
+        input_spec.format   = SDL_AUDIO_S16LE;
+        input_spec.channels = 2;
+        input_spec.freq     = playbackFrequency_ > 0 ? playbackFrequency_ : 44100;
+
+        audio_ = audio_engine->loadRawAudio(pcm_chunk->abuf, pcm_chunk->alen, input_spec);
+        if (!audio_ || !audio_engine->setTrackAudio(track_.get(), audio_.get())) {
+            sdl2::log_info("Unable to queue {}: {}!", filename, SDL_GetError());
+            return;
+        }
+
+        const auto play_options = create_loop_options(1);
+        if (!audio_engine->playTrack(track_.get(), play_options)) {
+            sdl2::log_info("Unable to play {}: {}!", filename, SDL_GetError());
+        } else {
+            sdl2::log_info("Now playing {}!", filename);
+        }
+        if (play_options != 0) {
+            SDL_DestroyProperties(play_options);
+        }
     }
 }
 
@@ -307,7 +376,8 @@ void ADLPlayer::toggleSound() {
 }
 
 bool ADLPlayer::isMusicPlaying() {
-    return pSoundAdlibPC != nullptr && pSoundAdlibPC->isPlaying();
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    return audio_engine != nullptr && track_ && audio_engine->isTrackPlaying(track_.get());
 }
 
 void ADLPlayer::setMusic(bool value) {
@@ -316,15 +386,17 @@ void ADLPlayer::setMusic(bool value) {
     if (musicOn) {
         changeMusic(MUSIC_RANDOM);
     } else {
-        Mix_HookMusic(nullptr, nullptr);
-
-        pSoundAdlibPC.reset();
+        auto* const audio_engine = dune::globals::pAudioEngine.get();
+        if (audio_engine != nullptr) {
+            audio_engine->stopMusic();
+        }
     }
 }
 
 void ADLPlayer::setMusicVolume(int newVolume) {
     parent::setMusicVolume(newVolume);
-    if (musicOn) {
-        pSoundAdlibPC->setVolume(newVolume);
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine != nullptr && track_) {
+        audio_engine->setTrackGain(track_.get(), volumeToGain(musicVolume));
     }
 }

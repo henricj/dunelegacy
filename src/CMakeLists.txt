@@ -80,6 +80,7 @@ add_library(dune STATIC)
 
 # Add sources in current directory
 target_sources(dune PRIVATE
+	Audio/SDLAudioEngine.cpp
 	AStarSearch.cpp
 	Bullet.cpp
 	Choam.cpp
@@ -289,4 +290,3 @@ add_custom_target(
 get_target_property(SOURCES dune SOURCES)
 
 include(locale-update)
-

@@ -46,6 +46,10 @@
 #include <misc/dune_sdl.h>
 #include <misc/dune_sdl_mixer.h>
 
+#include <Audio/AudioEngine.h>
+
+#include <globals.h>
+
 #if _MSC_VER
 #    pragma warning(push)
 #    pragma warning(disable : 4100)
@@ -145,8 +149,19 @@ SoundAdlibPC::SoundAdlibPC(SDL_IOStream* rwop, int freq) {
         m_freq     = freq;
         m_format   = SDL_AUDIO_S16LE;
         m_channels = 2;
-    } else
-        Mix_QuerySpec(&m_freq, &m_format, &m_channels);
+    } else {
+        SDL_AudioSpec deviceSpec{};
+        if (dune::globals::pAudioEngine && dune::globals::pAudioEngine->isOpen()
+            && dune::globals::pAudioEngine->getFormat(deviceSpec)) {
+            m_freq     = deviceSpec.freq;
+            m_format   = deviceSpec.format;
+            m_channels = deviceSpec.channels;
+        } else {
+            m_freq     = 44100;
+            m_format   = SDL_AUDIO_S16LE;
+            m_channels = 2;
+        }
+    }
 
     opl_ = create_opl();
 
@@ -289,14 +304,16 @@ sdl2::mix_chunk_ptr SoundAdlibPC::getSubsong(int Num) {
         break;
     }
 
-    sdl2::mix_chunk_ptr myChunk{static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))};
-    if (myChunk == nullptr)
+    SDL_AudioSpec spec{};
+    spec.freq     = m_freq;
+    spec.format   = m_format;
+    spec.channels = m_channels;
+
+    auto* chunk = Mix_CreateChunkWithData(buf, static_cast<Uint32>(bufSize), true, MIX_MAX_VOLUME, &spec);
+    if (!chunk) {
+        SDL_free(buf);
         return nullptr;
+    }
 
-    myChunk->volume    = 128;
-    myChunk->allocated = 1;
-    myChunk->abuf      = buf;
-    myChunk->alen      = bufSize;
-
-    return myChunk;
+    return sdl2::mix_chunk_ptr{chunk};
 }

@@ -32,6 +32,7 @@
 #define _(msgid) dune::globals::pTextManager->getLocalized(msgid)
 
 // forward declarations
+class AudioEngine;
 class SoundPlayer;
 class MusicPlayer;
 
@@ -62,8 +63,9 @@ extern UIGraphics_Enum cursorFrame;     ///< the current mouse cursor
 extern int currentZoomlevel;            ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
 
 // abstraction layers
-extern std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice
-extern std::unique_ptr<MusicPlayer> musicPlayer; ///< manager for playing background music
+extern std::unique_ptr<AudioEngine> pAudioEngine; ///< SDL3 audio backend
+extern std::unique_ptr<SoundPlayer> soundPlayer;  ///< manager for playing sfx and voice
+extern std::unique_ptr<MusicPlayer> musicPlayer;  ///< manager for playing background music
 
 extern std::unique_ptr<FileManager> pFileManager; ///< manager for loading files from PAKs
 extern std::unique_ptr<GFXManager> pGFXManager;   ///< manager for loading and managing graphics

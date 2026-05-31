@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include <Audio/AudioEngine.h>
 #include <Game.h>
 #include <House.h>
 #include <Map.h>
@@ -26,29 +27,40 @@
 
 #include <misc/exceptions.h>
 
-SoundPlayer::SoundPlayer() : sfxVolume(dune::globals::settings.audio.sfxVolume) {
+SoundPlayer::SoundPlayer() : soundOn(false), sfxVolume(dune::globals::settings.audio.sfxVolume) {
 
-    if (!dune::globals::pSFXManager) {
-        soundOn = false;
+    if (!dune::globals::pSFXManager)
         return;
-    }
 
-    Mix_Volume(-1, sfxVolume);
+    auto* const engine = dune::globals::pAudioEngine.get();
+    if (!engine || !engine->isOpen())
+        return;
 
-    Mix_ReserveChannels(24); // Reserve a channel for voice over
-
+    // Pool sizes mirror the original SDL2 Mix_GroupChannels ranges (total = 24 tracks):
     // clang-format off
-    Mix_GroupChannels( 0,  1, static_cast<int>(ChannelGroup::Voice));
-    Mix_GroupChannels( 2,  3, static_cast<int>(ChannelGroup::UI));
-    Mix_GroupChannels( 4,  5, static_cast<int>(ChannelGroup::Credits));
-    Mix_GroupChannels( 6,  8, static_cast<int>(ChannelGroup::Explosion));
-    Mix_GroupChannels( 9, 10, static_cast<int>(ChannelGroup::ExplosionStructure));
-    Mix_GroupChannels(11, 13, static_cast<int>(ChannelGroup::Gun));
-    Mix_GroupChannels(14, 16, static_cast<int>(ChannelGroup::Rocket));
-    Mix_GroupChannels(17, 18, static_cast<int>(ChannelGroup::Scream));
-    Mix_GroupChannels(19, 21, static_cast<int>(ChannelGroup::Sonic));
-    Mix_GroupChannels(22, 23, static_cast<int>(ChannelGroup::Other));
+    static constexpr int kGroupPoolSizes[kNumGroups] = {
+        2, // Voice
+        2, // UI
+        2, // Credits
+        3, // Explosion
+        2, // ExplosionStructure
+        3, // Gun
+        3, // Rocket
+        2, // Scream
+        3, // Sonic
+        2, // Other
+    };
     // clang-format on
+    static_assert(std::size(kGroupPoolSizes) == kNumGroups);
+
+    for (int g = 0; g < kNumGroups; ++g) {
+        auto& pool = trackPools_[g];
+        pool.reserve(kGroupPoolSizes[g]);
+        for (int i = 0; i < kGroupPoolSizes[g]; ++i) {
+            if (auto track = engine->createTrack())
+                pool.push_back(std::move(track));
+        }
+    }
 
     soundOn = dune::globals::settings.audio.playSFX;
 }
@@ -63,16 +75,11 @@ void SoundPlayer::playVoice(Voice_enum id, HOUSETYPE houseID) const {
     if (voice_index < 0 || voice_index >= static_cast<int>(Voice_enum::NUM_VOICE))
         THROW(std::invalid_argument, "The voice ID {} is invalid!", voice_index);
 
-    Mix_Chunk* tmp = nullptr;
-
-    if ((tmp = dune::globals::pSFXManager->getVoice(id, houseID)) == nullptr) {
+    Mix_Chunk* const tmp = dune::globals::pSFXManager->getVoice(id, houseID);
+    if (!tmp)
         THROW(std::invalid_argument, "There is no voice with ID {}!", voice_index);
-    }
 
-    const auto channel = Mix_PlayChannel(Mix_GroupAvailable(static_cast<int>(ChannelGroup::Voice)), tmp, 0);
-    if (channel != -1) {
-        Mix_Volume(channel, sfxVolume);
-    }
+    playChunk(tmp, ChannelGroup::Voice, sfxVolume);
 }
 
 void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const {
@@ -114,10 +121,7 @@ void SoundPlayer::playSound(Mix_Chunk* sound) const {
     if (!soundOn)
         return;
 
-    const auto channel = Mix_PlayChannel(-1, sound, 0);
-    if (channel != -1) {
-        Mix_Volume(channel, sfxVolume);
-    }
+    playChunk(sound, ChannelGroup::Other, sfxVolume);
 }
 
 void SoundPlayer::playSound(Sound_enum id) const {
@@ -165,16 +169,44 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
 
     static_assert(static_cast<size_t>(Sound_enum::NUM_SOUNDCHUNK) == std::size(soundID2ChannelGroup));
 
-    Mix_Chunk* sound = nullptr;
-
-    if ((sound = dune::globals::pSFXManager->getSound(soundID)) == nullptr)
+    Mix_Chunk* const sound = dune::globals::pSFXManager->getSound(soundID);
+    if (!sound)
         THROW(std::invalid_argument, "There is no sound with ID {}!", sound_index);
 
-    const auto group = static_cast<int>(soundID2ChannelGroup[sound_index]);
+    playChunk(sound, soundID2ChannelGroup[sound_index], volume);
+}
 
-    const auto channel = Mix_GroupAvailable(group);
-    const auto actual  = Mix_PlayChannel(channel, sound, 0);
-    if (actual != -1) {
-        Mix_Volume(actual, volume);
+void SoundPlayer::playChunk(Mix_Chunk* chunk, ChannelGroup group, int volume) const {
+    auto* const engine = dune::globals::pAudioEngine.get();
+    if (!engine || !chunk)
+        return;
+
+    auto* const audio = Mix_GetChunkAudio(chunk);
+    if (!audio)
+        return;
+
+    auto* const track = acquireTrack(group);
+    if (!track)
+        return;
+
+    const float gain = static_cast<float>(volume) / MIX_MAX_VOLUME;
+    engine->setTrackGain(track, gain);
+    engine->setTrackAudio(track, audio);
+    engine->playTrack(track);
+}
+
+MIX_Track* SoundPlayer::acquireTrack(ChannelGroup group) const noexcept {
+    auto* const engine = dune::globals::pAudioEngine.get();
+    if (!engine)
+        return nullptr;
+
+    const auto& pool = trackPools_[static_cast<int>(group)];
+    for (const auto& track : pool) {
+        if (!engine->isTrackPlaying(track.get()))
+            return track.get();
     }
+
+    // All tracks in this group are busy — drop the sound, matching
+    // SDL2 Mix_GroupAvailable returning -1 when no channel is free.
+    return nullptr;
 }

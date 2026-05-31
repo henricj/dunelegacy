@@ -100,7 +100,11 @@ public:
     SFXManager& operator=(const SFXManager&) = delete;
     SFXManager& operator=(SFXManager&&)      = delete;
 
+    // Returns a non-owning pointer to the voice chunk for the given id/house.
+    // The returned pointer is valid only for the lifetime of this SFXManager instance.
     Mix_Chunk* getVoice(Voice_enum id, HOUSETYPE house) const;
+    // Returns a non-owning pointer to the sound chunk for the given id.
+    // The returned pointer is valid only for the lifetime of this SFXManager instance.
     Mix_Chunk* getSound(Sound_enum id) const;
 
 private:

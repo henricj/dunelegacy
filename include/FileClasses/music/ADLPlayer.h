@@ -18,10 +18,8 @@
 #ifndef ADLPLAYER_H
 #define ADLPLAYER_H
 
+#include <Audio/AudioEngine.h>
 #include <FileClasses/music/MusicPlayer.h>
-
-// Forward declarations
-class SoundAdlibPC;
 
 class ADLPlayer final : public MusicPlayer {
     using parent = MusicPlayer;
@@ -29,6 +27,11 @@ class ADLPlayer final : public MusicPlayer {
 public:
     ADLPlayer();
     ~ADLPlayer() override;
+
+    ADLPlayer(const ADLPlayer&)            = delete;
+    ADLPlayer(ADLPlayer&&)                 = delete;
+    ADLPlayer& operator=(const ADLPlayer&) = delete;
+    ADLPlayer& operator=(ADLPlayer&&)      = delete;
 
     /*!
         change type of current music
@@ -60,7 +63,9 @@ public:
     void setMusicVolume(int newVolume) override;
 
 private:
-    std::unique_ptr<SoundAdlibPC> pSoundAdlibPC;
+    int playbackFrequency_{};
+    mix_track_ptr track_;
+    mix_audio_ptr audio_;
 };
 
 #endif // ADLPLAYER_H

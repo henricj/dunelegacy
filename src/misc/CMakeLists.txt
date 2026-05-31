@@ -7,6 +7,7 @@ target_sources(dune PRIVATE
 	FileSystem.cpp
 	fnkdat.cpp
 	Fullscreen.cpp
+	dune_sdl_mixer.cpp
 	IFileStream.cpp
 	IMemoryStream.cpp
 	InputStream.cpp

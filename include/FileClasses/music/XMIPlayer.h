@@ -18,14 +18,21 @@
 #ifndef XMIPLAYER_H
 #define XMIPLAYER_H
 
+#include <Audio/AudioEngine.h>
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <misc/dune_sdl_mixer.h>
+#include <cstdint>
+#include <vector>
 
 class XMIPlayer final : public MusicPlayer {
 public:
     XMIPlayer();
     ~XMIPlayer() override;
+
+    XMIPlayer(const XMIPlayer&)            = delete;
+    XMIPlayer(XMIPlayer&&)                 = delete;
+    XMIPlayer& operator=(const XMIPlayer&) = delete;
+    XMIPlayer& operator=(XMIPlayer&&)      = delete;
 
     /*!
         change type of current music
@@ -54,13 +61,12 @@ public:
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-    void setMusicVolume(int newVolume) override {
-        MusicPlayer::setMusicVolume(newVolume);
-        Mix_VolumeMusic(newVolume);
-    }
+    void setMusicVolume(int newVolume) override;
 
 private:
-    sdl2::mix_music_ptr music;
+    mix_track_ptr track_;
+    mix_audio_ptr audio_;
+    std::vector<uint8_t> midiBuffer_;
 };
 
 #endif // XMIPLAYER_H

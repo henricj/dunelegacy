@@ -9,126 +9,146 @@
 
 #include <globals.h>
 
+#include <cstring>
+
 sdl2::mix_chunk_ptr create_chunk() {
-    return sdl2::mix_chunk_ptr{static_cast<Mix_Chunk*>(SDL_malloc(sizeof(Mix_Chunk)))};
+    return sdl2::mix_chunk_ptr{Mix_CreateChunk()};
 }
 
 sdl2::mix_chunk_ptr concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2) {
-    auto returnChunk = create_chunk();
-    if (returnChunk == nullptr) {
+    if (!sound1 || !sound2) {
         return nullptr;
     }
 
-    returnChunk->allocated = 1;
-    returnChunk->volume    = sound1->volume;
-    returnChunk->alen      = sound1->alen + sound2->alen;
+    SDL_AudioSpec spec{};
+    Mix_GetChunkSpec(sound1, &spec);
 
-    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
+    const auto size1 = Mix_GetChunkDataSize(sound1);
+    const auto size2 = Mix_GetChunkDataSize(sound2);
+    const auto total = static_cast<size_t>(size1) + static_cast<size_t>(size2);
+
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(total))};
     if (buffer == nullptr) {
         return nullptr;
     }
 
     auto* p = buffer.get();
 
-    memcpy(p, sound1->abuf, sound1->alen);
-    p += sound1->alen;
-    memcpy(p, sound2->abuf, sound2->alen);
+    std::memcpy(p, Mix_GetChunkData(sound1), size1);
+    p += size1;
+    std::memcpy(p, Mix_GetChunkData(sound2), size2);
 
-    returnChunk->abuf = buffer.release();
+    auto* raw_buffer = buffer.release();
+    auto* chunk =
+        Mix_CreateChunkWithData(raw_buffer, static_cast<Uint32>(total), true, Mix_GetChunkVolume(sound1), &spec);
+    if (!chunk) {
+        SDL_free(raw_buffer);
+        return nullptr;
+    }
 
-    return returnChunk;
+    return sdl2::mix_chunk_ptr{chunk};
 }
 
 sdl2::mix_chunk_ptr concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3) {
-    auto returnChunk = create_chunk();
-    if (returnChunk == nullptr) {
+    if (!sound1 || !sound2 || !sound3) {
         return nullptr;
     }
 
-    returnChunk->allocated = 1;
-    returnChunk->volume    = sound1->volume;
-    returnChunk->alen      = sound1->alen + sound2->alen + sound3->alen;
+    SDL_AudioSpec spec{};
+    Mix_GetChunkSpec(sound1, &spec);
 
-    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
+    const auto size1 = Mix_GetChunkDataSize(sound1);
+    const auto size2 = Mix_GetChunkDataSize(sound2);
+    const auto size3 = Mix_GetChunkDataSize(sound3);
+    const auto total = static_cast<size_t>(size1) + static_cast<size_t>(size2) + static_cast<size_t>(size3);
+
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(total))};
     if (buffer == nullptr) {
         return nullptr;
     }
 
     auto* p = buffer.get();
 
-    memcpy(p, sound1->abuf, sound1->alen);
-    p += sound1->alen;
-    memcpy(p, sound2->abuf, sound2->alen);
-    p += sound2->alen;
-    memcpy(p, sound3->abuf, sound3->alen);
+    std::memcpy(p, Mix_GetChunkData(sound1), size1);
+    p += size1;
+    std::memcpy(p, Mix_GetChunkData(sound2), size2);
+    p += size2;
+    std::memcpy(p, Mix_GetChunkData(sound3), size3);
 
-    returnChunk->abuf = buffer.release();
+    auto* raw_buffer = buffer.release();
+    auto* chunk =
+        Mix_CreateChunkWithData(raw_buffer, static_cast<Uint32>(total), true, Mix_GetChunkVolume(sound1), &spec);
+    if (!chunk) {
+        SDL_free(raw_buffer);
+        return nullptr;
+    }
 
-    return returnChunk;
+    return sdl2::mix_chunk_ptr{chunk};
 }
 
 sdl2::mix_chunk_ptr concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3, Mix_Chunk* sound4) {
-    auto returnChunk = create_chunk();
-    if (returnChunk == nullptr) {
+    if (!sound1 || !sound2 || !sound3 || !sound4) {
         return nullptr;
     }
 
-    returnChunk->allocated = 1;
-    returnChunk->volume    = sound1->volume;
-    returnChunk->alen      = sound1->alen + sound2->alen + sound3->alen + sound4->alen;
+    SDL_AudioSpec spec{};
+    Mix_GetChunkSpec(sound1, &spec);
 
-    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
+    const auto size1 = Mix_GetChunkDataSize(sound1);
+    const auto size2 = Mix_GetChunkDataSize(sound2);
+    const auto size3 = Mix_GetChunkDataSize(sound3);
+    const auto size4 = Mix_GetChunkDataSize(sound4);
+    const auto total = static_cast<size_t>(size1) + static_cast<size_t>(size2) + static_cast<size_t>(size3)
+                     + static_cast<size_t>(size4);
+
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(total))};
     if (buffer == nullptr) {
         return nullptr;
     }
 
     auto* p = buffer.get();
 
-    memcpy(p, sound1->abuf, sound1->alen);
-    p += sound1->alen;
-    memcpy(p, sound2->abuf, sound2->alen);
-    p += sound2->alen;
-    memcpy(p, sound3->abuf, sound3->alen);
-    p += sound3->alen;
-    memcpy(p, sound4->abuf, sound4->alen);
+    std::memcpy(p, Mix_GetChunkData(sound1), size1);
+    p += size1;
+    std::memcpy(p, Mix_GetChunkData(sound2), size2);
+    p += size2;
+    std::memcpy(p, Mix_GetChunkData(sound3), size3);
+    p += size3;
+    std::memcpy(p, Mix_GetChunkData(sound4), size4);
 
-    returnChunk->abuf = buffer.release();
+    auto* raw_buffer = buffer.release();
+    auto* chunk =
+        Mix_CreateChunkWithData(raw_buffer, static_cast<Uint32>(total), true, Mix_GetChunkVolume(sound1), &spec);
+    if (!chunk) {
+        SDL_free(raw_buffer);
+        return nullptr;
+    }
 
-    return returnChunk;
+    return sdl2::mix_chunk_ptr{chunk};
 }
 
 sdl2::mix_chunk_ptr createEmptyChunk() {
-    auto returnChunk = create_chunk();
-    if (returnChunk == nullptr) {
-        return nullptr;
-    }
-
-    returnChunk->allocated = 1;
-    returnChunk->volume    = 0;
-    returnChunk->alen      = 0;
-    returnChunk->abuf      = nullptr;
-
-    return returnChunk;
+    return sdl2::mix_chunk_ptr{Mix_CreateChunkWithData(nullptr, 0, false, 0, nullptr)};
 }
 
 sdl2::mix_chunk_ptr createSilenceChunk(int length) {
-    auto returnChunk = create_chunk();
-    if (returnChunk == nullptr) {
+    if (length < 0) {
         return nullptr;
     }
 
-    returnChunk->allocated = 1;
-    returnChunk->volume    = MIX_MAX_VOLUME;
-    returnChunk->alen      = length;
-
-    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_calloc(returnChunk->alen, 1))};
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_calloc(length, 1))};
     if (buffer == nullptr) {
         return nullptr;
     }
 
-    returnChunk->abuf = buffer.release();
+    auto* raw_buffer = buffer.release();
+    auto* chunk      = Mix_CreateChunkWithData(raw_buffer, static_cast<Uint32>(length), true, MIX_MAX_VOLUME, nullptr);
+    if (!chunk) {
+        SDL_free(raw_buffer);
+        return nullptr;
+    }
 
-    return returnChunk;
+    return sdl2::mix_chunk_ptr{chunk};
 }
 
 sdl2::mix_chunk_ptr getChunkFromFile(std::string_view filename) {

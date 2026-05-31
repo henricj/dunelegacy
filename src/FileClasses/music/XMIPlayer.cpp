@@ -17,6 +17,7 @@
 
 #include <FileClasses/music/XMIPlayer.h>
 
+#include <Audio/AudioEngine.h>
 #include <globals.h>
 
 #include "FileClasses/xmidi/MemoryDataSource.h"
@@ -25,38 +26,62 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/xmidi/XMidiFile.h>
 
-#include <misc/dune_sdl.h>
-#include <misc/dune_sdl_mixer.h>
-
 #include <gsl/gsl>
+#include <misc/dune_sdl.h>
 
 #include <filesystem>
 
+namespace {
+
+SDL_PropertiesID create_loop_options(int loops) {
+    const auto options = SDL_CreateProperties();
+    if (options != 0) {
+        SDL_SetNumberProperty(options, MIX_PROP_PLAY_LOOPS_NUMBER, loops);
+    }
+    return options;
+}
+
+} // namespace
+
 XMIPlayer::XMIPlayer()
     : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "XMIPlayer") {
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine == nullptr) {
+        return;
+    }
 
-#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
-    if ((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
-        sdl2::log_info("XMIPlayer: Failed to init required midi support: {}", SDL_GetError());
+    track_ = audio_engine->createTrack();
+    if (!track_) {
+        sdl2::log_warn("XMIPlayer: Unable to create music track: {}", SDL_GetError());
+        return;
     }
-#else
-    if ((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
-        sdl2::log_info("XMIPlayer: Failed to init required midi support: {}", SDL_GetError());
+
+    if (!audio_engine->tagTrack(track_.get(), AudioEngine::kMusicTag)) {
+        sdl2::log_warn("XMIPlayer: Unable to tag music track: {}", SDL_GetError());
     }
-#endif
+    audio_engine->setTrackGain(track_.get(), volumeToGain(musicVolume));
 }
 
 XMIPlayer::~XMIPlayer() {
-    music.reset();
+    setMusic(false);
 
-    Mix_Quit();
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine != nullptr && track_) {
+        audio_engine->untagTrack(track_.get(), AudioEngine::kMusicTag);
+    }
 }
 
 void XMIPlayer::changeMusic(MUSICTYPE musicType) {
     int musicNum = -1;
     std::string filename;
 
-    if (currentMusicType == musicType && Mix_PlayingMusic()) {
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine == nullptr || !track_) {
+        currentMusicType = musicType;
+        return;
+    }
+
+    if (currentMusicType == musicType && audio_engine->isTrackPlaying(track_.get())) {
         return;
     }
 
@@ -300,7 +325,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
     currentMusicType = musicType;
 
     if (musicOn && !filename.empty()) {
-        std::vector<uint8_t> midi_list;
+        midiBuffer_.clear();
 
         { // Scope
             auto input_path = std::filesystem::path(reinterpret_cast<const char8_t*>(filename.c_str()));
@@ -323,26 +348,27 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
 
             event_list->write(&output);
 
-            midi_list = output.takeBuffer();
+            midiBuffer_ = output.takeBuffer();
         }
 
-        Mix_HaltMusic();
-        music.reset();
+        audio_engine->stopMusic();
+        audio_.reset();
 
-        { // Scope
-            sdl2::RWops_ptr midi_rwops{SDL_RWFromConstMem(midi_list.data(), gsl::narrow<int>(midi_list.size()))};
-
-            music.reset(Mix_LoadMUSType_RW(midi_rwops.get(), MUS_MID, 0));
-            if (music) {
-                if (Mix_PlayMusic(music.get(), 1) == 1) {
-                    sdl2::log_info("XMIPlayer: Playing music failed: {}", SDL_GetError());
-                } else {
-                    Mix_VolumeMusic(musicVolume);
-                    sdl2::log_info("Now playing {}!", filename);
-                }
-            } else {
-                sdl2::log_info("Unable to play {}: {}!", filename, Mix_GetError());
+        sdl2::IOStream_ptr midi_rwops{SDL_IOFromConstMem(midiBuffer_.data(), midiBuffer_.size())};
+        audio_ = audio_engine->loadAudioIO(midi_rwops.release(), true, true);
+        if (audio_ && audio_engine->setTrackAudio(track_.get(), audio_.get())) {
+            const auto play_options = create_loop_options(1);
+            const auto ok           = audio_engine->playTrack(track_.get(), play_options);
+            if (play_options != 0) {
+                SDL_DestroyProperties(play_options);
             }
+            if (!ok) {
+                sdl2::log_info("XMIPlayer: Playing music failed: {}", SDL_GetError());
+            } else {
+                sdl2::log_info("Now playing {}!", filename);
+            }
+        } else {
+            sdl2::log_info("Unable to play {}: {}!", filename, SDL_GetError());
         }
     }
 }
@@ -352,16 +378,13 @@ void XMIPlayer::toggleSound() {
         musicOn = true;
         changeMusic(MUSIC_PEACE);
     } else {
-        musicOn = false;
-        if (music != nullptr) {
-            Mix_HaltMusic();
-            music.reset();
-        }
+        setMusic(false);
     }
 }
 
 bool XMIPlayer::isMusicPlaying() {
-    return Mix_PlayingMusic();
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    return audio_engine != nullptr && track_ && audio_engine->isTrackPlaying(track_.get());
 }
 
 void XMIPlayer::setMusic(bool value) {
@@ -369,8 +392,19 @@ void XMIPlayer::setMusic(bool value) {
 
     if (musicOn) {
         changeMusic(MUSIC_RANDOM);
-    } else if (music != nullptr) {
-        Mix_HaltMusic();
-        music.reset();
+    } else {
+        auto* const audio_engine = dune::globals::pAudioEngine.get();
+        if (audio_engine != nullptr) {
+            audio_engine->stopMusic();
+        }
+    }
+}
+
+void XMIPlayer::setMusicVolume(int newVolume) {
+    MusicPlayer::setMusicVolume(newVolume);
+
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine != nullptr && track_) {
+        audio_engine->setTrackGain(track_.get(), volumeToGain(musicVolume));
     }
 }

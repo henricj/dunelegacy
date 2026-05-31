@@ -18,9 +18,13 @@
 #ifndef SOUNDPLAYER_H
 #define SOUNDPLAYER_H
 
+#include <Audio/AudioEngine.h>
 #include <FileClasses/SFXManager.h>
 
 #include <misc/dune_sdl_mixer.h>
+
+#include <array>
+#include <vector>
 
 // forward declaration
 class Coord;
@@ -84,6 +88,7 @@ public:
 
 private:
     enum class ChannelGroup { Voice, UI, Credits, Explosion, ExplosionStructure, Gun, Rocket, Scream, Sonic, Other };
+    static constexpr int kNumGroups = static_cast<int>(ChannelGroup::Other) + 1;
 
     /*!
         the function plays a sound with a given volume
@@ -92,11 +97,29 @@ private:
     */
     void playSound(Sound_enum soundID, int volume) const;
 
+    /*!
+        Routes a chunk through the appropriate track pool at the given volume.
+        @param chunk  the Mix_Chunk whose backend audio to play
+        @param group  the channel group pool to pick a track from
+        @param volume playback volume [0; MIX_MAX_VOLUME]
+    */
+    void playChunk(Mix_Chunk* chunk, ChannelGroup group, int volume) const;
+
+    /*!
+        Returns the first idle track in the pool for @p group, or nullptr if
+        all tracks in the pool are currently playing (sound is dropped, matching
+        the SDL2 Mix_GroupAvailable(-1) semantics).
+    */
+    [[nodiscard]] MIX_Track* acquireTrack(ChannelGroup group) const noexcept;
+
     //! whether sound should be played
     bool soundOn;
 
     //! volume of sound effects
     int sfxVolume;
+
+    //! pre-allocated track pools, one per ChannelGroup
+    std::array<std::vector<mix_track_ptr>, kNumGroups> trackPools_;
 };
 
 #endif // SOUNDPLAYER_H

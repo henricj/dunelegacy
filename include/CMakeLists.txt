@@ -1,6 +1,7 @@
 target_sources(dune PRIVATE
 	AITeamInfo.h
 	AStarSearch.h
+	Audio/AudioEngine.h
 	Bullet.h
 	Choam.h
 	Colors.h

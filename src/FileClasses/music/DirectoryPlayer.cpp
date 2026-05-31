@@ -17,6 +17,7 @@
 
 #include <FileClasses/music/DirectoryPlayer.h>
 
+#include <Audio/AudioEngine.h>
 #include <globals.h>
 
 #include <misc/FileSystem.h>
@@ -26,6 +27,18 @@
 #include <gsl/gsl>
 
 #include <filesystem>
+
+namespace {
+
+SDL_PropertiesID create_loop_options(int loops) {
+    const auto options = SDL_CreateProperties();
+    if (options != 0) {
+        SDL_SetNumberProperty(options, MIX_PROP_PLAY_LOOPS_NUMBER, loops);
+    }
+    return options;
+}
+
+} // namespace
 
 DirectoryPlayer::DirectoryPlayer()
     : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume,
@@ -51,24 +64,43 @@ DirectoryPlayer::DirectoryPlayer()
         musicFileList[i] = getMusicFileNames(configfilepath / musicDirectoryNames[i]);
     }
 
-#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
-    Mix_Init(MIX_INIT_MID | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
-#else
-    Mix_Init(MIX_INIT_FLUIDSYNTH | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
-#endif
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine == nullptr) {
+        return;
+    }
+
+    track_ = audio_engine->createTrack();
+    if (!track_) {
+        sdl2::log_warn("DirectoryPlayer: Unable to create music track: {}", SDL_GetError());
+        return;
+    }
+
+    if (!audio_engine->tagTrack(track_.get(), AudioEngine::kMusicTag)) {
+        sdl2::log_warn("DirectoryPlayer: Unable to tag music track: {}", SDL_GetError());
+    }
+    audio_engine->setTrackGain(track_.get(), volumeToGain(musicVolume));
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
-    music.reset();
+    setMusic(false);
 
-    Mix_Quit();
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine != nullptr && track_) {
+        audio_engine->untagTrack(track_.get(), AudioEngine::kMusicTag);
+    }
 }
 
 void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
     int musicNum                   = -1;
     std::filesystem::path filename = "";
 
-    if (currentMusicType == musicType && Mix_PlayingMusic()) {
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine == nullptr || !track_) {
+        currentMusicType = musicType;
+        return;
+    }
+
+    if (currentMusicType == musicType && audio_engine->isTrackPlaying(track_.get())) {
         return;
     }
 
@@ -97,16 +129,27 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
     }
 
     if (musicOn && !filename.empty()) {
+        audio_engine->stopMusic();
+        audio_.reset();
 
-        Mix_HaltMusic();
-
-        music.reset(Mix_LoadMUS(filename.string().c_str()));
-        if (music) {
+        auto file = dune::globals::pFileManager->openFile(filename);
+        if (!file) {
+            sdl2::log_info("Unable to open {}!", filename.string());
+            return;
+        }
+        audio_ = audio_engine->loadAudioIO(file.release(), true, true);
+        if (audio_ && audio_engine->setTrackAudio(track_.get(), audio_.get())) {
             sdl2::log_info("Now playing {}!", filename.string());
-            Mix_PlayMusic(music.get(), -1);
-            Mix_VolumeMusic(musicVolume);
+            const auto play_options = create_loop_options(-1);
+            const auto ok           = audio_engine->playTrack(track_.get(), play_options);
+            if (play_options != 0) {
+                SDL_DestroyProperties(play_options);
+            }
+            if (!ok) {
+                sdl2::log_info("Unable to play {}: {}!", filename.string(), SDL_GetError());
+            }
         } else {
-            sdl2::log_info("Unable to play {}: {}!", filename.string(), Mix_GetError());
+            sdl2::log_info("Unable to play {}: {}!", filename.string(), SDL_GetError());
         }
     }
 }
@@ -116,16 +159,13 @@ void DirectoryPlayer::toggleSound() {
         musicOn = true;
         changeMusic(MUSIC_PEACE);
     } else {
-        musicOn = false;
-        if (music) {
-            Mix_HaltMusic();
-            music.reset();
-        }
+        setMusic(false);
     }
 }
 
 bool DirectoryPlayer::isMusicPlaying() {
-    return Mix_PlayingMusic();
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    return audio_engine != nullptr && track_ && audio_engine->isTrackPlaying(track_.get());
 }
 
 void DirectoryPlayer::setMusic(bool value) {
@@ -133,8 +173,20 @@ void DirectoryPlayer::setMusic(bool value) {
 
     if (musicOn) {
         changeMusic(MUSIC_RANDOM);
-    } else if (music) {
-        Mix_HaltMusic();
+    } else {
+        auto* const audio_engine = dune::globals::pAudioEngine.get();
+        if (audio_engine != nullptr) {
+            audio_engine->stopMusic();
+        }
+    }
+}
+
+void DirectoryPlayer::setMusicVolume(int newVolume) {
+    MusicPlayer::setMusicVolume(newVolume);
+
+    auto* const audio_engine = dune::globals::pAudioEngine.get();
+    if (audio_engine != nullptr && track_) {
+        audio_engine->setTrackGain(track_.get(), volumeToGain(musicVolume));
     }
 }
 

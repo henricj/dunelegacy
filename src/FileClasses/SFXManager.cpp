@@ -74,14 +74,16 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) const {
     return soundChunk[sound_index].get();
 }
 
-sdl2::mix_chunk_ptr
-SFXManager::loadMixFromADL(const std::string& adlFile, int index, [[maybe_unused]] int volume) const {
+sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) const {
 
     const auto rwop = dune::globals::pFileManager->openFile(adlFile);
 
     SoundAdlibPC player{rwop.get(), AUDIO_FREQUENCY};
 
     auto chunk = player.getSubsong(index);
+    if (chunk) {
+        Mix_SetChunkVolume(chunk.get(), volume);
+    }
 
     return chunk;
 }

@@ -24,6 +24,7 @@
 
 #include <misc/dune_sdl_mixer.h>
 
+#include <algorithm>
 #include <string_view>
 
 //! \enum MUSICTYPE
@@ -58,11 +59,7 @@ class MusicPlayer {
 protected:
     MusicPlayer(bool bMusicOn, int newMusicVolume, std::string_view name)
         : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID), currentMusicType(MUSIC_RANDOM),
-          random_{RandomFactory{}.create(name)} {
-        // TODO: SDL3_mixer has a completely different API - volume is set per-track
-        // Mix_VolumeMusic is not available in SDL3_mixer
-        // The audio system needs to be refactored to use MIX_Mixer/MIX_Track
-    }
+          random_{RandomFactory{}.create(name)} { }
 
 public:
     virtual ~MusicPlayer() = default;
@@ -121,11 +118,15 @@ public:
     virtual void setMusicVolume(int newVolume) {
         if (newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
             musicVolume = newVolume;
-            // TODO: SDL3_mixer volume control - needs MIX_Track API
         }
     }
 
 protected:
+    [[nodiscard]] static float volumeToGain(int volume) noexcept {
+        const auto clamped = std::clamp(volume, 0, MIX_MAX_VOLUME);
+        return static_cast<float>(clamped) / static_cast<float>(MIX_MAX_VOLUME);
+    }
+
     Random& random() noexcept { return random_; }
 
     //! whether music should be played

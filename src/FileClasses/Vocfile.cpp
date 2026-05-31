@@ -25,6 +25,10 @@
 #include <misc/dune_sdl_mixer.h>
 #include <misc/dune_sdlpp.h>
 
+#include <Audio/AudioEngine.h>
+
+#include <globals.h>
+
 #include <soxr.h>
 
 #include <algorithm>
@@ -303,6 +307,33 @@ int16_t Float2Sint16(float x) {
     return static_cast<int16_t>(val);
 }
 
+int32_t Float2Sint32(float x) {
+    long long val = llround(static_cast<double>(x) * 2147483647.0);
+    if (val < -2147483648LL) {
+        val = -2147483648LL;
+    } else if (val > 2147483647LL) {
+        val = 2147483647LL;
+    }
+
+    return static_cast<int32_t>(val);
+}
+
+void normalize_target_spec(SDL_AudioSpec& spec) {
+    // Voc conversion supports integer and float PCM output. If the backend
+    // reports a format we don't explicitly map, fall back to signed 16-bit.
+    switch (spec.format) {
+        case SDL_AUDIO_U8:
+        case SDL_AUDIO_S8:
+        case SDL_AUDIO_S16LE:
+        case SDL_AUDIO_S16BE:
+        case SDL_AUDIO_S32LE:
+        case SDL_AUDIO_S32BE:
+        case SDL_AUDIO_F32LE:
+        case SDL_AUDIO_F32BE: break;
+        default: spec.format = SDL_AUDIO_S16; break;
+    }
+}
+
 } // namespace
 
 sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
@@ -359,16 +390,18 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     RawData_Samples--;
 
     // Get audio device specifications
-    int TargetFrequency = 0;
-
-    int channels                 = 0;
-    SDL_AudioFormat TargetFormat = SDL_AUDIO_U8;
-    if (Mix_QuerySpec(&TargetFrequency, &TargetFormat, &channels) == 0) {
-        // THROW(std::runtime_error, "LoadVOC_RW(): Mix_QuerySpec failed!");
-        channels        = 2;
-        TargetFrequency = 11025;
-        TargetFormat    = SDL_AUDIO_U8;
+    SDL_AudioSpec targetSpec{};
+    if (!(dune::globals::pAudioEngine && dune::globals::pAudioEngine->isOpen()
+          && dune::globals::pAudioEngine->getFormat(targetSpec))) {
+        targetSpec.freq     = 11025;
+        targetSpec.format   = SDL_AUDIO_U8;
+        targetSpec.channels = 2;
     }
+    normalize_target_spec(targetSpec);
+
+    const auto TargetFrequency = targetSpec.freq;
+    const auto channels        = targetSpec.channels;
+    const auto TargetFormat    = targetSpec.format;
 
     // Convert to audio device frequency
     const auto ConversionRatio = TargetFrequency / static_cast<double>(RawData_Frequency);
@@ -429,16 +462,6 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     const auto ThreeQuaterSilenceLength = static_cast<int>(NUM_SAMPLES_OF_SILENCE * ConversionRatio * (3.0f / 4.0f));
     TargetData_Samples -= static_cast<size_t>(2) * ThreeQuaterSilenceLength;
 
-    auto myChunk = sdl2::mix_chunk_ptr{static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))};
-    if (myChunk == nullptr) {
-        throw std::bad_alloc();
-    }
-
-    memset(myChunk.get(), 0, sizeof(Mix_Chunk));
-
-    myChunk->allocated = 1;
-    myChunk->volume    = 128;
-
     size_t SizeOfTargetSample = 0;
     // SDL3 removed unsigned 16-bit audio formats, use signed instead
     switch (TargetFormat) {
@@ -446,19 +469,24 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case SDL_AUDIO_S8: SizeOfTargetSample = sizeof(int8_t) * channels; break;
         case SDL_AUDIO_S16LE: SizeOfTargetSample = sizeof(int16_t) * channels; break;
         case SDL_AUDIO_S16BE: SizeOfTargetSample = sizeof(int16_t) * channels; break;
+        case SDL_AUDIO_S32LE: SizeOfTargetSample = sizeof(int32_t) * channels; break;
+        case SDL_AUDIO_S32BE: SizeOfTargetSample = sizeof(int32_t) * channels; break;
+        case SDL_AUDIO_F32LE: SizeOfTargetSample = sizeof(float) * channels; break;
+        case SDL_AUDIO_F32BE: SizeOfTargetSample = sizeof(float) * channels; break;
         default: {
             THROW(std::runtime_error, "LoadVOC_RW(): Invalid target sample format!");
         }
     }
 
-    if ((myChunk->abuf = static_cast<uint8_t*>(SDL_malloc(TargetData_Samples * SizeOfTargetSample))) == nullptr) {
+    const auto targetDataBytes = gsl::narrow<size_t>(TargetData_Samples * SizeOfTargetSample);
+    sdl2::sdl_ptr<uint8_t> targetDataBuffer{static_cast<uint8_t*>(SDL_malloc(targetDataBytes))};
+    if (targetDataBuffer == nullptr) {
         throw std::bad_alloc();
     }
-    myChunk->alen = gsl::narrow<decltype(myChunk->alen)>(TargetData_Samples * SizeOfTargetSample);
 
     switch (TargetFormat) {
         case SDL_AUDIO_U8: {
-            auto* TargetData = myChunk->abuf;
+            auto* TargetData = targetDataBuffer.get();
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
                 const auto v = Float2Uint8(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]);
                 for (auto j = 0; j < channels; j++) {
@@ -468,7 +496,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         } break;
 
         case SDL_AUDIO_S8: {
-            auto* TargetData = reinterpret_cast<int8_t*>(myChunk->abuf);
+            auto* TargetData = reinterpret_cast<int8_t*>(targetDataBuffer.get());
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
                 const auto v = Float2Sint8(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]);
                 for (auto j = 0; j < channels; j++) {
@@ -478,7 +506,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         } break;
 
         case SDL_AUDIO_S16LE: {
-            auto* TargetData = reinterpret_cast<int16_t*>(myChunk->abuf);
+            auto* TargetData = reinterpret_cast<int16_t*>(targetDataBuffer.get());
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
                 const auto v = SDL_SwapLE16(Float2Sint16(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
                 for (int j = 0; j < channels; j++) {
@@ -488,7 +516,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         } break;
 
         case SDL_AUDIO_S16BE: {
-            auto* TargetData = reinterpret_cast<int16_t*>(myChunk->abuf);
+            auto* TargetData = reinterpret_cast<int16_t*>(targetDataBuffer.get());
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
                 const auto v = SDL_SwapBE16(Float2Sint16(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
                 for (int j = 0; j < channels; j++) {
@@ -497,9 +525,58 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
             }
         } break;
 
+        case SDL_AUDIO_S32LE: {
+            auto* TargetData = reinterpret_cast<int32_t*>(targetDataBuffer.get());
+            for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
+                const auto v = SDL_SwapLE32(Float2Sint32(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
+                for (int j = 0; j < channels; j++) {
+                    TargetData[i + j] = v;
+                }
+            }
+        } break;
+
+        case SDL_AUDIO_S32BE: {
+            auto* TargetData = reinterpret_cast<int32_t*>(targetDataBuffer.get());
+            for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
+                const auto v = SDL_SwapBE32(Float2Sint32(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
+                for (int j = 0; j < channels; j++) {
+                    TargetData[i + j] = v;
+                }
+            }
+        } break;
+
+        case SDL_AUDIO_F32LE: {
+            auto* TargetData = reinterpret_cast<float*>(targetDataBuffer.get());
+            for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
+                const auto v = TargetDataFloat[i / channels + ThreeQuaterSilenceLength];
+                for (int j = 0; j < channels; j++) {
+                    TargetData[i + j] = v;
+                }
+            }
+        } break;
+
+        case SDL_AUDIO_F32BE: {
+            auto* TargetData = reinterpret_cast<float*>(targetDataBuffer.get());
+            for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
+                const auto f = TargetDataFloat[i / channels + ThreeQuaterSilenceLength];
+                const auto v = SDL_SwapFloatBE(f);
+                for (int j = 0; j < channels; j++) {
+                    TargetData[i + j] = v;
+                }
+            }
+        } break;
+
         default: {
             THROW(std::runtime_error, "LoadVOC_RW(): Invalid target sample format!");
         }
+    }
+
+    auto* raw_target_data = targetDataBuffer.release();
+    auto myChunk          = sdl2::mix_chunk_ptr{Mix_CreateChunkWithData(
+        raw_target_data, gsl::narrow<Uint32>(targetDataBytes), true, MIX_MAX_VOLUME, &targetSpec)};
+    if (myChunk == nullptr) {
+        SDL_free(raw_target_data);
+        throw std::bad_alloc();
     }
 
     return myChunk;

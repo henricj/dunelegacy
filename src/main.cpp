@@ -19,6 +19,7 @@
 
 #include <main.h>
 
+#include <Audio/AudioEngine.h>
 #include <config.h>
 
 #include <FileClasses/FileManager.h>
@@ -225,8 +226,18 @@ bool run_game(int argc, char* argv[]) {
 
                 // For now, try to initialize SDL3_mixer
                 if (MIX_Init()) {
-                    bAudioEnabled = true;
-                    sdl2::log_info("SDL3_mixer initialized successfully");
+                    dune::globals::pAudioEngine = AudioEngine::createSDL3Backend();
+                    if (dune::globals::pAudioEngine) {
+                        bAudioEnabled = true;
+                        sdl2::log_info("SDL3 audio backend opened successfully");
+                    } else {
+                        MIX_Quit();
+                        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING,
+                                                 "Dune Legacy: Warning",
+                                                 "Audio device could not be opened.",
+                                                 nullptr);
+                        sdl2::log_warn("Audio device could not be opened: {}", SDL_GetError());
+                    }
                 } else {
                     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING,
                                              "Dune Legacy: Warning",
@@ -377,8 +388,8 @@ bool run_game(int argc, char* argv[]) {
             if (bExitGame) {
                 dune::globals::musicPlayer.reset();
                 dune::globals::soundPlayer.reset();
-                // TODO: SDL3_mixer cleanup - MIX_Quit() is called via MIX_handle destructor
                 if (bAudioEnabled) {
+                    dune::globals::pAudioEngine.reset();
                     MIX_Quit();
                 }
             } else {
@@ -414,8 +425,9 @@ int main(int argc, char* argv[]) {
 
     // global try/catch around everything
     try {
-        GlobalCleanup sound_cleanup{dune::globals::soundPlayer};
+        GlobalCleanup audio_cleanup{dune::globals::pAudioEngine};
         GlobalCleanup music_cleanup{dune::globals::musicPlayer};
+        GlobalCleanup sound_cleanup{dune::globals::soundPlayer};
 
         // init fnkdat
         { // Scope

@@ -17,6 +17,7 @@
 
 #include <globals.h>
 
+#include <Audio/AudioEngine.h>
 #include <FileClasses/music/MusicPlayer.h>
 #include <SoundPlayer.h>
 
@@ -45,8 +46,9 @@ UIGraphics_Enum cursorFrame;     ///< the current mouse cursor
 int currentZoomlevel;            ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
 
 // abstraction layers
-std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice
-std::unique_ptr<MusicPlayer> musicPlayer; ///< manager for playing background music
+std::unique_ptr<AudioEngine> pAudioEngine; ///< SDL3 audio backend
+std::unique_ptr<SoundPlayer> soundPlayer;  ///< manager for playing sfx and voice
+std::unique_ptr<MusicPlayer> musicPlayer;  ///< manager for playing background music
 
 std::unique_ptr<FileManager> pFileManager;       ///< manager for loading files from PAKs
 std::unique_ptr<GFXManager> pGFXManager;         ///< manager for loading and managing graphics

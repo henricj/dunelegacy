@@ -87,7 +87,28 @@ struct Mix_Chunk {
     Uint8* abuf;        // Audio buffer
     Uint32 alen;        // Length of audio buffer
     Uint8 volume;       // 0-128
+    SDL_AudioSpec spec; // Format for abuf/alen
+    // Owning pointer: must be released via MIX_DestroyAudio() before the chunk
+    // is freed. Lifecycle is managed exclusively through Mix_FreeChunk() and
+    // Mix_RefreshChunkAudio(); callers must not free this directly.
+    MIX_Audio* audio;   // Backend-ready decoded payload
 };
+
+Mix_Chunk* Mix_CreateChunk();
+Mix_Chunk* Mix_CreateChunkWithData(Uint8* data, Uint32 len, bool takeOwnership, int volume, const SDL_AudioSpec* spec);
+Mix_Chunk* Mix_CreateChunkCopy(const void* data, Uint32 len, int volume, const SDL_AudioSpec* spec);
+bool Mix_SetChunkData(Mix_Chunk* chunk, Uint8* data, Uint32 len, bool takeOwnership, const SDL_AudioSpec* spec);
+bool Mix_RefreshChunkAudio(Mix_Chunk* chunk);
+bool Mix_SetChunkVolume(Mix_Chunk* chunk, int volume);
+int Mix_GetChunkVolume(const Mix_Chunk* chunk);
+Uint8* Mix_GetChunkData(Mix_Chunk* chunk);
+const Uint8* Mix_GetChunkData(const Mix_Chunk* chunk);
+Uint32 Mix_GetChunkDataSize(const Mix_Chunk* chunk);
+bool Mix_GetChunkSpec(const Mix_Chunk* chunk, SDL_AudioSpec* spec);
+// Returns a non-owning pointer to the chunk's backend audio payload.
+// The returned pointer is valid only for the lifetime of the chunk;
+// callers must not free it.
+MIX_Audio* Mix_GetChunkAudio(const Mix_Chunk* chunk);
 
 // Mix_Music - old opaque music structure (stubbed)
 struct Mix_Music {
@@ -97,6 +118,10 @@ struct Mix_Music {
 // Mix_FreeChunk
 inline void Mix_FreeChunk(Mix_Chunk* chunk) {
     if (chunk) {
+        if (chunk->audio) {
+            MIX_DestroyAudio(chunk->audio);
+            chunk->audio = nullptr;
+        }
         if (chunk->allocated && chunk->abuf) {
             SDL_free(chunk->abuf);
         }
