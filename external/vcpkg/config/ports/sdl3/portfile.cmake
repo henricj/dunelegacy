@@ -83,7 +83,12 @@ vcpkg_cmake_configure(
 )
 
 if (SDL_EXPECTS_WINDOWING)
-    set(SDL_CACHE_FILE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/CMakeCache.txt")
+    if (VCPKG_BUILD_TYPE STREQUAL "release")
+        set(SDL_CACHE_SUFFIX "-rel")
+    else()
+        set(SDL_CACHE_SUFFIX "-dbg")
+    endif()
+    set(SDL_CACHE_FILE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}${SDL_CACHE_SUFFIX}/CMakeCache.txt")
 
     if (NOT EXISTS "${SDL_CACHE_FILE}")
         message(FATAL_ERROR "Expected SDL build cache at ${SDL_CACHE_FILE}, but it was not generated.")
