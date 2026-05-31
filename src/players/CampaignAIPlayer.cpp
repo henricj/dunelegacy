@@ -30,6 +30,7 @@
 
 #include <gsl/gsl>
 
+#include <algorithm>
 #include <unordered_map>
 
 namespace {
@@ -142,19 +143,35 @@ void CampaignAIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& lo
 }
 
 void CampaignAIPlayer::onDamage(const ObjectBase* pObject, [[maybe_unused]] int damage, uint32_t damagerID) {
+    const auto* const pDamager = getObject(damagerID);
+    if (!pDamager || !pDamager->getOwner()) {
+        return;
+    }
+
+    if (pObject->isAStructure()) {
+        if (pDamager->getOwner()->getTeamID() == pObject->getOwner()->getTeamID()) {
+            return;
+        }
+
+        attackTriggered = true;
+        scrambleUnitsAndDefend(pDamager);
+        return;
+    }
+
     if (!pObject->isAUnit() || !pObject->isRespondable())
         return;
 
     const auto* const pUnit = static_cast<const UnitBase*>(pObject);
 
-    const auto* const pDamager = getObject(damagerID);
-    if (!pDamager) {
-        return;
-    }
-
     if (pDamager->getOwner()->getTeamID() == pUnit->getOwner()->getTeamID()) {
         // do not respond to friendly fire
         return;
+    }
+
+    attackTriggered = true;
+
+    if (pUnit->getItemID() == Unit_Harvester) {
+        scrambleUnitsAndDefend(pDamager);
     }
 
     if (!pUnit->canAttack(pDamager)) {
@@ -307,7 +324,40 @@ void CampaignAIPlayer::updateStructures() {
     }
 }
 
+void CampaignAIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
+    for (const UnitBase* pUnit : getUnitList()) {
+        if (pUnit->getOwner() != getHouse() || pUnit->wasForced() || !pUnit->isRespondable()) {
+            continue;
+        }
+
+        const auto itemID = pUnit->getItemID();
+        if ((itemID == Unit_Harvester) || (itemID == Unit_MCV) || (itemID == Unit_Carryall) || (itemID == Unit_Frigate)
+            || (itemID == Unit_Saboteur) || (itemID == Unit_Sandworm)) {
+            continue;
+        }
+
+        const bool isArtillery = (itemID == Unit_Launcher) || (itemID == Unit_Deviator);
+        if (pUnit->hasATarget() && !isArtillery) {
+            continue;
+        }
+
+        doSetAttackMode(pUnit, HUNT);
+        doAttackObject(pUnit, pIntruder, false);
+    }
+}
+
 void CampaignAIPlayer::updateUnits() {
+    if (!attackTriggered) {
+        return;
+    }
+
+    const auto now = getGameCycleCount();
+    if (now < attackTeam.nextLaunchCycle) {
+        return;
+    }
+
+    attackTeam.memberIds.clear();
+
     for (const UnitBase* pUnit : getUnitList()) {
         if (pUnit->getOwner() != getHouse() || pUnit->wasForced() || !pUnit->isRespondable() || pUnit->isByScenario()
             || pUnit->hasATarget()) {
@@ -315,40 +365,66 @@ void CampaignAIPlayer::updateUnits() {
         }
 
         if ((pUnit->getItemID() == Unit_Harvester) || (pUnit->getItemID() == Unit_MCV)
-            || (pUnit->getItemID() == Unit_Carryall) || (pUnit->getItemID() == Unit_Frigate)) {
+            || (pUnit->getItemID() == Unit_Carryall) || (pUnit->getItemID() == Unit_Frigate)
+            || (pUnit->getItemID() == Unit_Sandworm)) {
             continue;
         }
 
-        const ObjectBase* pBestCandidate = nullptr;
-        int bestCandidatePriority        = -1;
-        for (const StructureBase* pCandidate : getStructureList()) {
-            if (!pUnit->canAttack(pCandidate)) {
-                continue;
-            }
-
-            const int priority = calculateTargetPriority(pUnit, pCandidate);
-            if (priority > bestCandidatePriority) {
-                bestCandidatePriority = priority;
-                pBestCandidate        = pCandidate;
-            }
-        }
-
-        for (const UnitBase* pCandidate : getUnitList()) {
-            if (!pUnit->canAttack(pCandidate)) {
-                continue;
-            }
-
-            const int priority = calculateTargetPriority(pUnit, pCandidate);
-            if (priority > bestCandidatePriority) {
-                bestCandidatePriority = priority;
-                pBestCandidate        = pCandidate;
-            }
-        }
-
-        if (pBestCandidate) {
-            doAttackObject(pUnit, pBestCandidate, true);
-        }
+        attackTeam.memberIds.push_back(pUnit->getObjectID());
     }
+
+    if (attackTeam.memberIds.size() < attackTeam.minSize) {
+        return;
+    }
+
+    const ObjectBase* pBestCandidate = nullptr;
+    int bestPriority                 = -1;
+
+    auto considerTarget = [&](const ObjectBase* pCandidate) {
+        int candidatePriority = -1;
+        for (const auto unitID : attackTeam.memberIds) {
+            const auto* pUnit = static_cast<const UnitBase*>(getObject(unitID));
+            if (!pUnit || !pUnit->canAttack(pCandidate)) {
+                continue;
+            }
+
+            candidatePriority = std::max(candidatePriority, calculateTargetPriority(pUnit, pCandidate));
+        }
+
+        if (candidatePriority > bestPriority) {
+            bestPriority   = candidatePriority;
+            pBestCandidate = pCandidate;
+        }
+    };
+
+    for (const StructureBase* pCandidate : getStructureList()) {
+        if (pCandidate->getOwner() == getHouse()) {
+            continue;
+        }
+        considerTarget(pCandidate);
+    }
+
+    for (const UnitBase* pCandidate : getUnitList()) {
+        if (pCandidate->getOwner() == getHouse()) {
+            continue;
+        }
+        considerTarget(pCandidate);
+    }
+
+    if (!pBestCandidate) {
+        return;
+    }
+
+    for (const auto unitID : attackTeam.memberIds) {
+        const auto* pUnit = static_cast<const UnitBase*>(getObject(unitID));
+        if (!pUnit) {
+            continue;
+        }
+        doSetAttackMode(pUnit, HUNT);
+        doAttackObject(pUnit, pBestCandidate, true);
+    }
+
+    attackTeam.nextLaunchCycle = now + attackTeam.cooldownCycles;
 }
 
 int CampaignAIPlayer::calculateTargetPriority(const UnitBase* pUnit, const ObjectBase* pObject) {
