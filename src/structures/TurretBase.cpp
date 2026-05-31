@@ -32,8 +32,10 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID, 
     : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
-    angle_      = initializer.game().randomGen.rand(0, 7);
-    drawnAngle_ = static_cast<ANGLETYPE>(lround(angle_));
+    angle_          = initializer.game().randomGen.rand(0, 7);
+    drawnAngle_     = static_cast<ANGLETYPE>(lround(angle_));
+    findTargetTimer = static_cast<int32_t>(objectID_ % 50);
+    weaponTimer     = 0;
 }
 
 TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID,
@@ -66,6 +68,9 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
     if (target_ && (target_.getObjPointer() != nullptr)) {
         if (!canAttack(target_.getObjPointer()) || !targetInWeaponRange()) {
             setTarget(nullptr);
+            if (findTargetTimer < 25) {
+                findTargetTimer = 25 + static_cast<int32_t>(objectID_ % 15);
+            }
         } else if (targetInWeaponRange()) {
             const auto closestPoint = target_.getObjPointer()->getClosestPoint(location_);
             const auto wantedAngle  = destinationDrawnAngle(location_, closestPoint);
@@ -90,16 +95,30 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
                 }
             }
 
-            if (drawnAngle_ == wantedAngle) {
+            bool shouldFire = false;
+            if (turret_constants().bulletType() == Bullet_TurretRocket) {
+                auto angleDiff = abs(static_cast<int>(drawnAngle_) - static_cast<int>(wantedAngle));
+                if (angleDiff > NUM_ANGLES / 2) {
+                    angleDiff = NUM_ANGLES - angleDiff;
+                }
+                shouldFire = angleDiff <= 1;
+            } else if (drawnAngle_ == wantedAngle) {
+                shouldFire = true;
+            }
+
+            if (shouldFire) {
                 attack(context);
             }
 
         } else {
             setTarget(nullptr);
+            if (findTargetTimer < 25) {
+                findTargetTimer = 25 + static_cast<int32_t>(objectID_ % 15);
+            }
         }
     } else if ((attackMode_ != STOP) && (findTargetTimer == 0)) {
         setTarget(findTarget());
-        findTargetTimer = 100;
+        findTargetTimer = 50 + static_cast<int32_t>(objectID_ % 20);
     }
 
     if (findTargetTimer > 0) {
@@ -136,6 +155,14 @@ void TurretBase::doAttackObject(const ObjectBase* pObject) {
     setDestination(INVALID_POS, INVALID_POS);
     setTarget(pObject);
     setForced(true);
+}
+
+void TurretBase::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
+    ObjectBase::handleDamage(context, damage, damagerID, damagerOwner);
+
+    if (!target_ && (findTargetTimer > 10)) {
+        findTargetTimer = 10;
+    }
 }
 
 void TurretBase::turnLeft(const GameContext& context) {

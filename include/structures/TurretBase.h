@@ -70,6 +70,8 @@ public:
     */
     virtual void doAttackObject(const ObjectBase* pObject);
 
+    void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
+
     void turnLeft(const GameContext& context);
     void turnRight(const GameContext& context);
 

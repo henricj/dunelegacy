@@ -112,7 +112,7 @@ void RocketTurret::attack(const GameContext& context) {
                        turret_constants().bulletType(),
                        game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].weapondamage,
                        pObject->isAFlyingUnit(),
-                       nullptr);
+                       pObject);
 
         map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location_, 2);
         dune::globals::soundPlayer->playSoundAt(attackSound, location_);
