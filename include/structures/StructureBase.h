@@ -145,8 +145,10 @@ public:
     short getStructureSizeY() const noexcept { return getStructureSize().y; }
 
     void addSmoke(const Coord& pos, uint32_t gameCycle) {
-        const auto iter = std::upper_bound(std::begin(smoke), std::end(smoke), pos,
-                                           [](const Coord& p, const StructureSmoke& s) { return p.y < s.realPos.y; });
+        const auto iter =
+            std::upper_bound(std::begin(smoke), std::end(smoke), pos, [](const Coord& p, const StructureSmoke& s) {
+                return p.y < s.realPos.y;
+            });
 
         if (iter != std::end(smoke) && iter->realPos == pos) {
             iter->startGameCycle = gameCycle;

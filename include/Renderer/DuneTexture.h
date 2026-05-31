@@ -101,9 +101,11 @@ struct DuneTexture final {
     operator bool() const noexcept { return nullptr != texture_; }
 
     [[nodiscard]] SDL_Rect source_rect() const noexcept { return source_.as_sdl(); }
-    [[nodiscard]] bool has_sprite_frames() const noexcept { return sprite_frames_ && sprite_cols_ > 0 && sprite_rows_ > 0; }
-    void set_sprite_frames(
-        short cols, short rows, std::shared_ptr<const std::vector<DuneTextureSpriteFrame>> frames) noexcept;
+    [[nodiscard]] bool has_sprite_frames() const noexcept {
+        return sprite_frames_ && sprite_cols_ > 0 && sprite_rows_ > 0;
+    }
+    void set_sprite_frames(short cols, short rows,
+                           std::shared_ptr<const std::vector<DuneTextureSpriteFrame>> frames) noexcept;
     [[nodiscard]] bool
     map_sprite_source_rect(const SDL_Rect& source, SDL_Rect& mapped, SDL_FlipMode* flip = nullptr) const noexcept;
 

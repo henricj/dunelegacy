@@ -86,7 +86,8 @@ private:
         auto& units               = pickedUpUnitList;
         const auto& objectManager = context.objectManager;
 
-        units.erase(std::remove_if(units.begin(), units.end(),
+        units.erase(std::remove_if(units.begin(),
+                                   units.end(),
                                    [&](uint32_t unit_id) {
                                        auto* const unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
 

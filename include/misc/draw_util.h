@@ -47,7 +47,10 @@ inline void setRenderDrawColor(SDL_Renderer* renderer, uint32_t color) {
     if (((color & AMASK) >> ASHIFT) != 255) {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
-    SDL_SetRenderDrawColor(renderer, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT,
+    SDL_SetRenderDrawColor(renderer,
+                           (color & RMASK) >> RSHIFT,
+                           (color & GMASK) >> GSHIFT,
+                           (color & BMASK) >> BSHIFT,
                            (color & AMASK) >> ASHIFT);
 }
 
@@ -60,8 +63,8 @@ inline void renderDrawLineF(SDL_Renderer* renderer, float x1, float y1, float x2
 // SDL3: SDL_RenderDrawLine -> SDL_RenderLine (takes floats)
 inline void renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     setRenderDrawColor(renderer, color);
-    SDL_RenderLine(renderer, static_cast<float>(x1), static_cast<float>(y1), 
-                   static_cast<float>(x2), static_cast<float>(y2));
+    SDL_RenderLine(
+        renderer, static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2));
 }
 
 inline void renderDrawHLine(SDL_Renderer* renderer, int x1, int y, int x2, uint32_t color) {
@@ -84,8 +87,10 @@ inline void renderDrawVLine(SDL_Renderer* renderer, float x, float y1, float y2,
 inline void renderDrawRect(SDL_Renderer* renderer, const SDL_Rect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
     if (rect) {
-        SDL_FRect frect{static_cast<float>(rect->x), static_cast<float>(rect->y),
-                        static_cast<float>(rect->w), static_cast<float>(rect->h)};
+        SDL_FRect frect{static_cast<float>(rect->x),
+                        static_cast<float>(rect->y),
+                        static_cast<float>(rect->w),
+                        static_cast<float>(rect->h)};
         SDL_RenderRect(renderer, &frect);
     } else {
         SDL_RenderRect(renderer, nullptr);
@@ -99,7 +104,9 @@ inline void renderDrawRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint3
 }
 
 inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
-    const SDL_FRect rect{static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
+    const SDL_FRect rect{static_cast<float>(x1),
+                         static_cast<float>(y1),
+                         static_cast<float>(x2 - x1 + 1),
                          static_cast<float>(y2 - y1 + 1)};
     renderDrawRectF(renderer, &rect, color);
 }
@@ -113,8 +120,10 @@ inline void renderDrawRectF(SDL_Renderer* renderer, float x1, float y1, float x2
 inline void renderFillRect(SDL_Renderer* renderer, const SDL_Rect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
     if (rect) {
-        SDL_FRect frect{static_cast<float>(rect->x), static_cast<float>(rect->y),
-                        static_cast<float>(rect->w), static_cast<float>(rect->h)};
+        SDL_FRect frect{static_cast<float>(rect->x),
+                        static_cast<float>(rect->y),
+                        static_cast<float>(rect->w),
+                        static_cast<float>(rect->h)};
         SDL_RenderFillRect(renderer, &frect);
     } else {
         SDL_RenderFillRect(renderer, nullptr);
@@ -133,8 +142,8 @@ inline void renderFillRectF(SDL_Renderer* renderer, float x1, float y1, float x2
 }
 
 inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
-    renderFillRectF(renderer, static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2),
-                    static_cast<float>(y2), color);
+    renderFillRectF(
+        renderer, static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2), color);
 }
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);

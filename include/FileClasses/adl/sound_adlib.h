@@ -42,8 +42,8 @@
 #ifndef SOUND_ADLIB_H
 #define SOUND_ADLIB_H
 
-#include <misc/dune_sdlpp.h>
 #include <misc/dune_sdl_mixer.h>
+#include <misc/dune_sdlpp.h>
 
 #include <memory>
 #include <vector>

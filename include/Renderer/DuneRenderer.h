@@ -42,22 +42,26 @@ Dune_RenderCopyEx(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* 
     const SDL_FRect* dstf = nullptr;
     SDL_FRect dst_frect;
     if (dstrect) {
-        dst_frect = {static_cast<float>(dstrect->x), static_cast<float>(dstrect->y),
-                     static_cast<float>(dstrect->w), static_cast<float>(dstrect->h)};
-        dstf = &dst_frect;
+        dst_frect = {static_cast<float>(dstrect->x),
+                     static_cast<float>(dstrect->y),
+                     static_cast<float>(dstrect->w),
+                     static_cast<float>(dstrect->h)};
+        dstf      = &dst_frect;
     }
     const SDL_FRect* srcf = nullptr;
     SDL_FRect src_frect;
     if (srcrect) {
-        src_frect = {static_cast<float>(srcrect->x), static_cast<float>(srcrect->y),
-                     static_cast<float>(srcrect->w), static_cast<float>(srcrect->h)};
-        srcf = &src_frect;
+        src_frect = {static_cast<float>(srcrect->x),
+                     static_cast<float>(srcrect->y),
+                     static_cast<float>(srcrect->w),
+                     static_cast<float>(srcrect->h)};
+        srcf      = &src_frect;
     }
     const SDL_FPoint* centerf = nullptr;
     SDL_FPoint center_fpoint;
     if (center) {
         center_fpoint = {static_cast<float>(center->x), static_cast<float>(center->y)};
-        centerf = &center_fpoint;
+        centerf       = &center_fpoint;
     }
     return SDL_RenderTextureRotated(renderer, texture, srcf, dstf, angle, centerf, flip);
 }
@@ -70,9 +74,11 @@ Dune_RenderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect*
     const SDL_FRect* srcf = nullptr;
     SDL_FRect src_frect;
     if (srcrect) {
-        src_frect = {static_cast<float>(srcrect->x), static_cast<float>(srcrect->y),
-                     static_cast<float>(srcrect->w), static_cast<float>(srcrect->h)};
-        srcf = &src_frect;
+        src_frect = {static_cast<float>(srcrect->x),
+                     static_cast<float>(srcrect->y),
+                     static_cast<float>(srcrect->w),
+                     static_cast<float>(srcrect->h)};
+        srcf      = &src_frect;
     }
     return SDL_RenderTextureRotated(renderer, texture, srcf, dstrect, angle, center, flip);
 }
@@ -81,8 +87,7 @@ int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const 
                       const SDL_Rect* dstrect, double angle, const SDL_Point* center, const SDL_FlipMode flip);
 
 int Dune_RenderCopyExF(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
-                       const SDL_FRect* dstrect, const double angle, const SDL_FPoint* center,
-                       const SDL_FlipMode flip);
+                       const SDL_FRect* dstrect, const double angle, const SDL_FPoint* center, const SDL_FlipMode flip);
 
 void Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
                      const SDL_Rect* dstrect);
@@ -100,16 +105,20 @@ Dune_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* sr
     const SDL_FRect* dstf = nullptr;
     SDL_FRect dst_frect;
     if (dstrect) {
-        dst_frect = {static_cast<float>(dstrect->x), static_cast<float>(dstrect->y),
-                     static_cast<float>(dstrect->w), static_cast<float>(dstrect->h)};
-        dstf = &dst_frect;
+        dst_frect = {static_cast<float>(dstrect->x),
+                     static_cast<float>(dstrect->y),
+                     static_cast<float>(dstrect->w),
+                     static_cast<float>(dstrect->h)};
+        dstf      = &dst_frect;
     }
     const SDL_FRect* srcf = nullptr;
     SDL_FRect src_frect;
     if (srcrect) {
-        src_frect = {static_cast<float>(srcrect->x), static_cast<float>(srcrect->y),
-                     static_cast<float>(srcrect->w), static_cast<float>(srcrect->h)};
-        srcf = &src_frect;
+        src_frect = {static_cast<float>(srcrect->x),
+                     static_cast<float>(srcrect->y),
+                     static_cast<float>(srcrect->w),
+                     static_cast<float>(srcrect->h)};
+        srcf      = &src_frect;
     }
     SDL_RenderTexture(renderer, texture, srcf, dstf);
 }
@@ -121,9 +130,11 @@ Dune_RenderCopyF(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* s
     const SDL_FRect* srcf = nullptr;
     SDL_FRect src_frect;
     if (srcrect) {
-        src_frect = {static_cast<float>(srcrect->x), static_cast<float>(srcrect->y),
-                     static_cast<float>(srcrect->w), static_cast<float>(srcrect->h)};
-        srcf = &src_frect;
+        src_frect = {static_cast<float>(srcrect->x),
+                     static_cast<float>(srcrect->y),
+                     static_cast<float>(srcrect->w),
+                     static_cast<float>(srcrect->h)};
+        srcf      = &src_frect;
     }
     SDL_RenderTexture(renderer, texture, srcf, dstrect);
 }

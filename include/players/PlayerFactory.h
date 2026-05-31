@@ -118,7 +118,8 @@ private:
         static_assert(std::is_base_of_v<Player, PlayerType>, "The PlayerType must be derived from Player");
 
         playerDataList.emplace_back(
-            std::move(playerclass), std::move(name),
+            std::move(playerclass),
+            std::move(name),
             [=](const GameContext& context, House* house, const std::string& playername, const Random& random) {
                 return std::make_unique<PlayerType>(context, house, playername, random, args...);
             },

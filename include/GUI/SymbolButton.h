@@ -98,8 +98,10 @@ protected:
 
                 dest.x++;
                 dest.y++;
-                SDL_BlitSurface(pActiveSymbolSurface_ ? pActiveSymbolSurface_.get() : pSymbolSurface_.get(), nullptr,
-                                pPressed.get(), &dest);
+                SDL_BlitSurface(pActiveSymbolSurface_ ? pActiveSymbolSurface_.get() : pSymbolSurface_.get(),
+                                nullptr,
+                                pPressed.get(),
+                                &dest);
             }
 
             if (pActiveSymbolSurface_) {

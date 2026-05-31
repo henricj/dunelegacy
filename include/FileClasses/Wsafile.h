@@ -33,9 +33,9 @@
 class Wsafile final {
 public:
     /**
-        The constructor reads from the IOStream all data and saves them internally. The SDL_IOStream can be readonly but must
-       support seeking. Immediately after the Wsafile-Object is constructed the IOStream can be closed. All data is saved
-       in the class. All animations are concatenated.
+        The constructor reads from the IOStream all data and saves them internally. The SDL_IOStream can be readonly but
+       must support seeking. Immediately after the Wsafile-Object is constructed the IOStream can be closed. All data is
+       saved in the class. All animations are concatenated.
        \param  ios     SDL_IOStream for each wsa-File. (can be readonly)
     */
     explicit Wsafile(std::convertible_to<SDL_IOStream*> auto... ios) {

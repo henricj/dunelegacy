@@ -20,8 +20,8 @@
 
 #include "Font.h"
 
-#include <misc/dune_sdlpp.h>
 #include <misc/dune_sdl_ttf.h>
+#include <misc/dune_sdlpp.h>
 
 #include <string_view>
 

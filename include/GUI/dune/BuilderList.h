@@ -111,8 +111,9 @@ public:
         \return the minimum size of this widget
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        return {WIDGET_WIDTH, BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2
-                                  + BUILDERBTN_SPACING * 4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING};
+        return {WIDGET_WIDTH,
+                BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2 + BUILDERBTN_SPACING * 4
+                    + ORDERBTN_HEIGHT + BUILDERBTN_SPACING};
     }
 
     static BuilderList* create(uint32_t builderObjectID) {

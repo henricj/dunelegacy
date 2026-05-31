@@ -56,7 +56,8 @@ bool splitString(std::string_view parseString, std::string& arg0, std::convertib
     const auto strings_end = pStrings.end();
 
     for (auto previous = parseString.data(), current = previous, end = previous + parseString.size();
-         current != end && previous != end; previous = current + 1) {
+         current != end && previous != end;
+         previous = current + 1) {
         current = std::find(previous, end, ',');
 
         if (previous != current) {
@@ -86,7 +87,8 @@ bool splitString(std::string_view parseString, std::string_view& arg0,
     const auto strings_end = pStrings.end();
 
     for (auto previous = parseString.data(), current = previous, end = previous + parseString.size();
-         current != end && previous != end; previous = current + 1) {
+         current != end && previous != end;
+         previous = current + 1) {
         current = std::find(previous, end, ',');
 
         if (previous != current) {

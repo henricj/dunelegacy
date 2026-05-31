@@ -8,4 +8,4 @@ namespace sdl2 {
 // which returns const char* for the name. This function is deprecated for SDL3 migration.
 void SDL_LogRenderer(SDL_Renderer* renderer);
 
-}
+} // namespace sdl2

@@ -113,8 +113,8 @@ constexpr SDL_Rect calcSpriteSourceRect(SDL_Surface* pSurface, int col, int numC
     assert(col >= 0 && col < numCols);
     assert(row >= 0 && row < numRows);
 
-    const SDL_Rect rect = {col * (pSurface->w / numCols), row * (pSurface->h / numRows), pSurface->w / numCols,
-                           pSurface->h / numRows};
+    const SDL_Rect rect = {
+        col * (pSurface->w / numCols), row * (pSurface->h / numRows), pSurface->w / numCols, pSurface->h / numRows};
     return rect;
 }
 
@@ -136,8 +136,8 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Texture* pTexture, int col, int numCols
     // SDL3: SDL_QueryTexture removed, use SDL_GetTextureSize
     float fw, fh;
     SDL_GetTextureSize(pTexture, &fw, &fh);
-    int w = static_cast<int>(fw);
-    int h = static_cast<int>(fh);
+    int w               = static_cast<int>(fw);
+    int h               = static_cast<int>(fh);
     const SDL_Rect rect = {col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
     return rect;
 }
@@ -749,8 +749,10 @@ calcAlignedDrawingRect(const DuneTexture* pTexture, HAlign halign = HAlign::Cent
 }
 
 inline auto as_rect(const SDL_FRect& rect) {
-    return SDL_Rect{static_cast<int>(std::ceil(rect.x)), static_cast<int>(std::floor(rect.y)),
-                    static_cast<int>(std::ceil(rect.w)), static_cast<int>(std::floor(rect.h))};
+    return SDL_Rect{static_cast<int>(std::ceil(rect.x)),
+                    static_cast<int>(std::floor(rect.y)),
+                    static_cast<int>(std::ceil(rect.w)),
+                    static_cast<int>(std::floor(rect.h))};
 }
 
 #endif // DRAWINGRECTHELPER_H

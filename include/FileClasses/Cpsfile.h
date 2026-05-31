@@ -21,9 +21,9 @@
 #include <misc/SDL2pp.h>
 
 /**
-    This function reads a cps-File from a SDL_IOStream and returns it as a std::unique_ptr<SDL_Surface>. The SDL_IOStream can
-   be readonly but must support seeking. \param  io    SDL_IOStream to the cps-File. (can be readonly) \return Picture in
-   this CPS-File
+    This function reads a cps-File from a SDL_IOStream and returns it as a std::unique_ptr<SDL_Surface>. The
+   SDL_IOStream can be readonly but must support seeking. \param  io    SDL_IOStream to the cps-File. (can be readonly)
+   \return Picture in this CPS-File
 */
 sdl2::surface_ptr LoadCPS_RW(SDL_IOStream* io);
 

@@ -70,12 +70,12 @@ public:
     /// The SDL3_mixer tag applied to all background-music tracks.
     static constexpr const char* kMusicTag = "music";
 
-    AudioEngine()                            = default;
-    virtual ~AudioEngine()                   = default;
-    AudioEngine(const AudioEngine&)          = delete;
+    AudioEngine()                              = default;
+    virtual ~AudioEngine()                     = default;
+    AudioEngine(const AudioEngine&)            = delete;
     AudioEngine& operator=(const AudioEngine&) = delete;
-    AudioEngine(AudioEngine&&)               = delete;
-    AudioEngine& operator=(AudioEngine&&)    = delete;
+    AudioEngine(AudioEngine&&)                 = delete;
+    AudioEngine& operator=(AudioEngine&&)      = delete;
 
     // -----------------------------------------------------------------------
     // Device state
@@ -90,7 +90,7 @@ public:
     // -----------------------------------------------------------------------
     // Master gain  [0.0f = silence, 1.0f = unity, >1.0f amplifies]
 
-    virtual bool setMasterGain(float gain) noexcept = 0;
+    virtual bool setMasterGain(float gain) noexcept            = 0;
     [[nodiscard]] virtual float getMasterGain() const noexcept = 0;
 
     // -----------------------------------------------------------------------
@@ -115,8 +115,7 @@ public:
 
     /// Load raw PCM audio from an in-memory buffer (data is copied).
     /// Returns an empty handle on failure.
-    [[nodiscard]] virtual mix_audio_ptr loadRawAudio(const void* data, size_t datalen,
-                                                     const SDL_AudioSpec& spec) = 0;
+    [[nodiscard]] virtual mix_audio_ptr loadRawAudio(const void* data, size_t datalen, const SDL_AudioSpec& spec) = 0;
 
     // -----------------------------------------------------------------------
     // Track input sources
@@ -149,7 +148,7 @@ public:
     // -----------------------------------------------------------------------
     // Per-track gain  [0.0f = silence, 1.0f = unity]
 
-    virtual bool setTrackGain(MIX_Track* track, float gain) noexcept = 0;
+    virtual bool setTrackGain(MIX_Track* track, float gain) noexcept          = 0;
     [[nodiscard]] virtual float getTrackGain(MIX_Track* track) const noexcept = 0;
 
     // -----------------------------------------------------------------------

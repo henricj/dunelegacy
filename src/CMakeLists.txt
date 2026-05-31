@@ -266,15 +266,12 @@ endif()
 
 install(TARGETS dunelegacy RUNTIME DESTINATION .)
 
-# Clang format target - tricky because variables are gone
-# We can use a glob or manually list them again, OR rely on file visibility.
-# Simplest for now is to omit or fix later, but to be safe, let's glob inside . or something.
-# Or better: remove the strict list and just glob src/
-file(GLOB_RECURSE CLANGFORMAT_SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-)
-list(APPEND CLANGFORMAT_SOURCES ../include/*.h)
+# clangformat uses the explicit target source lists (no globbing).
+get_target_property(DUNE_SOURCES dune SOURCES)
+get_target_property(DUNELEGACY_SOURCES dunelegacy SOURCES)
+set(CLANGFORMAT_SOURCES ${DUNE_SOURCES} ${DUNELEGACY_SOURCES})
+list(FILTER CLANGFORMAT_SOURCES INCLUDE REGEX ".*\\.(cpp|h)$")
+list(REMOVE_DUPLICATES CLANGFORMAT_SOURCES)
 
 add_custom_target(
 	clangformat
