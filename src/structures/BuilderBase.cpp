@@ -471,6 +471,12 @@ void BuilderBase::produce_item(const GameContext& context) {
 
             newUnit->deploy(context, spot);
 
+            if (getOwner()->isAI()) {
+                if (newUnit->getItemID() == Unit_Harvester) {
+                    newUnit->doSetAttackMode(context, HARVEST);
+                }
+            }
+
             if (unitDestination.isValid()) {
                 newUnit->setGuardPoint(unitDestination);
                 newUnit->ObjectBase::setDestination(unitDestination);
