@@ -184,8 +184,9 @@ void CampaignAIPlayer::updateStructures() {
                     const House* pBestHouse = nullptr;
 
                     context_.game.for_each_house([&](const auto& house) {
-                        if (house.getTeamID() != getHouse()->getTeamID())
+                        if (house.getTeamID() == getHouse()->getTeamID()) {
                             return;
+                        }
 
                         if (!pBestHouse) {
                             pBestHouse = &house;
