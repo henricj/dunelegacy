@@ -98,6 +98,8 @@ ctest --preset=windows-x64-release
 ```
 
 The executable will be in `out/build/windows-x64-release/src/dunelegacy.exe`.
+Windows packaging assumes the static triplet (`x64-windows-ltcg-static`); dynamic-linking
+Windows builds are not supported by the installer script.
 
 To see all available CMake presets:
 

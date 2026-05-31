@@ -4,9 +4,8 @@ Prerequirements
 ---------------
 
 - gcc or any other standard compliant C++ compiler
-- autotools
-- SDL 2
-- SDL2-mixer
+- CMake
+- SDL 3
 
 
 Building
@@ -68,8 +67,8 @@ This creates dunelegacy-?.tar.bz2. You might want to add a "src" to the name to 
 
 
 Debian/Ubuntu:
-Make sure you have the following packages installed: build-essential, debhelper, autoconf, libsdl2-dev, libsdl2-mixer-dev and libsdl2-ttf-dev
-Extract the source code from the bz2 file and change inside the source root directory (which contains configure). From there you run the following command:
+Make sure you have the following packages installed: build-essential, debhelper, cmake, libsdl3-dev
+Extract the source code from the source tarball and change inside the source root directory (which contains CMakeLists.txt). From there you run the following command:
 
 dpkg-buildpackage -rfakeroot
 
@@ -77,7 +76,7 @@ You will get a dunelegacy_0.96-1_*.deb file one directory above.
 
 
 Fedora:
-You need the source tarball (see Packaging/Source in this file) and the following packages: rpm-build, gcc, gcc-c++, libstdc++-devel, SDL2-devel, SDL2_mixer-devel. Then run the following command:
+You need the source tarball (see Packaging/Source in this file) and the following packages: rpm-build, gcc, gcc-c++, libstdc++-devel, SDL3-devel, cmake. Then run the following command:
 
 rpmbuild -tb dunelegacy-?-src.tar.bz2
 
@@ -92,31 +91,24 @@ emerge dunelegacy
 
 
 Mac OS X:
-First you need the SDL2 and SDL2-mixer framework. Download them as dmgs from the official website, open the dmgs and copy SDL2.framework and SDL2_mixer.framework to /Library/Frameworks/.
+First you need the SDL3 framework. Download it as a dmg from the official website, open the dmg and copy SDL3.framework to /Library/Frameworks/.
 Then open the XCode-Project from IDE/xCode/Dune Legacy.xcodeproj and build Dune Legacy. The resulting bundle will be put under IDE/xCode/build/Release.
 Now go to the folder MacOSX and extract Dune Legacy.dmg.zip and then mount Dune Legacy.dmg. Put the compiled Dune Legacy bundle into the mounted dmg and unmount it afterwards.
 Zip the dmg again to save a lot of download bandwidth.
 
 
 Windows:
-Use Code::Blocks to build the exe which will be placed in the data directory. The following DLLs are needed to run dunelegacy.exe:
-libogg-0.dll
-libvorbis-0.dll
-libvorbisfile-3.dll
-SDL2.dll
-SDL2_mixer.dll
-smpeg.dll
-
-Copy them in the data directory. To create a installer you need NSIS. Compile dunelegacy.nsi with the NSIS compiler to create the installer.
+Use CMake presets to build the project, which will place build output in the out directory.
+Windows builds are expected to use the static triplet (`x64-windows-ltcg-static`), so
+`SDL3.dll` is not needed at runtime. Dynamic-linking Windows builds are not supported by
+the project packaging scripts.
+To create an installer you need NSIS. Compile dunelegacy.nsi with the NSIS compiler to create
+the installer.
 
 
 Cross-compiling Windows Version on Linux:
 To compile the Windows version on Linux you need to setup the mingw cross-compiler. On Debian/Ubuntu install the packages g++-mingw-w64 and nsis.
-You need SDL2 and SDL2-mixer development files for Windows (These are not the same as the development files for Linux):
-https://libsdl.org/release/SDL2-devel-2.0.5-mingw.tar.gz
-https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.1-mingw.tar.gz
-
-Put a copy of the headers under /usr/i686-w64-mingw32/include and /usr/x86_64-w64-mingw32/include ; the lib files under /usr/i686-w64-mingw32/lib and /usr/x86_64-w64-mingw32/lib.
+You need SDL3 development files for Windows (vcpkg can provide these).
 
 To cross-compile and create a Windows installer for Dune Legacy run the following command:
 
@@ -137,5 +129,3 @@ Running cppcheck
 cppcheck is a static analysis. The following command will run it on the source and write all errors/warnings to cppcheck.log:
 
 cppcheck -j 5 --enable=all -D_REENTRANT -DHAS_SOCKLEN_T -I include . 2> cppcheck.log
-
-

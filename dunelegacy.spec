@@ -7,8 +7,7 @@ License:	GPL v2+
 Group:		X11/Applications/Games/Strategy
 Source0:	http://www.myway.de/richieland/%{name}-%{version}-src.tar.bz2
 URL:		http://dunelegacy.sourceforge.net/
-BuildRequires:	SDL2_mixer-devel
-BuildRequires:	SDL2-devel
+BuildRequires:	SDL3-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel
