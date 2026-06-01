@@ -31,6 +31,7 @@
 #include <gsl/gsl>
 
 #include <algorithm>
+#include <limits>
 #include <unordered_map>
 
 namespace {
@@ -98,7 +99,9 @@ const std::unordered_map<uint32_t, int> targetPriorityMap = {{Unit_Carryall, 36}
 
 CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
                                    const Random& random)
-    : Player(context, associatedHouse, playername, random) { }
+    : Player(context, associatedHouse, playername, random) {
+    initializeAttackTeamMinSizeFromScenario();
+}
 
 CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {
@@ -106,6 +109,12 @@ CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, InputStream& stre
     for (uint32_t i = 0; i < numStructureInfo; i++) {
         structureQueue.emplace_back(stream);
     }
+
+    attackTriggered              = stream.readBool();
+    attackTeam.minSize           = stream.readUint32();
+    attackTeam.cooldownCycles    = stream.readUint32();
+    attackTeam.nextLaunchCycle   = stream.readUint32();
+    attackTeamMinSizeInitialized = true;
 }
 
 CampaignAIPlayer::~CampaignAIPlayer() = default;
@@ -117,6 +126,11 @@ void CampaignAIPlayer::save(OutputStream& stream) const {
     for (const auto& structureInfo : structureQueue) {
         structureInfo.save(stream);
     }
+
+    stream.writeBool(attackTriggered);
+    stream.writeUint32(attackTeam.minSize);
+    stream.writeUint32(attackTeam.cooldownCycles);
+    stream.writeUint32(attackTeam.nextLaunchCycle);
 }
 
 void CampaignAIPlayer::update() {
@@ -346,7 +360,30 @@ void CampaignAIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
     }
 }
 
+void CampaignAIPlayer::initializeAttackTeamMinSizeFromScenario() {
+    if (attackTeamMinSizeInitialized) {
+        return;
+    }
+
+    attackTeamMinSizeInitialized = true;
+
+    uint32_t scenarioMinSize = std::numeric_limits<uint32_t>::max();
+    for (const auto& aiTeam : getHouse()->getAITeams()) {
+        if ((aiTeam.houseID != getHouse()->getHouseID()) || (aiTeam.minUnits <= 0)) {
+            continue;
+        }
+
+        scenarioMinSize = std::min(scenarioMinSize, gsl::narrow<uint32_t>(aiTeam.minUnits));
+    }
+
+    if (scenarioMinSize != std::numeric_limits<uint32_t>::max()) {
+        attackTeam.minSize = scenarioMinSize;
+    }
+}
+
 void CampaignAIPlayer::updateUnits() {
+    initializeAttackTeamMinSizeFromScenario();
+
     if (!attackTriggered) {
         return;
     }

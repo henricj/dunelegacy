@@ -35,7 +35,7 @@ inline constexpr auto DEFAULT_METASERVER = "http://dunelegacy.sourceforge.net/me
 
 // Savegame format marker for this fork to avoid cross-loading incompatible upstream saves.
 inline constexpr auto SAVEMAGIC       = 0x444C5346U; // 'DLSF'
-inline constexpr auto SAVEGAMEVERSION = 9705;
+inline constexpr auto SAVEGAMEVERSION = 9706;
 
 inline constexpr auto MAX_PLAYERNAMELENGTH = 24;
 

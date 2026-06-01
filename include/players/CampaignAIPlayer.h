@@ -70,6 +70,7 @@ private:
     void updateStructures();
     void updateUnits();
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
+    void initializeAttackTeamMinSizeFromScenario();
 
     static int calculateTargetPriority(const UnitBase* pUnit, const ObjectBase* pObject);
 
@@ -82,7 +83,8 @@ private:
 
     std::vector<StructureInfo> structureQueue; ///< Last destroyed structures and their location
     AttackTeam attackTeam;
-    bool attackTriggered = false;
+    bool attackTriggered              = false;
+    bool attackTeamMinSizeInitialized = false;
 };
 
 #endif // CAMPAIGNAIPLAYER_H
