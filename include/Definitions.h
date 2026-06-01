@@ -33,8 +33,9 @@ inline constexpr auto AUDIO_FREQUENCY = 49716;
 inline constexpr auto DEFAULT_PORT       = 28747;
 inline constexpr auto DEFAULT_METASERVER = "http://dunelegacy.sourceforge.net/metaserver/metaserver.php";
 
-inline constexpr auto SAVEMAGIC       = 8675309;
-inline constexpr auto SAVEGAMEVERSION = 9704;
+// Savegame format marker for this fork to avoid cross-loading incompatible upstream saves.
+inline constexpr auto SAVEMAGIC       = 0x444C5346U; // 'DLSF'
+inline constexpr auto SAVEGAMEVERSION = 9705;
 
 inline constexpr auto MAX_PLAYERNAMELENGTH = 24;
 

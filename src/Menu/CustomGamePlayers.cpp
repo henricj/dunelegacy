@@ -33,6 +33,7 @@
 #include <misc/FileSystem.h>
 #include <misc/IMemoryStream.h>
 #include <misc/draw_util.h>
+#include <misc/exceptions.h>
 #include <misc/string_util.h>
 
 #include <INIMap/INIMapPreviewCreator.h>
@@ -99,16 +100,18 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
 
         uint32_t magicNum = memStream.readUint32();
         if (magicNum != SAVEMAGIC) {
-            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected magic number {:#08X}, but got {:#08X}!",
-                           SAVEMAGIC,
-                           magicNum);
+            THROW(std::runtime_error,
+                  "CustomGamePlayers: Invalid savegame magic number (expected {:#08X}, got {:#08X})",
+                  SAVEMAGIC,
+                  magicNum);
         }
 
         uint32_t savegameVersion = memStream.readUint32();
         if (savegameVersion != SAVEGAMEVERSION) {
-            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected savegame version {}, but got {}!",
-                           SAVEGAMEVERSION,
-                           savegameVersion);
+            THROW(std::runtime_error,
+                  "CustomGamePlayers: Invalid savegame version (expected {}, got {})",
+                  SAVEGAMEVERSION,
+                  savegameVersion);
         }
 
         memStream.readString(); // dune legacy version
