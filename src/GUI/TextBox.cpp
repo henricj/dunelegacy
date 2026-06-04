@@ -27,6 +27,8 @@
 TextBox::TextBox() {
     parent::enableResizing(true, false);
     resize(getMinimumSize().x, getMinimumSize().y);
+    setOnGainFocus([] { SDL_StartTextInput(dune::globals::window.get()); });
+    setOnLostFocus([] { SDL_StopTextInput(dune::globals::window.get()); });
 }
 
 TextBox::~TextBox() {

@@ -1,4 +1,4 @@
-target_sources(dune PRIVATE
+target_sources(dune_core PRIVATE
 	AITeamInfo.h
 	AStarSearch.h
 	Audio/AudioEngine.h
@@ -81,6 +81,7 @@ target_sources(dune PRIVATE
 	Game.h
 	GameInitSettings.h
 	GameInterface.h
+	GameUIController.h
 	globals.h
 	GUI/Button.h
 	GUI/CenteringBox.h
@@ -242,6 +243,7 @@ target_sources(dune PRIVATE
 	Renderer/DuneTexture.h
 	Renderer/DuneTextures.h
 	Renderer/DuneTileTexture.h
+	sand_core.h
 	sand.h
 	ScreenBorder.h
 	SoundPlayer.h

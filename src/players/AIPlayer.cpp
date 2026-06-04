@@ -22,7 +22,7 @@
 #include <GameInitSettings.h>
 #include <House.h>
 #include <Map.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <structures/BuilderBase.h>
 #include <structures/ConstructionYard.h>

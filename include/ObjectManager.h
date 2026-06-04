@@ -57,6 +57,14 @@ public:
     void save(OutputStream& stream) const;
 
     /**
+        Saves all objects to a stream in ascending object-ID order.
+        Unlike save(), this produces a deterministic byte sequence regardless
+        of unordered_map iteration order, suitable for canonical state hashing.
+        \param  stream  Stream to save to
+    */
+    void saveCanonical(OutputStream& stream) const;
+
+    /**
         Loads all objects from a stream
         \param  stream  Stream to load from
     */

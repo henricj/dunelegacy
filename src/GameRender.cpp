@@ -292,8 +292,8 @@ void Game::drawScreen() {
     }
 
     ///////////draw game bar
-    pInterface_->draw({});
-    pInterface_->drawOverlay({});
+    uiController_.getGameInterface()->draw({});
+    uiController_.getGameInterface()->drawOverlay({});
 
     const auto& gui = GUIStyle::getInstance();
 
@@ -370,14 +370,14 @@ void Game::drawScreen() {
         dune::defer_destroy_texture(std::move(pFinishMessageTexture));
     }
 
-    if (pWaitingForOtherPlayers_ != nullptr) {
-        pWaitingForOtherPlayers_->draw();
+    if (uiController_.getWaitingForOtherPlayers() != nullptr) {
+        uiController_.getWaitingForOtherPlayers()->draw();
     }
 
-    if (pInGameMenu_ != nullptr) {
-        pInGameMenu_->draw();
-    } else if (pInGameMentat_ != nullptr) {
-        pInGameMentat_->draw();
+    if (uiController_.getInGameMenu() != nullptr) {
+        uiController_.getInGameMenu()->draw();
+    } else if (uiController_.getInGameMentat() != nullptr) {
+        uiController_.getInGameMentat()->draw();
     }
 
     drawCursor(on_screen_rect);
@@ -438,7 +438,8 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
         hardware_cursor = gfx->getCursor(UI_CursorDown);
     } else {
         const SDL_Point mouse_point{dune::globals::drawnMouseX, dune::globals::drawnMouseY};
-        if ((pInGameMenu_ != nullptr) || (pInGameMentat_ != nullptr) || (pWaitingForOtherPlayers_ != nullptr)
+        if ((uiController_.getInGameMenu() != nullptr) || (uiController_.getInGameMentat() != nullptr)
+            || (uiController_.getWaitingForOtherPlayers() != nullptr)
             || ((!SDL_PointInRect(&mouse_point, &map_rect))
                 && (!isOnRadarView(dune::globals::drawnMouseX, dune::globals::drawnMouseY)))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
@@ -493,7 +494,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
                         xPos = screenborder->screen2MapX(dune::globals::drawnMouseX);
                         yPos = screenborder->screen2MapY(dune::globals::drawnMouseY);
                     } else if (isOnRadarView(dune::globals::drawnMouseX, dune::globals::drawnMouseY)) {
-                        const auto position = pInterface_->getRadarView().getWorldCoords(
+                        const auto position = uiController_.getGameInterface()->getRadarView().getWorldCoords(
                             dune::globals::drawnMouseX - (sideBarPos_.x + SIDEBAR_COLUMN_WIDTH),
                             dune::globals::drawnMouseY - sideBarPos_.y);
 

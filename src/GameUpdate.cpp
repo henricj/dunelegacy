@@ -43,50 +43,7 @@ void convertEventToRenderCoordinates(SDL_Event& event) {
 } // namespace
 
 void Game::processObjects() {
-    // update all tiles
-    map_->for_all([](Tile& t) { t.update(); });
-
-    const GameContext context{*this, *dune::globals::currentGameMap, objectManager_};
-
-    for (auto* pStructure : dune::globals::structureList) {
-        pStructure->update(context);
-    }
-
-    if ((currentCursorMode == CursorMode_Placing) && selectedList_.empty()) {
-        currentCursorMode = CursorMode_Normal;
-    }
-
-    for (auto* pUnit : dune::globals::unitList) {
-        pUnit->update(context);
-    }
-
-    auto selection_changed = false;
-
-    map_->consume_removed_objects([&](uint32_t objectID) {
-        auto* object = objectManager_.getObject(objectID);
-
-        if (!object)
-            return;
-
-        if (removeFromSelectionLists(object))
-            selection_changed = true;
-    });
-
-    objectManager_.consume_pending_deletes([&](auto& object) {
-        object->cleanup(context, dune::globals::pLocalPlayer);
-
-        if (removeFromSelectionLists(object.get()))
-            selection_changed = true;
-
-        removeFromQuickSelectionLists(object->getObjectID());
-    });
-
-    if (selection_changed)
-        selectionChanged();
-
-    std::erase_if(dune::globals::bulletList, [&](auto& b) { return b->update(context); });
-
-    std::erase_if(explosionList_, [](auto& e) { return e->update(); });
+    core_.processObjects();
 }
 
 void Game::setupView(const GameContext& context) const {
@@ -154,9 +111,9 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
             if (dune::dune_clock::now() - startWaitingForOtherPlayersTime_ > 1000ms) {
                 // we waited for more than one second
 
-                if (pWaitingForOtherPlayers_ == nullptr) {
-                    pWaitingForOtherPlayers_ = std::make_unique<WaitingForOtherPlayers>();
-                    bMenu_                   = true;
+                if (uiController_.getWaitingForOtherPlayers() == nullptr) {
+                    uiController_.showWaitingDialog();
+                    bMenu_ = true;
                 }
             }
         }
@@ -164,33 +121,24 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
         SDL_Delay(10);
     } else {
         startWaitingForOtherPlayersTime_ = dune::dune_clock::time_point{};
-        pWaitingForOtherPlayers_.reset();
+        uiController_.hideWaitingDialog();
     }
 }
 
 void Game::updateGame(const GameContext& context) {
-    pInterface_->getRadarView().update();
-    cmdManager_.executeCommands(context, gameCycleCount_);
+    core_.updateGame(context);
+}
 
-    // sdl2::log_info("cycle {} : {}", gameCycleCount, context.game.randomGen.getSeed());
+void Game::stepSimulation(uint32_t ticks) {
+    core_.stepSimulation(ticks);
+}
 
-#ifdef TEST_SYNC
-    // add every gamecycles one test sync command
-    if (bReplay == false) {
-        cmdManager.addCommand(Command(pLocalPlayer->getPlayerID(), CMD_TEST_SYNC, randomGen.getSeed()));
-    }
-#endif
+void Game::updateUI() {
+    if (uiController_.getGameInterface() != nullptr)
+        uiController_.getGameInterface()->getRadarView().update();
 
-    std::ranges::for_each(house_, [](auto& h) {
-        if (h)
-            h->update();
-    });
-
-    dune::globals::screenborder->update(dune::globals::pGFXManager->random());
-
-    triggerManager_.trigger(context, gameCycleCount_);
-
-    processObjects();
+    if (auto* const screen_border = dune::globals::screenborder.get())
+        screen_border->update(dune::globals::pGFXManager->random());
 
     if ((indicatorFrame_ != NONE_ID) && (--indicatorTimer_ <= 0)) {
         indicatorTimer_ = indicatorTime_;
@@ -200,7 +148,8 @@ void Game::updateGame(const GameContext& context) {
         }
     }
 
-    gameCycleCount_++;
+    if (selectedList_.empty() && currentCursorMode == CursorMode_Placing)
+        currentCursorMode = CursorMode_Normal;
 }
 
 void Game::doEventsUntil(const GameContext& context, const dune::dune_clock::time_point until) {

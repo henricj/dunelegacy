@@ -29,7 +29,7 @@
 #include <units/UnitBase.h>
 
 #include <globals.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <Network/NetworkManager.h>
 

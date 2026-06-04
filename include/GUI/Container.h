@@ -453,13 +453,13 @@ protected:
             // deactivate current active widget
             if (pActiveChildWidget != nullptr && pActiveChildWidget != childWidget) {
                 pActiveChildWidget->setActive(false);
-                pActiveChildWidget = childWidget;
-            } else {
-                pActiveChildWidget = childWidget;
-
-                // activate this container and upper containers
-                parent::setActive();
             }
+
+            pActiveChildWidget = childWidget;
+            pActiveChildWidget->setActive(true);
+
+            // activate this container and upper containers
+            parent::setActive();
         } else {
             if (childWidget != pActiveChildWidget)
                 return;

@@ -19,8 +19,11 @@
 #define GAME_H
 
 #include <CommandManager.h>
+#include <GameCore.h>
+#include <GameEvents.h>
 #include <GameInitSettings.h>
 #include <GameInterface.h>
+#include <GameUIController.h>
 #include <INIMap/INIMapLoader.h>
 #include <ObjectData.h>
 #include <ObjectManager.h>
@@ -38,6 +41,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
 #include <filesystem>
 #include <ranges>
 #include <unordered_set>
@@ -45,9 +49,6 @@
 
 // forward declarations
 class ObjectBase;
-class InGameMenu;
-class MentatHelp;
-class WaitingForOtherPlayers;
 class ObjectManager;
 class House;
 class Explosion;
@@ -80,6 +81,9 @@ public:
     Game& operator=(const Game&) = delete;
     Game& operator=(Game&&)      = delete;
 
+    [[nodiscard]] GameCore& getCore() noexcept { return core_; }
+    [[nodiscard]] const GameCore& getCore() const noexcept { return core_; }
+
     /**
         Initializes a game with the specified settings
         \param  newGameInitSettings the game init settings to initialize the game
@@ -93,6 +97,8 @@ public:
     void initReplay(const std::filesystem::path& filename);
 
     friend class INIMapLoader; // loading INI Maps is done with a INIMapLoader helper object
+    friend class GameCore;
+    friend class GameUIController;
 
 private:
     /**
@@ -236,9 +242,32 @@ public:
     bool saveGame(const std::filesystem::path& filename);
 
     /**
+        Serializes the simulation state (not UI/save-format metadata) to stream in a canonical,
+        deterministic order. Objects are emitted sorted by ID so unordered_map iteration order
+        does not affect the result. Suitable for hashing with computeStateHash().
+        \param stream   the stream to write to
+    */
+    void serializeCanonicalState(OutputStream& stream) const;
+
+    /**
+        Returns a SHA-384 digest of the canonical simulation state.
+        Two Game instances with identical simulation states will return equal digests,
+        regardless of platform or unordered_map layout.
+        \return 48-byte SHA-384 digest
+    */
+    [[nodiscard]] std::array<uint8_t, 48> computeStateHash() const;
+
+    /**
         This method starts the game. Will return when the game is finished or aborted.
     */
     void runMainLoop(const GameContext& context, MenuBase::event_handler_type handler);
+
+    /**
+        Advances the simulation by the specified number of ticks without entering the main SDL/UI loop.
+        Intended for headless testing; uses the same simulation path as the main loop.
+        \param  ticks   number of simulation cycles to advance
+    */
+    void stepSimulation(uint32_t ticks);
 
     void quitGame() { bQuitGame_ = true; }
 
@@ -263,7 +292,20 @@ public:
 
     ObjectManager& getObjectManager() noexcept { return objectManager_; }
     [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager_; }
-    [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *pInterface_; }
+    [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *uiController_.getGameInterface(); }
+
+    /**
+        Publishes a pure-data UI event for the future controller to consume.
+        \param event the event to enqueue
+    */
+    void publishUIEvent(GameUIEvent event);
+
+    /**
+        Retrieves the oldest pending UI event, if any.
+        \param event receives the dequeued event
+        \return true when an event was returned, false when the queue is empty
+    */
+    [[nodiscard]] bool pollUIEvent(GameUIEvent& event);
 
     [[nodiscard]] const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings_; }
     void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) {
@@ -333,10 +375,11 @@ public:
     */
     void selectionChanged() {
         bSelectionChanged_ = true;
-        if (pInterface_) {
-            pInterface_->updateObjectInterface();
+        if (uiController_.getGameInterface() != nullptr) {
+            uiController_.updateObjectInterface();
         }
-        dune::globals::pLocalPlayer->onSelectionChanged(selectedList_);
+        if (dune::globals::pLocalPlayer)
+            dune::globals::pLocalPlayer->onSelectionChanged(selectedList_);
     }
 
 private:
@@ -367,8 +410,8 @@ public:
         \param  text    the text to add
     */
     void addToNewsTicker(std::string_view text) const {
-        if (pInterface_ != nullptr) {
-            pInterface_->addToNewsTicker(std::string{text});
+        if (uiController_.getGameInterface() != nullptr) {
+            uiController_.addToNewsTicker(std::string{text});
         }
     }
 
@@ -377,8 +420,8 @@ public:
         \param  text    the text to add
     */
     void addToNewsTicker(std::string text) const {
-        if (pInterface_ != nullptr) {
-            pInterface_->addToNewsTicker(std::move(text));
+        if (uiController_.getGameInterface() != nullptr) {
+            uiController_.addToNewsTicker(std::move(text));
         }
     }
 
@@ -388,8 +431,8 @@ private:
         \param  text    the text to add
     */
     void addUrgentMessageToNewsTicker(std::string text) const {
-        if (pInterface_ != nullptr) {
-            pInterface_->addUrgentMessageToNewsTicker(std::move(text));
+        if (uiController_.getGameInterface() != nullptr) {
+            uiController_.addUrgentMessageToNewsTicker(std::move(text));
         }
     }
 
@@ -579,6 +622,7 @@ private:
 
     void serviceNetwork(bool& bWaitForNetwork);
     void updateGame(const GameContext& context);
+    void updateUI();
 
     void doEventsUntil(const GameContext& context, dune::dune_clock::time_point until);
 
@@ -684,11 +728,9 @@ private:
         finishedLevelTime_{};    ///< The time in milliseconds when the level was finished (won or lost)
     bool finishedLevel_ = false; ///< Set, when the game is really finished and the end message was shown
 
-    std::unique_ptr<GameInterface> pInterface_; ///< This is the whole interface (top bar and side bar)
-    std::unique_ptr<InGameMenu> pInGameMenu_;   ///< This is the menu that is opened by the option button
-    std::unique_ptr<MentatHelp> pInGameMentat_; ///< This is the mentat dialog opened by the mentat button
-    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers_; ///< This is the dialog that pops up when we are
-                                                                      ///< waiting for other players during network hangs
+    MenuBase::event_handler_type sdl_handler_;
+    GameUIController uiController_;
+
     dune::dune_clock::time_point
         startWaitingForOtherPlayersTime_{}; ///< The time in milliseconds when we started waiting for other players
 
@@ -706,7 +748,8 @@ private:
 
     std::array<std::unique_ptr<House>, NUM_HOUSES> house_; ///< All the houses of this game, index by their houseID; has
                                                            ///< the size NUM_HOUSES; unused houses are nullptr
-    MenuBase::event_handler_type sdl_handler_;
+
+    GameCore core_;
 };
 
 #endif // GAME_H

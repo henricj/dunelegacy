@@ -27,14 +27,14 @@ Widget::~Widget() {
 }
 
 void Widget::setActive() {
-    active_ = true;
+    setActive(true);
     if (parent_ != nullptr) {
         parent_->setActiveChildWidget(true, this);
     }
 }
 
 void Widget::setInactive() {
-    active_ = false;
+    setActive(false);
     if (parent_ != nullptr) {
         parent_->setActiveChildWidget(false, this);
     }

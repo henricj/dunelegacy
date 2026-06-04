@@ -167,6 +167,7 @@ public:
     [[nodiscard]] const std::string& getServername() const noexcept { return servername; }
 
     [[nodiscard]] const std::vector<uint8_t>& getRandomSeed() noexcept;
+    void setRandomSeed(std::vector<uint8_t> seed) { randomSeed = std::move(seed); }
 
     [[nodiscard]] bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; }
     void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept {

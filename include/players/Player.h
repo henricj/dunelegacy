@@ -315,7 +315,7 @@ protected:
 };
 
 #include <House.h>
-#include <sand.h>
+#include <sand_core.h>
 
 template<typename... Args>
 void Player::logDebug(std::string_view fmt, Args&&... args) const {

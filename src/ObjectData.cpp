@@ -21,7 +21,7 @@
 
 #include <FileClasses/FileManager.h>
 #include <FileClasses/INIFile.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <misc/string_util.h>
 

@@ -19,7 +19,7 @@
 
 #include "mmath.h"
 #include <globals.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <FileClasses/TextManager.h>
 

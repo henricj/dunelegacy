@@ -25,7 +25,7 @@
 #include <misc/exceptions.h>
 
 #include <globals.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <gsl/gsl>
 

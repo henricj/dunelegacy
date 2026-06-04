@@ -75,11 +75,12 @@ separate_arguments(dune_flags)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Define library target FIRST
-add_library(dune STATIC)
+# dune_core: simulation engine and game logic
+add_library(dune_core STATIC)
 
 # Add sources in current directory
-target_sources(dune PRIVATE
+# Keep translation units in dune_core while they still satisfy dune_core symbols.
+target_sources(dune_core PRIVATE
 	Audio/SDLAudioEngine.cpp
 	AStarSearch.cpp
 	Bullet.cpp
@@ -87,14 +88,8 @@ target_sources(dune PRIVATE
 	Command.cpp
 	CommandManager.cpp
 	Explosion.cpp
-	Game.cpp
-	GameInput.cpp
-	GameRender.cpp
-	GameSaveLoad.cpp
-	GameSelection.cpp
-	GameUpdate.cpp
 	GameInitSettings.cpp
-	GameInterface.cpp
+	GameSaveLoad.cpp
 	globals.cpp
 	House.cpp
 	Map.cpp
@@ -106,20 +101,16 @@ target_sources(dune PRIVATE
 	ObjectPointer.cpp
 	RadarView.cpp
 	RadarViewBase.cpp
-	sand.cpp
 	ScreenBorder.cpp
+	sand_core.cpp
 	SoundPlayer.cpp
 	Tile.cpp
 )
 
-# Add subdirectories
-add_subdirectory(CutScenes)
+# Non-UI subdirectories (contribute to dune_core)
 add_subdirectory(FileClasses)
 add_subdirectory(fixmath)
-add_subdirectory(GUI)
 add_subdirectory(INIMap)
-add_subdirectory(MapEditor)
-add_subdirectory(Menu)
 add_subdirectory(misc)
 add_subdirectory(Network)
 add_subdirectory(platforms)
@@ -132,18 +123,40 @@ add_subdirectory(units)
 # Add headers from include directory
 add_subdirectory(../include include)
 
-target_compile_options(dune PRIVATE ${dune_flags})
-target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
-target_link_libraries(dune PUBLIC ${LIBS})
+# dune: UI shell — depends on dune_core for all simulation and game logic
+add_library(dune STATIC)
+
+# Game/UI integration files that no longer satisfy dune_core references.
+target_sources(dune PRIVATE
+	Game.cpp
+	GameCore.cpp
+	GameInterface.cpp
+	GameSelection.cpp
+	GameUpdate.cpp
+	GameRender.cpp
+	GameInput.cpp
+	GameUIController.cpp
+	sand.cpp
+)
+
+# UI subdirectories (contribute to dune)
+add_subdirectory(CutScenes)
+add_subdirectory(GUI)
+add_subdirectory(MapEditor)
+add_subdirectory(Menu)
+
+target_compile_options(dune_core PRIVATE ${dune_flags})
+target_include_directories(dune_core PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
+target_link_libraries(dune_core PUBLIC ${LIBS})
 
 if(TARGET dune_gitversion)
-  target_link_libraries(dune PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")
+  target_link_libraries(dune_core PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")
 endif()
 
 if(DUNE_CRT_HEAP_DEBUG)
-	target_compile_definitions(dune PUBLIC DUNE_CRT_HEAP_DEBUG)
+	target_compile_definitions(dune_core PUBLIC DUNE_CRT_HEAP_DEBUG)
 	if(WIN32)
-		target_compile_definitions(dune PUBLIC _CRTDBG_MAP_ALLOC)
+		target_compile_definitions(dune_core PUBLIC _CRTDBG_MAP_ALLOC)
 	endif()
 endif()
 
@@ -152,43 +165,58 @@ include(CheckIncludeFile)
 CHECK_INCLUDE_FILE_CXX(cxxabi.h, HAVE_CXXABI_H)
 
 if(HAVE_MS_LOCALTIME_S)
-	target_compile_definitions(dune PUBLIC HAVE_MS_LOCALTIME_S)
+	target_compile_definitions(dune_core PUBLIC HAVE_MS_LOCALTIME_S)
 endif()
 if(HAVE_LOCALTIME_R)
-	target_compile_definitions(dune PUBLIC HAVE_LOCALTIME_R)
+	target_compile_definitions(dune_core PUBLIC HAVE_LOCALTIME_R)
 endif()
 
 if(HAVE_STRERROR_S)
-	target_compile_definitions(dune PUBLIC HAVE_STRERROR_S)
+	target_compile_definitions(dune_core PUBLIC HAVE_STRERROR_S)
 elseif(HAVE_STRERROR_R)
-	target_compile_definitions(dune PUBLIC HAVE_STRERROR_R)
+	target_compile_definitions(dune_core PUBLIC HAVE_STRERROR_R)
 elseif(HAVE_GNU_STRERROR_R)
-	target_compile_definitions(dune PUBLIC HAVE_GNU_STRERROR_R)
+	target_compile_definitions(dune_core PUBLIC HAVE_GNU_STRERROR_R)
 endif()
 
 if(NOT HAVE_FLOAT_TO_CHARS)
-	target_compile_definitions(dune PUBLIC NEED_FLOAT_TO_CHARS)
+	target_compile_definitions(dune_core PUBLIC NEED_FLOAT_TO_CHARS)
 endif()
 if(NOT HAVE_DOUBLE_TO_CHARS)
-	target_compile_definitions(dune PUBLIC NEED_DOUBLE_TO_CHARS)
+	target_compile_definitions(dune_core PUBLIC NEED_DOUBLE_TO_CHARS)
 endif()
 if(NOT HAVE_FLOAT_FROM_CHARS)
-	target_compile_definitions(dune PUBLIC NEED_FLOAT_FROM_CHARS)
+	target_compile_definitions(dune_core PUBLIC NEED_FLOAT_FROM_CHARS)
 endif()
 if(NOT HAVE_DOUBLE_FROM_CHARS)
-	target_compile_definitions(dune PUBLIC NEED_DOUBLE_FROM_CHARS)
+	target_compile_definitions(dune_core PUBLIC NEED_DOUBLE_FROM_CHARS)
 endif()
 
 if(HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
-	target_compile_definitions(dune PUBLIC HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
+	target_compile_definitions(dune_core PUBLIC HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
 endif()
 
 if(HAVE_STD_ASYNC)
-	target_compile_definitions(dune PUBLIC HAVE_STD_ASYNC)
+	target_compile_definitions(dune_core PUBLIC HAVE_STD_ASYNC)
 endif()
 
 if(DUNE_PRECOMPILED_HEADERS)
-	target_precompile_headers(dune PRIVATE stdafx.h)
+	target_precompile_headers(dune_core PRIVATE stdafx.h)
+endif()
+
+target_compile_options(dune PRIVATE ${dune_flags})
+target_link_libraries(dune PUBLIC dune_core)
+
+if(TARGET dune_gitversion)
+  target_link_libraries(dune PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")
+endif()
+
+if(DUNE_PRECOMPILED_HEADERS)
+	if(MSVC)
+		target_precompile_headers(dune PRIVATE stdafx.h)
+	else()
+		target_precompile_headers(dune REUSE_FROM dune_core)
+	endif()
 endif()
 
 # Define Executable
@@ -208,9 +236,9 @@ if(WIN32)
         ../Windows/DuneLegacy.exe.manifest 
         ../resource.rc
     )
-    # Add natvis files to library
-    target_sources(dune PRIVATE
-        fixmath/fixmath.natvis 
+    # Add natvis files to dune_core for debugger visualization
+    target_sources(dune_core PRIVATE
+        fixmath/fixmath.natvis
         FileClasses/INIFile.natvis
     )
 endif()
@@ -236,7 +264,7 @@ if(DUNE_PRECOMPILED_HEADERS)
 	if(MSVC)
 		target_precompile_headers(dunelegacy PRIVATE stdafx.h)
 	else()
-		target_precompile_headers(dunelegacy REUSE_FROM dune)
+		target_precompile_headers(dunelegacy REUSE_FROM dune_core)
 	endif()
 endif()
 
@@ -267,9 +295,10 @@ endif()
 install(TARGETS dunelegacy RUNTIME DESTINATION .)
 
 # clangformat uses the explicit target source lists (no globbing).
+get_target_property(DUNE_CORE_SOURCES dune_core SOURCES)
 get_target_property(DUNE_SOURCES dune SOURCES)
 get_target_property(DUNELEGACY_SOURCES dunelegacy SOURCES)
-set(CLANGFORMAT_SOURCES ${DUNE_SOURCES} ${DUNELEGACY_SOURCES})
+set(CLANGFORMAT_SOURCES ${DUNE_CORE_SOURCES} ${DUNE_SOURCES} ${DUNELEGACY_SOURCES})
 list(FILTER CLANGFORMAT_SOURCES INCLUDE REGEX ".*\\.(cpp|h)$")
 list(REMOVE_DUPLICATES CLANGFORMAT_SOURCES)
 
@@ -283,7 +312,9 @@ add_custom_target(
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# Extract SOURCES from the dune target for locale extraction
-get_target_property(SOURCES dune SOURCES)
+# Extract SOURCES from both targets for locale extraction
+get_target_property(DUNE_CORE_LOCALE_SOURCES dune_core SOURCES)
+get_target_property(DUNE_LOCALE_SOURCES dune SOURCES)
+set(SOURCES ${DUNE_CORE_LOCALE_SOURCES} ${DUNE_LOCALE_SOURCES})
 
 include(locale-update)

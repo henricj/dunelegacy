@@ -40,6 +40,22 @@ void ObjectManager::save(OutputStream& stream) const {
     }
 }
 
+void ObjectManager::saveCanonical(OutputStream& stream) const {
+    stream.writeUint32(nextFreeObjectID);
+
+    std::vector<uint32_t> sortedIDs;
+    sortedIDs.reserve(objectMap.size());
+    for (const auto& id : objectMap | std::views::keys)
+        sortedIDs.push_back(id);
+    std::ranges::sort(sortedIDs);
+
+    stream.writeUint32(static_cast<uint32_t>(sortedIDs.size()));
+    for (const uint32_t id : sortedIDs) {
+        stream.writeUint32(id);
+        Game::saveObject(stream, objectMap.at(id).get());
+    }
+}
+
 void ObjectManager::load(InputStream& stream) {
     objectMap.clear();
 

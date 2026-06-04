@@ -37,7 +37,7 @@
 #include <misc/Random.h>
 
 #include <globals.h>
-#include <sand.h>
+#include <sand_core.h>
 #include <utility>
 
 Player::Player(const GameContext& context, House* associatedHouse, std::string playername, const Random& random)

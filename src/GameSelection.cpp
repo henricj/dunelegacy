@@ -75,7 +75,7 @@ void Game::onReceiveSelectionList(const std::string& name, const dune::selected_
 }
 
 void Game::onPeerDisconnected(const std::string& name, [[maybe_unused]] bool bHost, [[maybe_unused]] int cause) const {
-    pInterface_->getChatManager().addInfoMessage(name + " disconnected!");
+    uiController_.getGameInterface()->getChatManager().addInfoMessage(name + " disconnected!");
 }
 
 bool Game::removeFromSelectionLists(ObjectBase* pObject) {

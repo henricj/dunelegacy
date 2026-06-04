@@ -81,25 +81,25 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
         dune::globals::drawnMouseY = std::max(0, std::min(static_cast<int>(mouse->y), video.height - 1));
     }
 
-    if (pInGameMenu_ != nullptr) {
-        pInGameMenu_->handleInput(event);
+    if (uiController_.getInGameMenu() != nullptr) {
+        uiController_.getInGameMenu()->handleInput(event);
 
         if (!bMenu_) {
-            pInGameMenu_.reset();
+            uiController_.resetInGameMenu();
         }
 
-    } else if (pInGameMentat_ != nullptr) {
-        pInGameMentat_->doInput(event);
+    } else if (uiController_.getInGameMentat() != nullptr) {
+        uiController_.getInGameMentat()->doInput(event);
 
         if (!bMenu_) {
-            pInGameMentat_.reset();
+            uiController_.resetInGameMentat();
         }
 
-    } else if (pWaitingForOtherPlayers_ != nullptr) {
-        pWaitingForOtherPlayers_->handleInput(event);
+    } else if (uiController_.getWaitingForOtherPlayers() != nullptr) {
+        uiController_.getWaitingForOtherPlayers()->handleInput(event);
 
         if (!bMenu_) {
-            pWaitingForOtherPlayers_.reset();
+            uiController_.resetWaitingForOtherPlayers();
         }
     } else {
         /* Look for a keypress */
@@ -124,7 +124,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
             case SDL_EVENT_MOUSE_WHEEL: {
                 if (event.wheel.y != 0) {
-                    pInterface_->handleMouseWheel(
+                    uiController_.getGameInterface()->handleMouseWheel(
                         dune::globals::drawnMouseX, dune::globals::drawnMouseY, (event.wheel.y > 0));
                 }
             } break;
@@ -134,11 +134,13 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
                 switch (mouse->button) {
                     case SDL_BUTTON_LEFT: {
-                        pInterface_->handleMouseLeft(static_cast<int>(mouse->x), static_cast<int>(mouse->y), true);
+                        uiController_.getGameInterface()->handleMouseLeft(
+                            static_cast<int>(mouse->x), static_cast<int>(mouse->y), true);
                     } break;
 
                     case SDL_BUTTON_RIGHT: {
-                        pInterface_->handleMouseRight(static_cast<int>(mouse->x), static_cast<int>(mouse->y), true);
+                        uiController_.getGameInterface()->handleMouseRight(
+                            static_cast<int>(mouse->x), static_cast<int>(mouse->y), true);
                     } break;
 
                     default: break;
@@ -254,7 +256,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
             case SDL_EVENT_MOUSE_MOTION: {
                 const auto* const mouse = &event.motion;
 
-                pInterface_->handleMouseMovement(static_cast<int>(mouse->x), static_cast<int>(mouse->y));
+                uiController_.getGameInterface()->handleMouseMovement(static_cast<int>(mouse->x),
+                                                                      static_cast<int>(mouse->y));
             } break;
 
             case SDL_EVENT_MOUSE_BUTTON_UP: {
@@ -262,11 +265,13 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
                 switch (mouse->button) {
                     case SDL_BUTTON_LEFT: {
-                        pInterface_->handleMouseLeft(static_cast<int>(mouse->x), static_cast<int>(mouse->y), false);
+                        uiController_.getGameInterface()->handleMouseLeft(
+                            static_cast<int>(mouse->x), static_cast<int>(mouse->y), false);
                     } break;
 
                     case SDL_BUTTON_RIGHT: {
-                        pInterface_->handleMouseRight(static_cast<int>(mouse->x), static_cast<int>(mouse->y), false);
+                        uiController_.getGameInterface()->handleMouseRight(
+                            static_cast<int>(mouse->x), static_cast<int>(mouse->y), false);
                     } break;
                     default: break;
                 }
@@ -337,8 +342,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                                 }
                             }
 
-                            if (!pInterface_->newsTickerHasMessage()) {
-                                pInterface_->addToNewsTicker(harvesterMessage);
+                            if (!uiController_.getGameInterface()->newsTickerHasMessage()) {
+                                uiController_.getGameInterface()->addToNewsTicker(harvesterMessage);
                             }
                         }
                     }
@@ -364,7 +369,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
         }
     }
 
-    if ((pInGameMenu_ == nullptr) && (pInGameMentat_ == nullptr) && (pWaitingForOtherPlayers_ == nullptr)
+    if ((uiController_.getInGameMenu() == nullptr) && (uiController_.getInGameMentat() == nullptr)
+        && (uiController_.getWaitingForOtherPlayers() == nullptr)
         && (SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_INPUT_FOCUS)) {
 
         const auto* keystate = SDL_GetKeyboardState(nullptr);
@@ -395,6 +401,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 void Game::handleChatInput([[maybe_unused]] const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
     if (keyboardEvent.key == SDLK_ESCAPE) {
         chatMode_ = false;
+        SDL_StopTextInput(dune::globals::window.get());
     } else if (keyboardEvent.key == SDLK_RETURN) {
         if (typingChatMessage_.length() > 0) {
             std::array<unsigned char, 16> md5sum{};
@@ -404,42 +411,44 @@ void Game::handleChatInput([[maybe_unused]] const GameContext& context, SDL_Keyb
 
             if ((!bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_MODE_ENABLE))) {
                 bCheatsEnabled_ = true;
-                pInterface_->getChatManager().addInfoMessage("Cheat mode enabled");
+                uiController_.getGameInterface()->getChatManager().addInfoMessage("Cheat mode enabled");
             } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_MODE_ENABLE))) {
-                pInterface_->getChatManager().addInfoMessage("Cheat mode already enabled");
+                uiController_.getGameInterface()->getChatManager().addInfoMessage("Cheat mode already enabled");
             } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_WIN_GAME))) {
                 if (gameType != GameType::CustomMultiplayer) {
-                    pInterface_->getChatManager().addInfoMessage("You win this game");
+                    uiController_.getGameInterface()->getChatManager().addInfoMessage("You win this game");
                     setGameWon();
                 }
             } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_START_DEBUGGING))) {
                 if (dune::globals::debug) {
-                    pInterface_->getChatManager().addInfoMessage("You are already in debug mode");
+                    uiController_.getGameInterface()->getChatManager().addInfoMessage("You are already in debug mode");
                 } else if (gameType != GameType::CustomMultiplayer) {
-                    pInterface_->getChatManager().addInfoMessage("Debug mode enabled");
+                    uiController_.getGameInterface()->getChatManager().addInfoMessage("Debug mode enabled");
                     dune::globals::debug = true;
                 }
             } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_STOP_DEBUGGING))) {
                 if (!dune::globals::debug) {
-                    pInterface_->getChatManager().addInfoMessage("You are not in debug mode");
+                    uiController_.getGameInterface()->getChatManager().addInfoMessage("You are not in debug mode");
                 } else if (gameType != GameType::CustomMultiplayer) {
-                    pInterface_->getChatManager().addInfoMessage("Debug mode disabled");
+                    uiController_.getGameInterface()->getChatManager().addInfoMessage("Debug mode disabled");
                     dune::globals::debug = false;
                 }
             } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_GIVE_CREDITS))) {
                 if (gameType != GameType::CustomMultiplayer) {
-                    pInterface_->getChatManager().addInfoMessage("You got some credits");
+                    uiController_.getGameInterface()->getChatManager().addInfoMessage("You got some credits");
                     dune::globals::pLocalHouse->returnCredits(10000_fix);
                 }
             } else {
                 if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
                     network_manager->sendChatMessage(typingChatMessage_);
                 }
-                pInterface_->getChatManager().addChatMessage(getLocalPlayerName(), typingChatMessage_);
+                uiController_.getGameInterface()->getChatManager().addChatMessage(getLocalPlayerName(),
+                                                                                  typingChatMessage_);
             }
         }
 
         chatMode_ = false;
+        SDL_StopTextInput(dune::globals::window.get());
     } else if (keyboardEvent.key == SDLK_BACKSPACE) {
         if (typingChatMessage_.length() > 0) {
             typingChatMessage_ = utf8Substr(typingChatMessage_, 0, utf8Length(typingChatMessage_) - 1);
@@ -498,7 +507,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             if (SDL_GetModState() & KMOD_CTRL) {
                 local_player->setGroupList(selectListIndex, selectedList_);
 
-                pInterface_->updateObjectInterface();
+                uiController_.updateObjectInterface();
             } else {
                 const auto& groupList = local_player->getGroupList(selectListIndex);
 
@@ -790,6 +799,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             } else {
                 typingChatMessage_.clear();
                 chatMode_ = true;
+                SDL_StartTextInput(dune::globals::window.get());
             }
         } break;
 
@@ -1123,6 +1133,6 @@ bool Game::onRadarClick(const GameContext& context, Coord worldPosition, bool bR
 }
 
 bool Game::isOnRadarView(int mouseX, int mouseY) const {
-    return pInterface_->getRadarView().isOnRadar(mouseX - (sideBarPos_.x + SIDEBAR_COLUMN_WIDTH),
-                                                 mouseY - sideBarPos_.y);
+    return uiController_.getGameInterface()->getRadarView().isOnRadar(mouseX - (sideBarPos_.x + SIDEBAR_COLUMN_WIDTH),
+                                                                      mouseY - sideBarPos_.y);
 }

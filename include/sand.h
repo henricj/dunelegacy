@@ -19,9 +19,7 @@
 #define SAND_H
 
 #include "Menu/MenuBase.h"
-#include "data.h"
-#include <DataTypes.h>
-#include <fixmath/FixPoint.h>
+#include "sand_core.h"
 #include <misc/SDL2pp.h>
 
 #include <filesystem>
@@ -38,34 +36,8 @@ extern sdl2::renderer_ptr renderer;
 void drawCursor();
 
 std::string_view resolveItemName(ItemID_enum itemID);
-
-int getAnimByFilename(const std::string& filename);
-
-Coord getStructureSize(ItemID_enum itemID);
-
-ItemID_enum getItemIDByName(std::string_view name);
-std::string_view getItemNameByID(ItemID_enum itemID);
 const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
-
-HOUSETYPE getHouseByName(std::string_view name);
-std::string getHouseNameByNumber(HOUSETYPE house);
-
-ATTACKMODE getAttackModeByName(std::string_view name);
-std::string getAttackModeNameByMode(ATTACKMODE attackMode);
-
-DropLocation getDropLocationByName(std::string_view name);
-std::string_view getDropLocationNameByID(DropLocation dropLocation);
 std::string_view resolveDropLocationName(DropLocation dropLocation);
-
-AITeamBehavior getAITeamBehaviorByName(const std::string& name);
-std::string getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior);
-
-AITeamType getAITeamTypeByName(const std::string& name);
-std::string getAITeamTypeNameByID(AITeamType aiTeamType);
-
-uint32_t getColorByTerrainType(TERRAINTYPE terrainType);
-
-FixPoint getDeviateWeakness(HOUSETYPE house);
 
 inline int missionNumberToLevelNumber(int missionNumber) {
     if (missionNumber != 22) {

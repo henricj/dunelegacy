@@ -22,7 +22,7 @@
 #include <House.h>
 #include <Map.h>
 #include <misc/Random.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <structures/ConstructionYard.h>
 #include <structures/Palace.h>

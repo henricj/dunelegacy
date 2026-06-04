@@ -22,7 +22,10 @@
 DigitsTextBox::DigitsTextBox() {
     textBox_.setText("0");
     textBox_.setAllowedChars("-0123456789");
-    textBox_.setOnLostFocus([this] { onTextBoxLostFocus(); });
+    textBox_.setOnLostFocus([this] {
+        SDL_StopTextInput(dune::globals::window.get());
+        onTextBoxLostFocus();
+    });
     DigitsTextBox::addWidget(&textBox_);
 
     buttonVBox_.addWidget(Widget::create<Spacer>().release());

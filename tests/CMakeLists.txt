@@ -12,4 +12,5 @@ add_subdirectory(dune_misc)
 add_subdirectory(random)
 add_subdirectory(INIFileTestCase)
 add_subdirectory(FileSystemTestCase)
+add_subdirectory(headless)
 

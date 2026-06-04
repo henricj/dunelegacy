@@ -1,4 +1,4 @@
-target_sources(dune PRIVATE
+target_sources(dune_core PRIVATE
 	AIPlayer.cpp
 	CampaignAIPlayer.cpp
 	HumanPlayer.cpp

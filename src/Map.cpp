@@ -22,7 +22,7 @@
 #include <Game.h>
 #include <House.h>
 #include <ScreenBorder.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <structures/StructureBase.h>
 #include <units/AirUnit.h>

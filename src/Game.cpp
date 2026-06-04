@@ -31,7 +31,6 @@
 #include <INIMap/INIMapLoader.h>
 #include <Map.h>
 #include <Menu/BriefingMenu.h>
-#include <Menu/MapChoice.h>
 #include <Menu/MentatHelp.h>
 #include <Network/NetworkManager.h>
 #include <ScreenBorder.h>
@@ -53,6 +52,8 @@
 
 #include <gsl/gsl>
 
+#include <tuple>
+
 namespace {
 // SDL3: Convert event coordinates from window space to render logical space
 void convertEventToRenderCoordinates(SDL_Event& event) {
@@ -63,7 +64,7 @@ void convertEventToRenderCoordinates(SDL_Event& event) {
 }
 } // namespace
 
-Game::Game() : localPlayerName_(dune::globals::settings.general.playerName) {
+Game::Game() : localPlayerName_(dune::globals::settings.general.playerName), uiController_(*this), core_(*this) {
     dune::globals::currentZoomlevel = dune::globals::settings.video.preferredZoomLevel;
 
     dune::globals::unitList.clear();      // holds all the units
@@ -126,8 +127,15 @@ void Game::resize() {
     if (map_)
         dune::globals::screenborder->adjustScreenBorderToMapsize(map_->getSizeX(), map_->getSizeY());
 
-    if (pInterface_)
-        pInterface_->resize(static_cast<uint32_t>(renderer_width), static_cast<uint32_t>(renderer_height));
+    uiController_.resize(static_cast<uint32_t>(renderer_width), static_cast<uint32_t>(renderer_height));
+}
+
+void Game::publishUIEvent(GameUIEvent event) {
+    uiController_.publishUIEvent(std::move(event));
+}
+
+bool Game::pollUIEvent(GameUIEvent& event) {
+    return uiController_.pollUIEvent(event);
 }
 
 void Game::initGame(const GameInitSettings& newGameInitSettings) {
@@ -173,8 +181,8 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
                 && gameInitSettings_.getGameType() != GameType::CustomMultiplayer) {
                 /* do briefing */
                 sdl2::log_info("Briefing...");
-                BriefingMenu(gameInitSettings_.getHouseID(), gameInitSettings_.getMission(), BRIEFING)
-                    .showMenu(sdl_handler_);
+                uiController_.showBriefingMenu(
+                    gameInitSettings_.getHouseID(), gameInitSettings_.getMission(), BRIEFING, sdl_handler_);
             }
         } break;
 
@@ -213,19 +221,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
     auto cleanup_handler = gsl::finally([&] { sdl_handler_ = {}; });
 
     // add interface
-    if (pInterface_ == nullptr) {
-        pInterface_ = std::make_unique<GameInterface>(context);
-
-        const auto has_radar_on = dune::globals::pLocalHouse->hasRadarOn();
-
-        if (gameState == GameState::Loading) {
-            // when loading a save game we set radar directly
-            pInterface_->getRadarView().setRadarMode(has_radar_on);
-        } else if (has_radar_on) {
-            // when starting a new game we switch the radar on with an animation if appropriate
-            pInterface_->getRadarView().switchRadarMode(true);
-        }
-    }
+    uiController_.createGameInterface(context);
 
     sdl2::log_info("Sizes: Tile {} UnitBase {} StructureBase {} Harvester {} ConstructionYard {} Palace {}",
                    sizeof(Tile),
@@ -310,7 +306,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
     auto* const network_manager = dune::globals::pNetworkManager.get();
     if (network_manager) {
         network_manager->setOnReceiveChatMessage(
-            [cm = &pInterface_->getChatManager()](const auto& username, const auto& message) {
+            [cm = &uiController_.getGameInterface()->getChatManager()](const auto& username, const auto& message) {
                 cm->addChatMessage(username, message);
             });
         network_manager->setOnReceiveCommandList([cm = &cmdManager_](const auto& playername, const auto& commands) {
@@ -405,7 +401,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
             doInput(context, event);
         }
 
-        pInterface_->updateObjectInterface();
+        uiController_.updateObjectInterface();
 
         if (network_manager != nullptr) {
             if (bSelectionChanged_) {
@@ -415,13 +411,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
             }
         }
 
-        if (pInGameMentat_ != nullptr) {
-            pInGameMentat_->update();
-        }
-
-        if (pWaitingForOtherPlayers_ != nullptr) {
-            pWaitingForOtherPlayers_->update();
-        }
+        uiController_.updateDialogs();
 
         cmdManager_.update();
 
@@ -457,6 +447,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
             const auto updateStart = dune::dune_clock::now();
 
             updateGame(context);
+            updateUI();
 
             const auto updateElapsed = dune::dune_clock::now() - updateStart;
 
@@ -554,15 +545,14 @@ void Game::onOptions() {
         const auto color = SDL2RGB(
             dune::globals::palette
                 [dune::globals::houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
-        pInGameMenu_ = std::make_unique<InGameMenu>((gameType == GameType::CustomMultiplayer), color);
-        bMenu_       = true;
+        uiController_.showInGameMenu((gameType == GameType::CustomMultiplayer), color);
+        bMenu_ = true;
         pauseGame();
     }
 }
 
 void Game::onMentat() {
-    pInGameMentat_ = std::make_unique<MentatHelp>(
-        dune::globals::pLocalHouse->getHouseID(), techLevel, gameInitSettings_.getMission());
+    uiController_.showMentatHelp(dune::globals::pLocalHouse->getHouseID(), techLevel, gameInitSettings_.getMission());
     bMenu_ = true;
     pauseGame();
 }
@@ -584,10 +574,8 @@ GameInitSettings Game::getNextGameInitSettings() {
             if (currentMission >= -1) {
                 // do map choice
                 sdl2::log_info("Map Choice...");
-                MapChoice mapChoice(gameInitSettings_.getHouseID(), currentMission, alreadyPlayedRegions);
-                mapChoice.showMenu(sdl_handler_);
-                nextMission          = mapChoice.getSelectedMission();
-                alreadyPlayedRegions = mapChoice.getAlreadyPlayedRegions();
+                std::tie(nextMission, alreadyPlayedRegions) = uiController_.showMapChoiceMenu(
+                    gameInitSettings_.getHouseID(), currentMission, alreadyPlayedRegions, sdl_handler_);
             }
 
             const uint32_t alreadyShownTutorialHints = won_

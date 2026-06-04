@@ -1,4 +1,4 @@
-target_sources(dune PRIVATE
+target_sources(dune_core PRIVATE
 	BlendBlitter.cpp
 	draw_util.cpp
 	dune_localtime.cpp
@@ -13,6 +13,7 @@ target_sources(dune PRIVATE
 	InputStream.cpp
 	md5.cpp
 	OFileStream.cpp
+	OHashStream.cpp
 	#OMemoryStream.cpp
 	OutputStream.cpp
 	Random.cpp

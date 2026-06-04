@@ -11,7 +11,7 @@
 
 #include <globals.h>
 #include <mmath.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <algorithm>
 

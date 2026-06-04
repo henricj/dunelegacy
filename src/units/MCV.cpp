@@ -26,7 +26,7 @@
 #include <House.h>
 #include <Map.h>
 #include <SoundPlayer.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <players/HumanPlayer.h>
 

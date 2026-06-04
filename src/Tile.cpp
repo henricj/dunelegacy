@@ -30,7 +30,7 @@
 #include <Map.h>
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
-#include <sand.h>
+#include <sand_core.h>
 
 #include <structures/StructureBase.h>
 #include <units/AirUnit.h>

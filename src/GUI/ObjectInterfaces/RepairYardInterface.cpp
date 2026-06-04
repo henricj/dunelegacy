@@ -18,6 +18,7 @@
 #include "GUI/ObjectInterfaces/RepairYardInterface.h"
 
 #include "GUI/Spacer.h"
+#include "sand.h"
 
 #include <units/UnitBase.h>
 
