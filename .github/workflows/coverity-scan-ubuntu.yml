@@ -28,7 +28,7 @@ jobs:
           submodules: recursive
 
       - name: Get cmake and ninja
-        uses: lukka/get-cmake@v4.3.3
+        uses: lukka/get-cmake@v4.3.4
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v11
