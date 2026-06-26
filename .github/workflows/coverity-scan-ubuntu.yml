@@ -1,11 +1,7 @@
 name: Coverity Scan
 
-# Coverity seems to be donw more than it is up.
-if: false
-
 on:
-  push:
-    branches: [modernize]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,6 +11,7 @@ permissions: {}
 
 jobs:
   coverity:
+    if: false # Disabled until upstream Coverity service reliability improves.
     runs-on: ubuntu-latest
 
     permissions:
@@ -30,22 +27,23 @@ jobs:
       - name: Get cmake and ninja
         uses: lukka/get-cmake@v4.3.4
 
+      - name: Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf autoconf-archive automake libtool libltdl-dev \
+            gettext \
+            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
+            libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev \
+            libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
+            libibus-1.0-dev
+
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: external/vcpkg/vcpkg
           vcpkgJsonGlob: external/vcpkg/config-sdl3/vcpkg.json
           prependedCacheKey: "coverity/${{ runner.os }}"
-
-      - name: Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            gettext \
-            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
-            libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev \
-            libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
-            libibus-1.0-dev
 
       - name: Configure
         run: >

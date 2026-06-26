@@ -54,6 +54,7 @@ jobs:
         run: >
           sudo apt update &&
           sudo apt install -y
+          autoconf autoconf-archive automake libtool libltdl-dev
           libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev
           libxi-dev libxss-dev libxtst-dev libgl1-mesa-dev
           libwayland-dev libxkbcommon-dev libegl1-mesa-dev
