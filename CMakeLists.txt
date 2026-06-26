@@ -121,6 +121,19 @@ if(COMMAND gitversion_create_target)
   gitversion_create_target(dune_gitversion)
 endif()
 
+function(dune_link_dune_and_core target)
+    if(UNIX AND NOT APPLE AND (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+        target_link_libraries(${target} PRIVATE
+            "-Wl,--start-group"
+            dune
+            dune_core
+            "-Wl,--end-group"
+        )
+    else()
+        target_link_libraries(${target} PRIVATE dune)
+    endif()
+endfunction()
+
 add_subdirectory(external)
 add_subdirectory(src)
 add_subdirectory(data)

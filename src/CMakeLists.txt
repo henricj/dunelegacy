@@ -247,7 +247,8 @@ if(WIN32)
 endif()
 
 target_compile_options(dunelegacy PRIVATE ${dune_flags})
-target_link_libraries(dunelegacy PRIVATE dune harden_interface)
+dune_link_dune_and_core(dunelegacy)
+target_link_libraries(dunelegacy PRIVATE harden_interface)
 
 if(TARGET dune_gitversion)
   target_link_libraries(dunelegacy PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")

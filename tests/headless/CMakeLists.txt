@@ -7,7 +7,8 @@ set(HEADLESS_TEST_SOURCES
 
 add_executable(headless_test ${HEADLESS_TEST_SOURCES})
 target_include_directories(headless_test PRIVATE ../../include)
-target_link_libraries(headless_test PRIVATE dune GTest::gtest GTest::gtest_main)
+dune_link_dune_and_core(headless_test)
+target_link_libraries(headless_test PRIVATE GTest::gtest GTest::gtest_main)
 
 set(HEADLESS_DATA_FILES
 	"${CMAKE_CURRENT_SOURCE_DIR}/../../data/OPENSD2.PAK"
@@ -44,7 +45,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/HeadlessSimulationTest.cpp")
 	list(APPEND HEADLESS_TEST_SOURCES HeadlessSimulationTest.cpp)
 	add_executable(headless_simulation_test HeadlessTestFixture.cpp HeadlessSimulationTest.cpp)
 	target_include_directories(headless_simulation_test PRIVATE ../../include)
-	target_link_libraries(headless_simulation_test PRIVATE dune GTest::gtest GTest::gtest_main)
+	dune_link_dune_and_core(headless_simulation_test)
+	target_link_libraries(headless_simulation_test PRIVATE GTest::gtest GTest::gtest_main)
 
 	add_dependencies(headless_simulation_test copy_for_headless_tests)
 
@@ -58,7 +60,8 @@ endif()
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CampaignAIHeadlessTest.cpp")
 	add_executable(campaign_ai_headless_test HeadlessTestFixture.cpp CampaignAIHeadlessTest.cpp)
 	target_include_directories(campaign_ai_headless_test PRIVATE ../../include)
-	target_link_libraries(campaign_ai_headless_test PRIVATE dune GTest::gtest GTest::gtest_main)
+	dune_link_dune_and_core(campaign_ai_headless_test)
+	target_link_libraries(campaign_ai_headless_test PRIVATE GTest::gtest GTest::gtest_main)
 
 	add_dependencies(campaign_ai_headless_test copy_for_headless_tests)
 
@@ -74,7 +77,7 @@ endif()
 # Temporary: link dune while core/UI split is still in progress.
 add_executable(headless_hash_runner headless_hash_runner.cpp)
 target_include_directories(headless_hash_runner PRIVATE ../../include)
-target_link_libraries(headless_hash_runner PRIVATE dune)
+dune_link_dune_and_core(headless_hash_runner)
 add_dependencies(headless_hash_runner copy_for_headless_tests)
 
 if(DUNE_PRECOMPILED_HEADERS)

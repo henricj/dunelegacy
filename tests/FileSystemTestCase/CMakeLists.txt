@@ -2,7 +2,8 @@
 find_package(GTest CONFIG REQUIRED)
 
 add_executable(FileSystemTestCase FileSystemTestCase.cpp)
-target_link_libraries(FileSystemTestCase PRIVATE dune GTest::gtest GTest::gtest_main)
+dune_link_dune_and_core(FileSystemTestCase)
+target_link_libraries(FileSystemTestCase PRIVATE GTest::gtest GTest::gtest_main)
 
 if(DUNE_PRECOMPILED_HEADERS)
 	target_precompile_headers(FileSystemTestCase PRIVATE ../../src/stdafx.h)

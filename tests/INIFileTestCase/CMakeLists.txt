@@ -9,7 +9,8 @@ add_executable(INIFileTestCase
     InitGameTestCase.cpp
 )
 
-target_link_libraries(INIFileTestCase PRIVATE dune GTest::gtest GTest::gtest_main)
+dune_link_dune_and_core(INIFileTestCase)
+target_link_libraries(INIFileTestCase PRIVATE GTest::gtest GTest::gtest_main)
 
 set(INI_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/INIFileTestCase1.ini

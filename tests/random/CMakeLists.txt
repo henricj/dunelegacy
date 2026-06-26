@@ -7,7 +7,8 @@ add_test(NAME lemire COMMAND lemire_test)
 
 add_executable(serialization_test serialization_test.cpp)
 target_include_directories(serialization_test PRIVATE ../../include)
-target_link_libraries(serialization_test PRIVATE dune GTest::gtest GTest::gtest_main)
+dune_link_dune_and_core(serialization_test)
+target_link_libraries(serialization_test PRIVATE GTest::gtest GTest::gtest_main)
 
 if(DUNE_PRECOMPILED_HEADERS)
     target_precompile_headers(serialization_test PRIVATE ../../src/stdafx.h)
@@ -17,7 +18,8 @@ add_test(NAME random_serialization COMMAND serialization_test)
 
 add_executable(random_test random_test.cpp)
 target_include_directories(random_test PRIVATE ../../include)
-target_link_libraries(random_test PRIVATE dune GTest::gtest GTest::gtest_main)
+dune_link_dune_and_core(random_test)
+target_link_libraries(random_test PRIVATE GTest::gtest GTest::gtest_main)
 
 if(DUNE_PRECOMPILED_HEADERS)
 	target_precompile_headers(random_test PRIVATE ../../src/stdafx.h)
