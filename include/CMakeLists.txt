@@ -272,6 +272,9 @@ target_sources(dune_core PRIVATE
 	Trigger/TimeoutTrigger.h
 	Trigger/Trigger.h
 	Trigger/TriggerManager.h
+	View/PublishedFrame.h
+	View/PublishedFrameBuilder.h
+	View/PublishedFrameHandoff.h
 	units/AirUnit.h
 	units/Carryall.h
 	units/Devastator.h

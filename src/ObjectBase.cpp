@@ -69,7 +69,10 @@
 #include <units/Trike.h>
 #include <units/Trooper.h>
 
+#include <algorithm>
 #include <array>
+
+#include <View/PublishedFrame.h>
 
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
                        const ObjectInitializer& initializer)
@@ -214,6 +217,21 @@ Coord ObjectBase::getCenterPoint() const {
 
 Coord ObjectBase::getClosestCenterPoint([[maybe_unused]] const Coord& objectLocation) const {
     return getCenterPoint();
+}
+
+void ObjectBase::appendPublicView(VisibleObjectRecord& record) const {
+    record.objectID     = objectID_;
+    record.itemID       = itemID_;
+    record.ownerHouse   = owner_->getHouseID();
+    record.location     = location_;
+    record.isSelected   = selected_;
+    record.isAUnit      = isAUnit();
+    record.isAStructure = isAStructure();
+
+    const auto maxHealth = getMaxHealth();
+    record.healthPercent = (maxHealth > 0)
+                             ? static_cast<uint8_t>(std::clamp((getHealth() * 100 / maxHealth).lround(), 0, 100))
+                             : uint8_t{};
 }
 
 int ObjectBase::getMaxHealth() const {

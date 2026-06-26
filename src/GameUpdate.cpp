@@ -134,6 +134,10 @@ void Game::stepSimulation(uint32_t ticks) {
 }
 
 void Game::updateUI() {
+    // Pull the next available snapshot from the handoff if one is queued and ready.
+    // This enables the UI to advance to a new published frame at a non-blocking, non-real-time boundary.
+    frameHandoff_.tryAcquireNextForUi();
+
     if (uiController_.getGameInterface() != nullptr)
         uiController_.getGameInterface()->getRadarView().update();
 

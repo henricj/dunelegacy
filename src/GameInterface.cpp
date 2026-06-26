@@ -146,9 +146,15 @@ void GameInterface::draw(Point position) {
 
     const auto* const local_house = dune::globals::pLocalHouse;
 
+    // read from the per-tick published frame snapshot for power, spice, and credits
+    const auto& frame    = context_.game.getLatestFrame();
+    const auto house_idx = static_cast<size_t>(static_cast<int>(local_house->getHouseID()));
+    const auto& player_view =
+        (house_idx < frame.playerViews.size()) ? frame.playerViews[house_idx] : frame.playerViews.front();
+
     // draw power level indicator
-    const auto power_required = local_house->getPowerRequirement();
-    const auto power_produced = local_house->getProducedPower();
+    const auto power_required = player_view.powerRequired;
+    const auto power_produced = player_view.powerProduced;
 
     auto power_percent = 0.f;
 
@@ -165,21 +171,21 @@ void GameInterface::draw(Point position) {
     draw_indicator(renderer, powerIndicatorPos, power_percent, COLOR_GREEN);
 
     // draw spice level indicator
-    const auto spice_capacity = local_house->getCapacity();
+    const auto spice_capacity = player_view.spiceCapacity;
 
     auto spice_percent = 0.f;
 
     if (spice_capacity > 0) {
-        const auto spice_stored = local_house->getStoredCredits();
+        const auto spice_stored = player_view.spiceStored;
 
-        spice_percent = spice_stored.toFloat() / static_cast<float>(spice_capacity);
+        spice_percent = static_cast<float>(spice_stored) / static_cast<float>(spice_capacity);
     }
 
     draw_indicator(renderer, spiceIndicatorPos, spice_percent, COLOR_ORANGE);
 
     // draw credits
-    const auto credits       = local_house->getCredits();
-    const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
+    const auto frame_credits = player_view.credits;
+    const auto CreditsBuffer = std::to_string(frame_credits);
     const auto NumDigits     = static_cast<int>(CreditsBuffer.length());
 
     auto* const digitsTex = dune::globals::pGFXManager->getUIGraphic(UI_CreditsDigits);

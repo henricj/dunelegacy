@@ -98,6 +98,14 @@ void GameCore::updateGame(const GameContext& context) {
     processObjects();
 
     game_.gameCycleCount_++;
+
+    // Publish an immutable per-player visibility snapshot after each simulation tick through the triple-buffered handoff.
+    game_.frameBuilder_.buildFrame(game_);
+
+    // Transfer the built frame to the write slot and publish it through the handoff ring.
+    PublishedFrame& writeFrame = game_.frameHandoff_.beginWrite();
+    writeFrame                 = game_.frameBuilder_.getLatestFrame();
+    game_.frameHandoff_.publishWrittenFrame();
 }
 
 void GameCore::stepSimulation(uint32_t ticks) {

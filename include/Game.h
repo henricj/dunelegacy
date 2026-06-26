@@ -28,6 +28,8 @@
 #include <ObjectData.h>
 #include <ObjectManager.h>
 #include <Trigger/TriggerManager.h>
+#include <View/PublishedFrameBuilder.h>
+#include <View/PublishedFrameHandoff.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/Random.h>
@@ -83,6 +85,10 @@ public:
 
     [[nodiscard]] GameCore& getCore() noexcept { return core_; }
     [[nodiscard]] const GameCore& getCore() const noexcept { return core_; }
+
+    /// Returns the most recently published per-tick frame snapshot.
+    /// Populated by GameCore::updateGame() after each simulation tick.
+    [[nodiscard]] const PublishedFrame& getLatestFrame() const noexcept { return frameBuilder_.getLatestFrame(); }
 
     /**
         Initializes a game with the specified settings
@@ -749,6 +755,8 @@ private:
     std::array<std::unique_ptr<House>, NUM_HOUSES> house_; ///< All the houses of this game, index by their houseID; has
                                                            ///< the size NUM_HOUSES; unused houses are nullptr
 
+    PublishedFrameBuilder frameBuilder_; ///< Builds and stores the latest per-tick published frame snapshot
+    PublishedFrameHandoff frameHandoff_; ///< Triple-buffered handoff for published frames (front/queued/write)
     GameCore core_;
 };
 

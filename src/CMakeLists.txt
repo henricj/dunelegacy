@@ -81,7 +81,6 @@ add_library(dune_core STATIC)
 # Add sources in current directory
 # Keep translation units in dune_core while they still satisfy dune_core symbols.
 target_sources(dune_core PRIVATE
-	Audio/SDLAudioEngine.cpp
 	AStarSearch.cpp
 	Bullet.cpp
 	Choam.cpp
@@ -99,12 +98,9 @@ target_sources(dune_core PRIVATE
 	ObjectData.cpp
 	ObjectManager.cpp
 	ObjectPointer.cpp
-	RadarView.cpp
-	RadarViewBase.cpp
-	ScreenBorder.cpp
 	sand_core.cpp
-	SoundPlayer.cpp
 	Tile.cpp
+	View/PublishedFrame.cpp
 )
 
 # Non-UI subdirectories (contribute to dune_core)
@@ -119,6 +115,7 @@ add_subdirectory(Renderer)
 add_subdirectory(structures)
 add_subdirectory(Trigger)
 add_subdirectory(units)
+add_subdirectory(View)
 
 # Add headers from include directory
 add_subdirectory(../include include)
@@ -136,7 +133,13 @@ target_sources(dune PRIVATE
 	GameRender.cpp
 	GameInput.cpp
 	GameUIController.cpp
+	RadarView.cpp
+	RadarViewBase.cpp
+	ScreenBorder.cpp
+	Audio/SDLAudioEngine.cpp
+	SoundPlayer.cpp
 	sand.cpp
+	View/PublishedFrameBuilder.cpp
 )
 
 # UI subdirectories (contribute to dune)

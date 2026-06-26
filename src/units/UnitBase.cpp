@@ -38,6 +38,8 @@
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
 
+#include <View/PublishedFrame.h>
+
 #include <gsl/gsl>
 
 inline constexpr auto SMOKEDELAY    = 30;
@@ -160,6 +162,11 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeSint32(secondaryWeaponTimer);
 
     stream.writeSint32(deviationTimer);
+}
+
+void UnitBase::appendPublicView(VisibleObjectRecord& record) const {
+    ObjectBase::appendPublicView(record);
+    record.angle = drawnAngle_;
 }
 
 bool UnitBase::attack(const GameContext& context) {

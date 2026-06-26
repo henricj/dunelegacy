@@ -42,6 +42,7 @@ class Map;
 class Coord;
 template<class WidgetData>
 class Container;
+struct VisibleObjectRecord;
 
 class GameContext {
 public:
@@ -145,6 +146,13 @@ public:
     ObjectBase& operator=(ObjectBase&&)      = delete;
 
     virtual void save(OutputStream& stream) const;
+
+    /// Populate \p record with this object's current public-view snapshot.
+    /// Fills objectID, itemID, ownerHouse, location, healthPercent, isSelected,
+    /// isAUnit, and isAStructure. The angle field is left at its default
+    /// INVALID_ANGLE; derived classes that carry a meaningful angle (units)
+    /// override this method and set it after calling the base.
+    virtual void appendPublicView(VisibleObjectRecord& record) const;
 
     virtual std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context);
 

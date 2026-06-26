@@ -70,6 +70,10 @@ public:
 
     std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
+    /// Populates common fields via ObjectBase::appendPublicView, then sets
+    /// record.angle from drawnAngle_ to reflect the unit's current facing.
+    void appendPublicView(VisibleObjectRecord& record) const override;
+
     virtual void checkPos(const GameContext& context) = 0;
     virtual void deploy(const GameContext& context, const Coord& newLocation);
 
