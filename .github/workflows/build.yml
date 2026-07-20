@@ -47,7 +47,7 @@ jobs:
           xcode-version: latest
 
       - name: Get cmake and ninja
-        uses: lukka/get-cmake@v4.3.4
+        uses: lukka/get-cmake@v4.4.0
 
       - name: Install packages
         if: runner.os == 'Linux'
