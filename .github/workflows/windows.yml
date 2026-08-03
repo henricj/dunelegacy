@@ -51,7 +51,7 @@ jobs:
           submodules: recursive
 
       - name: Get cmake and ninja
-        uses: lukka/get-cmake@v4.4.0
+        uses: lukka/get-cmake@v4.4.1
 
       - name: Find MSVC (on Windows)
         uses: ilammy/msvc-dev-cmd@v1
