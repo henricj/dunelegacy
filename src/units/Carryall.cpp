@@ -440,7 +440,10 @@ void Carryall::pickupTarget(const GameContext& context) {
         } else {
             pGroundUnitTarget->setAwaitingPickup(false);
             if (pGroundUnitTarget->getAttackMode() == CARRYALLREQUESTED) {
-                pGroundUnitTarget->doSetAttackMode(context, STOP);
+                // Fall back to the normal mode, as GroundUnit::update() does. STOP is permanent for a harvester: it
+                // never harvests again, which left empty harvesters idle next to the spice and the refinery.
+                pGroundUnitTarget->doSetAttackMode(context,
+                                                   pGroundUnitTarget->getItemID() == Unit_Harvester ? HARVEST : GUARD);
             }
             releaseTarget();
         }
