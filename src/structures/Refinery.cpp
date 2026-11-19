@@ -216,7 +216,8 @@ void Refinery::updateStructureSpecificStuff(const GameContext& context) {
         Carryall* pCarryall = nullptr;
         if (pHarvester->getGuardPoint().isValid() && getOwner()->hasCarryalls()) {
             for (auto* const pUnit : dune::globals::unitList) {
-                if (pUnit->getOwner() == owner_)
+                // Only our own carryalls: the test was inverted in 25752ff6 and could book another house's carryall.
+                if (pUnit->getOwner() != owner_)
                     continue;
 
                 if (auto* const pTmpCarryall = dune_cast<Carryall>(pUnit)) {
