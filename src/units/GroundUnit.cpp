@@ -213,7 +213,9 @@ bool GroundUnit::hasBookedCarrier() {
         return false;
 
     if (const auto* const carrier = getCarrier()) {
-        if (carrier->getTarget() == this)
+        const auto* const target = carrier->getTarget();
+        // A carryall that comes to take this unit out of a refinery or a repair yard is booked for it as well.
+        if (target == this || (target != nullptr && target->isAStructure()))
             return true;
 
         sdl2::log_error("A ground unit's carrier has another target!");

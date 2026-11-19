@@ -100,8 +100,12 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
 
     UnitBase* pRepairUnit = repairUnit.getUnitPointer();
 
-    if (nullptr == pRepairUnit)
+    if (nullptr == pRepairUnit) {
+        // Nothing to hand over: a carryall that came for it must not stay targeting this repair yard.
+        if (pCarryall != nullptr)
+            pCarryall->setTarget(nullptr);
         return;
+    }
 
     if (pCarryall != nullptr) {
         pCarryall->giveCargo(context, pRepairUnit);
