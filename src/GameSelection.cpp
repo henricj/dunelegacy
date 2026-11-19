@@ -97,6 +97,10 @@ bool Game::removeFromSelectionLists(ObjectBase* pObject) {
 void Game::removeFromQuickSelectionLists(uint32_t objectID) {
     auto* const local_player = dune::globals::pLocalPlayer;
 
+    // No local player (e.g. headless simulation): there are no quick selection groups to update.
+    if (local_player == nullptr)
+        return;
+
     for (int i = 0; i < NUMSELECTEDLISTS; i++) {
         local_player->getGroupList(i).erase(objectID);
     }

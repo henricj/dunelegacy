@@ -493,7 +493,8 @@ void StructureBase::destroy(const GameContext& context) {
 
     objectManager.removeObject(getObjectID());
 
-    if (isVisible(dune::globals::pLocalHouse->getTeamID()))
+    // No local house in a headless simulation: nobody hears the explosion.
+    if (dune::globals::pLocalHouse != nullptr && isVisible(dune::globals::pLocalHouse->getTeamID()))
         dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionStructure, location_);
 }
 
