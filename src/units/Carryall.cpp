@@ -358,7 +358,9 @@ void Carryall::engageTarget(const GameContext& context) {
 
     targetDistance = distanceFrom(realLocation, realDestination);
 
-    if (targetDistance <= TILESIZE / 32) {
+    // A carryall stops as soon as it is over the destination tile, not on its exact centre: a 2 px radius around the
+    // centre is then never reached, and the carryall hovers over the target forever. Being over the tile is enough.
+    if (targetDistance <= TILESIZE / 32 || location_ == targetLocation) {
         if (hasCargo()) {
             if (object->isAStructure()) {
                 while (!pickedUpUnitList.empty()) {
