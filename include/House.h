@@ -121,15 +121,17 @@ public:
 
     /**
         This function checks if the limit for ground units is already reached. Infantry units are only counted as 1/3.
+        \param extraUnits number of units already committed but not yet created (e.g. queued at a starport)
         \return true, if the limit is already reached, false if building further ground units is allowed
     */
-    [[nodiscard]] bool isGroundUnitLimitReached() const;
+    [[nodiscard]] bool isGroundUnitLimitReached(int extraUnits = 0) const;
 
     /**
         This function checks if the limit for infantry units is already reached. Infantry units are only counted as 1/3.
+        \param extraUnits number of units already committed but not yet created (e.g. queued at a starport)
         \return true, if the limit is already reached, false if building further infantry units is allowed
     */
-    [[nodiscard]] bool isInfantryUnitLimitReached() const;
+    [[nodiscard]] bool isInfantryUnitLimitReached(int extraUnits = 0) const;
 
     /**
         This function checks if the limit for air units is already reached.

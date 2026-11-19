@@ -111,6 +111,12 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
         return;
     }
 
+    if (isUnitLimitReachedFor(itemID, static_cast<int>(currentProductionQueue_.size()))) {
+        soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
+        currentGame->addToNewsTicker(_("Unit limit reached"));
+        return;
+    }
+
     for (const auto& buildItem : getBuildList()) {
         if (buildItem.itemID_ == itemID) {
             if ((owner_->getCredits() < static_cast<int>(buildItem.price_))) {
@@ -134,6 +140,20 @@ void StarPort::handleCancelOrderClick() {
         Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_CANCELORDER, objectID_));
 }
 
+bool StarPort::isUnitLimitReachedFor(ItemID_enum itemID, int pendingOrders) const {
+    // Each queued order becomes one unit (or three infantry, counted as one) when delivered, but it is not
+    // yet part of the house's unit count, so it is passed as an extra count. The limit of the factory that would
+    // build the unit applies. Flying units are not checked here, as they were not before: they keep the behaviour
+    // of the base branch.
+    if (isFlyingUnit(itemID)) {
+        return false;
+    }
+    if (isInfantryUnit(itemID)) {
+        return owner_->isInfantryUnitLimitReached(pendingOrders);
+    }
+    return owner_->isGroundUnitLimitReached(pendingOrders);
+}
+
 void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner_->getChoam();
 
@@ -145,6 +165,11 @@ void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
             const auto numAvailable = choam.getNumAvailable(itemID);
 
             if (numAvailable <= 0) {
+                break;
+            }
+
+            // The starport obeys the same unit limit as the factories.
+            if (isUnitLimitReachedFor(itemID, static_cast<int>(currentProductionQueue_.size()))) {
                 break;
             }
 
@@ -282,6 +307,12 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
         if (deployTimer_ == 0) {
 
             if (!currentProductionQueue_.empty()) {
+                // The order stays in the queue until a unit slot is free again, so the house never exceeds its limit.
+                if (isUnitLimitReachedFor(currentProductionQueue_.front().itemID_, 0)) {
+                    deployTimer_ = MILLI2CYCLES(2000);
+                    return;
+                }
+
                 auto newUnitItemID = currentProductionQueue_.front().itemID_;
 
                 auto num2Place = 1;
