@@ -242,7 +242,14 @@ void StarPort::doPlaceOrder() {
 void StarPort::doCancelOrder() {
     if (arrivalTimer == STARPORT_NO_ARRIVAL_AWAITED) {
         while (!currentProductionQueue_.empty()) {
+            const auto queueSize = currentProductionQueue_.size();
             doCancelItem(currentProductionQueue_.back().itemID_, false);
+            if (currentProductionQueue_.size() == queueSize) {
+                // The counter and the queue disagree: stop instead of spinning forever.
+                sdl2::log_warn("StarPort: cannot cancel a queued order, counters out of sync");
+                currentProductionQueue_.clear();
+                break;
+            }
         }
 
         currentProducedItem_ = ItemID_Invalid;
@@ -374,7 +381,12 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                     return (buildItem.itemID_ == currentProductionQueue_.front().itemID_);
                 });
                 if (currentProducedBuildItem != buildList.end()) {
-                    currentProducedBuildItem->num_--;
+                    // num_ is unsigned: decrementing a zero counter would wrap to 4294967295 (shown as -1).
+                    if (currentProducedBuildItem->num_ > 0) {
+                        currentProducedBuildItem->num_--;
+                    } else {
+                        sdl2::log_warn("StarPort: delivering an order whose counter is already zero");
+                    }
                 }
 
                 currentProductionQueue_.pop_front();
@@ -394,6 +406,19 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
 }
 
 void StarPort::informFrigateDestroyed() {
+    // The queued orders are dropped with the frigate. Keep the per-type counters in step with the queue:
+    // each queued order was counted in its build item when it was bought.
+    for (const auto& queued : currentProductionQueue_) {
+        for (auto& buildItem : getBuildList()) {
+            if (buildItem.itemID_ == queued.itemID_) {
+                if (buildItem.num_ > 0) {
+                    buildItem.num_--;
+                }
+                break;
+            }
+        }
+    }
+
     currentProductionQueue_.clear();
     arrivalTimer = STARPORT_NO_ARRIVAL_AWAITED;
     deployTimer_ = 0;
