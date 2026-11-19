@@ -425,10 +425,6 @@ int main(int argc, char* argv[]) {
 
     // global try/catch around everything
     try {
-        GlobalCleanup audio_cleanup{dune::globals::pAudioEngine};
-        GlobalCleanup music_cleanup{dune::globals::musicPlayer};
-        GlobalCleanup sound_cleanup{dune::globals::soundPlayer};
-
         // init fnkdat
         { // Scope
             auto [ok, tmp] = fnkdat(FNKDAT_INIT);
@@ -465,6 +461,12 @@ int main(int argc, char* argv[]) {
         logSDLVideoDiagnostics();
 
         SDL_handle sdl_handle{SDL_INIT_VIDEO};
+
+        // Declared after sdl_handle so that the audio objects are destroyed before SDL_Quit() runs. Destroying them
+        // afterwards frees SDL audio streams twice (heap-use-after-free under ASan, double free in release builds).
+        GlobalCleanup audio_cleanup{dune::globals::pAudioEngine};
+        GlobalCleanup music_cleanup{dune::globals::musicPlayer};
+        GlobalCleanup sound_cleanup{dune::globals::soundPlayer};
 
         const int compiledVersion = SDL_VERSION;
         const int linkedVersion   = SDL_GetVersion();
