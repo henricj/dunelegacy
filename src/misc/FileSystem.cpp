@@ -18,6 +18,7 @@
 #include <misc/FileSystem.h>
 #include <misc/dune_sdlpp.h>
 #include <misc/exceptions.h>
+#include <misc/fnkdat.h>
 #include <misc/string_util.h>
 
 #include <algorithm>
@@ -372,13 +373,20 @@ std::filesystem::path getDuneLegacyDataDir() {
 #endif
 
         if (dataDir.empty() || dataDir == "." || dataDir == "./" || dataDir == ".\\") {
-            // SDL3: SDL_GetBasePath returns const char* that doesn't need to be freed
-            const char* basePath = SDL_GetBasePath();
+            // Default: the per-user configuration directory (~/.config/dunelegacy). It holds the settings, the maps,
+            // the locale files and the PAK files, and they can be edited there without root.
+            auto [ok, userDataPath] = fnkdat("data", FNKDAT_USER | FNKDAT_CREAT);
+            if (ok && userDataPath.has_parent_path()) {
+                dataDir = userDataPath.parent_path();
+            } else {
+                // SDL3: SDL_GetBasePath returns const char* that doesn't need to be freed
+                const char* basePath = SDL_GetBasePath();
 
-            if (basePath == nullptr) {
-                THROW(sdl_error, "SDL_GetBasePath() failed: {}!", SDL_GetError());
+                if (basePath == nullptr) {
+                    THROW(sdl_error, "SDL_GetBasePath() failed: {}!", SDL_GetError());
+                }
+                dataDir = basePath;
             }
-            dataDir = basePath;
         }
 
         duneLegacyDataDir = dataDir.lexically_normal().make_preferred();

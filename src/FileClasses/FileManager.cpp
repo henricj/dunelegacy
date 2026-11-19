@@ -119,6 +119,13 @@ const std::vector<std::filesystem::path>& FileManager::getSearchPath() {
         auto [ok, tmp] = fnkdat("data/", FNKDAT_USER | FNKDAT_CREAT);
         if (ok)
             search_path.push_back(tmp);
+
+        // Files shipped next to the executable (e.g. the test data copied into the build tree) stay reachable.
+        if (const char* basePath = SDL_GetBasePath(); basePath != nullptr) {
+            const std::filesystem::path base_dir = basePath;
+            if (base_dir != search_path.front())
+                search_path.push_back(base_dir);
+        }
     });
 
     return search_path;
