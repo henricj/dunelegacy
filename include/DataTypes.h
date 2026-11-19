@@ -241,6 +241,7 @@ public:
         int height;
         bool frameLimit;
         int preferredZoomLevel;
+        double displayScale; ///< User override of the UI scale (0 = automatic from the display, 1.0 = unscaled)
         std::string scaler;
         bool rotateUnitGraphics;
         std::string renderer;

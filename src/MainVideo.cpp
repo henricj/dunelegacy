@@ -256,7 +256,13 @@ void update_display_scale(SDL_Window* sdl_window) {
     float contentScale   = SDL_GetDisplayContentScale(displayID);
     float dpi            = default_dpi * contentScale;
 
-    gui.setDisplayDpi((dpi * actual_dpi) / (default_dpi * dune_dpi));
+    // "Display Scale" in the [Video] section overrides the automatic scale. 1.0 gives the unscaled layout of 0.96.4.
+    const auto userScale = dune::globals::settings.video.displayScale;
+    if (userScale > 0.0) {
+        gui.setDisplayDpi(static_cast<float>(userScale));
+    } else {
+        gui.setDisplayDpi((dpi * actual_dpi) / (default_dpi * dune_dpi));
+    }
 
     auto* sdl_renderer = SDL_GetRenderer(sdl_window);
 
