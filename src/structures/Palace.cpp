@@ -166,7 +166,10 @@ void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
 
     if (getOwner() != dune::globals::pLocalHouse) {
         context.game.addToNewsTicker(_("@DUNE.ENG|81#Missile is approaching"));
-        dune::globals::soundPlayer->playVoice(Voice_enum::MissileApproaching, dune::globals::pLocalHouse->getHouseID());
+        // Headless: there is no local house to hear the warning.
+        if (dune::globals::pLocalHouse != nullptr)
+            dune::globals::soundPlayer->playVoice(Voice_enum::MissileApproaching,
+                                                  dune::globals::pLocalHouse->getHouseID());
     }
 
     specialWeaponTimer = getMaxSpecialWeaponTimer();

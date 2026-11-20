@@ -29,7 +29,9 @@ class Game;
 /// Call buildFrame() once per tick after the simulation update completes.
 class PublishedFrameBuilder {
 public:
-    PublishedFrameBuilder()  = default;
+    /// Sizes the player views up front, so getLatestFrame() is usable before the first buildFrame() call (the
+    /// UI reads the frame when the game starts, before any tick has been simulated).
+    PublishedFrameBuilder();
     ~PublishedFrameBuilder() = default;
 
     PublishedFrameBuilder(const PublishedFrameBuilder&)            = delete;

@@ -19,24 +19,26 @@
 
 #include <DataTypes.h>
 #include <Definitions.h>
+
+#include <algorithm>
 #include <Game.h>
 #include <House.h>
 #include <globals.h>
 #include <structures/StructureBase.h>
 #include <units/UnitBase.h>
 
+PublishedFrameBuilder::PublishedFrameBuilder() {
+    // One-time setup: allocate one PlayerView slot per possible house ID so
+    // every slot can be addressed by index for the lifetime of the builder.
+    frame_.playerViews.resize(NUM_HOUSES);
+    for (auto i = 0; i < NUM_HOUSES; ++i)
+        frame_.playerViews[static_cast<size_t>(i)].playerHouse = static_cast<HOUSETYPE>(i);
+}
+
 void PublishedFrameBuilder::buildFrame(const Game& game) {
     // Lightweight reset: clears tick and each PlayerView's visibleObjects
     // without releasing any allocated capacity.
     frame_.reset();
-
-    // One-time setup: allocate one PlayerView slot per possible house ID so
-    // every slot can be addressed by index for the lifetime of the builder.
-    if (frame_.playerViews.size() != static_cast<size_t>(NUM_HOUSES)) {
-        frame_.playerViews.resize(NUM_HOUSES);
-        for (auto i = 0; i < NUM_HOUSES; ++i)
-            frame_.playerViews[static_cast<size_t>(i)].playerHouse = static_cast<HOUSETYPE>(i);
-    }
 
     // Populate each active house's view with visibility-filtered object records.
     game.for_each_house([&](const House& house) {
@@ -46,7 +48,8 @@ void PublishedFrameBuilder::buildFrame(const Game& game) {
         pv.credits       = static_cast<uint32_t>(house.getCredits());
         pv.powerProduced = static_cast<uint32_t>(house.getProducedPower());
         pv.powerRequired = static_cast<uint32_t>(house.getPowerRequirement());
-        pv.spiceStored   = static_cast<uint32_t>(house.getCredits());
+        // Spice in the silos, not the credits: the sidebar spice bar must not move when something is bought.
+        pv.spiceStored   = static_cast<uint32_t>(std::max(0, static_cast<int>(house.getStoredCredits().lround())));
         pv.spiceCapacity = static_cast<uint32_t>(house.getCapacity());
 
         const int teamID = house.getTeamID();

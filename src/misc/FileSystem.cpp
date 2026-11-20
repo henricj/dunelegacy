@@ -18,6 +18,7 @@
 #include <misc/FileSystem.h>
 #include <misc/dune_sdlpp.h>
 #include <misc/exceptions.h>
+#include <misc/fnkdat.h>
 #include <misc/string_util.h>
 
 #include <algorithm>
@@ -80,6 +81,21 @@ void safe_tolower_inplace(std::u32string& s32) {
     std::ranges::transform(s32, s32.begin(), [](char32_t c) { return safe_tolower(c); });
 }
 
+// path::u32string() throws filesystem_error when the name is not valid in the process encoding (e.g. a Latin-1 map
+// name on Linux). Fall back to the raw code units so such files can still be listed and sorted.
+std::u32string path_to_u32_lenient(const std::filesystem::path& p) {
+    try {
+        return p.u32string();
+    } catch (const std::filesystem::filesystem_error&) {
+        using unsigned_native = std::make_unsigned_t<std::filesystem::path::value_type>;
+
+        std::u32string result;
+        for (const auto c : p.native())
+            result.push_back(static_cast<char32_t>(static_cast<unsigned_native>(c)));
+        return result;
+    }
+}
+
 // Work around standard brain damage
 // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-closed.html#721
 template<class I, class E, class S>
@@ -93,8 +109,8 @@ static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) {
     return a.name.compare(b.name) < 0;
 }
 static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
-    const auto a32 = a.name.u32string();
-    const auto b32 = b.name.u32string();
+    const auto a32 = path_to_u32_lenient(a.name);
+    const auto b32 = path_to_u32_lenient(b.name);
 
     for (auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
         const auto la = safe_tolower(a32[i]);
@@ -113,8 +129,8 @@ static bool cmp_Name_Dsc(const FileInfo& a, const FileInfo& b) {
     return a.name.compare(b.name) > 0;
 }
 static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
-    const auto a32 = a.name.u32string();
-    const auto b32 = b.name.u32string();
+    const auto a32 = path_to_u32_lenient(a.name);
+    const auto b32 = path_to_u32_lenient(b.name);
 
     for (auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
         const auto la = safe_tolower(a32[i]);
@@ -170,7 +186,7 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
             continue;
 
         const auto& path    = entry.path();
-        const auto filename = path.filename().u32string();
+        const auto filename = path_to_u32_lenient(path.filename());
 
         // Make sure we have the extension, a dot, and a non-empty stem.
         if (filename.length() < target_extension.length() + 1)
@@ -357,13 +373,20 @@ std::filesystem::path getDuneLegacyDataDir() {
 #endif
 
         if (dataDir.empty() || dataDir == "." || dataDir == "./" || dataDir == ".\\") {
-            // SDL3: SDL_GetBasePath returns const char* that doesn't need to be freed
-            const char* basePath = SDL_GetBasePath();
+            // Default: the per-user configuration directory (~/.config/dunelegacy). It holds the settings, the maps,
+            // the locale files and the PAK files, and they can be edited there without root.
+            auto [ok, userDataPath] = fnkdat("data", FNKDAT_USER | FNKDAT_CREAT);
+            if (ok && userDataPath.has_parent_path()) {
+                dataDir = userDataPath.parent_path();
+            } else {
+                // SDL3: SDL_GetBasePath returns const char* that doesn't need to be freed
+                const char* basePath = SDL_GetBasePath();
 
-            if (basePath == nullptr) {
-                THROW(sdl_error, "SDL_GetBasePath() failed: {}!", SDL_GetError());
+                if (basePath == nullptr) {
+                    THROW(sdl_error, "SDL_GetBasePath() failed: {}!", SDL_GetError());
+                }
+                dataDir = basePath;
             }
-            dataDir = basePath;
         }
 
         duneLegacyDataDir = dataDir.lexically_normal().make_preferred();

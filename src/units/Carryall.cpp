@@ -358,7 +358,9 @@ void Carryall::engageTarget(const GameContext& context) {
 
     targetDistance = distanceFrom(realLocation, realDestination);
 
-    if (targetDistance <= TILESIZE / 32) {
+    // A carryall stops as soon as it is over the destination tile, not on its exact centre: a 2 px radius around the
+    // centre is then never reached, and the carryall hovers over the target forever. Being over the tile is enough.
+    if (targetDistance <= TILESIZE / 32 || location_ == targetLocation) {
         if (hasCargo()) {
             if (object->isAStructure()) {
                 while (!pickedUpUnitList.empty()) {
@@ -438,7 +440,10 @@ void Carryall::pickupTarget(const GameContext& context) {
         } else {
             pGroundUnitTarget->setAwaitingPickup(false);
             if (pGroundUnitTarget->getAttackMode() == CARRYALLREQUESTED) {
-                pGroundUnitTarget->doSetAttackMode(context, STOP);
+                // Fall back to the normal mode, as GroundUnit::update() does. STOP is permanent for a harvester: it
+                // never harvests again, which left empty harvesters idle next to the spice and the refinery.
+                pGroundUnitTarget->doSetAttackMode(context,
+                                                   pGroundUnitTarget->getItemID() == Unit_Harvester ? HARVEST : GUARD);
             }
             releaseTarget();
         }

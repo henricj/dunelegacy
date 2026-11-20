@@ -194,16 +194,17 @@ void House::setProducedPower(int newPower) {
     producedPower_ = newPower;
 }
 
-bool House::isGroundUnitLimitReached() const {
+bool House::isGroundUnitLimitReached(int extraUnits) const {
     const int numGroundUnit = numUnits_ - numItem_[Unit_Soldier] - numItem_[Unit_Trooper] - numItem_[Unit_Carryall]
                             - numItem_[Unit_Ornithopter];
-    return (numGroundUnit + (numItem_[Unit_Soldier] + 2) / 3 + (numItem_[Unit_Trooper] + 2) / 3 >= maxUnits_);
+    return (numGroundUnit + (numItem_[Unit_Soldier] + 2) / 3 + (numItem_[Unit_Trooper] + 2) / 3 + extraUnits
+            >= maxUnits_);
 }
 
-bool House::isInfantryUnitLimitReached() const {
+bool House::isInfantryUnitLimitReached(int extraUnits) const {
     const auto numGroundUnit = numUnits_ - numItem_[Unit_Soldier] - numItem_[Unit_Trooper] - numItem_[Unit_Carryall]
                              - numItem_[Unit_Ornithopter];
-    return (numGroundUnit + numItem_[Unit_Soldier] / 3 + numItem_[Unit_Trooper] / 3 >= maxUnits_);
+    return (numGroundUnit + numItem_[Unit_Soldier] / 3 + numItem_[Unit_Trooper] / 3 + extraUnits >= maxUnits_);
 }
 
 bool House::isAirUnitLimitReached() const {

@@ -134,6 +134,10 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
             pCarryall->setTarget(nullptr);
             pCarryall->setDestination(pHarvester->getGuardPoint());
         } else {
+            // The harvester leaves by itself: a carryall that came for it must not stay targeting this refinery.
+            if (pCarryall != nullptr)
+                pCarryall->setTarget(nullptr);
+
             const auto deployPos =
                 dune::globals::currentGameMap->findDeploySpot(pHarvester, location_, destination_, getStructureSize());
 
@@ -143,8 +147,12 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
             } else
                 pHarvester->deploy(context, deployPos);
         }
-    } else
+    } else {
         sdl2::log_error("A refinery is trying to deploy a non-existent harvester!");
+
+        if (pCarryall != nullptr)
+            pCarryall->setTarget(nullptr);
+    }
 
     if (bookings == 0)
         stopAnimate();
@@ -208,7 +216,8 @@ void Refinery::updateStructureSpecificStuff(const GameContext& context) {
         Carryall* pCarryall = nullptr;
         if (pHarvester->getGuardPoint().isValid() && getOwner()->hasCarryalls()) {
             for (auto* const pUnit : dune::globals::unitList) {
-                if (pUnit->getOwner() == owner_)
+                // Only our own carryalls: the test was inverted in 25752ff6 and could book another house's carryall.
+                if (pUnit->getOwner() != owner_)
                     continue;
 
                 if (auto* const pTmpCarryall = dune_cast<Carryall>(pUnit)) {

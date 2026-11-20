@@ -81,6 +81,7 @@ General Keyboard Shortcuts:
 
  Key G							-	Cycle through construction yards
  Key F							-	Cycle through factories/other builders
+ Key E							-	Select all your units of the same type as the selected unit (whole map)
 
  Key F4							-	Skip 10 seconds (only in singleplayer)
  Key F5							-	Skip 30 seconds (only in singleplayer)

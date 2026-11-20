@@ -708,6 +708,32 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             selectNextStructureOfType(itemIDs);
         } break;
 
+        case SDLK_e: {
+            // select all of our units of the type of the (first) selected unit, anywhere on the map
+            const ObjectBase* pFirstUnit = nullptr;
+            for (const auto objectID : selectedList_) {
+                const auto* const pObject = objectManager_.getObject(objectID);
+                if (pObject != nullptr && pObject->isAUnit() && pObject->getOwner() == dune::globals::pLocalHouse) {
+                    pFirstUnit = pObject;
+                    break;
+                }
+            }
+
+            if (pFirstUnit != nullptr) {
+                const auto itemID = pFirstUnit->getItemID();
+
+                for (auto* const pUnit : dune::globals::unitList) {
+                    if (pUnit->getOwner() == dune::globals::pLocalHouse && pUnit->getItemID() == itemID
+                        && pUnit->isRespondable() && !pUnit->isSelected()) {
+                        pUnit->setSelected(true);
+                        selectedList_.insert(pUnit->getObjectID());
+                    }
+                }
+
+                selectionChanged();
+            }
+        } break;
+
         case SDLK_f: {
             // select next factory
             dune::selected_set_type itemIDs;

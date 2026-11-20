@@ -40,7 +40,11 @@ public:
     void deployRepairUnit(const GameContext& context, Carryall* pCarryall = nullptr);
 
     void book() { bookings++; }
-    void unBook() { bookings--; }
+    void unBook() {
+        // deployRepairUnit() also runs when no unit was booked: never wrap the unsigned counter around.
+        if (bookings > 0)
+            bookings--;
+    }
     void assignUnit(ObjectPointer newUnit) {
         repairUnit     = newUnit;
         repairingAUnit = true;

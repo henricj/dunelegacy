@@ -371,7 +371,8 @@ void InfantryBase::destroy(const GameContext& context) {
             // "normal" dead
             pTile->assignDeadUnit(DeadUnit_Infantry, owner_->getHouseID(), {realX_.toFloat(), realY_.toFloat()});
 
-            if (isVisible(getOwner()->getTeamID())) {
+            // The scream is only cosmetic; without a graphics manager (headless simulation) there is no sound to choose.
+            if (isVisible(getOwner()->getTeamID()) && dune::globals::pGFXManager) {
                 const auto sound_id = dune::globals::pGFXManager->random().getRandOf(Sound_enum::Sound_Scream1,
                                                                                      Sound_enum::Sound_Scream2,
                                                                                      Sound_enum::Sound_Scream3,

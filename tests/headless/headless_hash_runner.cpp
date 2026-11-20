@@ -34,13 +34,21 @@
  */
 
 #include <FileClasses/FileManager.h>
+#include <FileClasses/TextManager.h>
+#include <units/Carryall.h>
+#include <units/GroundUnit.h>
+#include <units/Harvester.h>
+#include <units/UnitBase.h>
 #include <Game.h>
+#include <ScreenBorder.h>
+#include <SoundPlayer.h>
 #include <GameInitSettings.h>
 #include <globals.h>
 #include <misc/Random.h>
 #include <misc/string_util.h>
 
 #include <charconv>
+#include <cstdlib>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -68,6 +76,7 @@ int main(int argc, char* argv[]) {
     std::vector<uint8_t> seed(RandomFactory::seed_size, 0);
     int max_units = -1;
     int credits   = -1;
+    std::string ai_class; // --ai=<player class>: give every house an AI player (e.g. qBotHard)
 
     // Parse remaining arguments
     for (int i = 3; i < argc; ++i) {
@@ -81,6 +90,8 @@ int main(int argc, char* argv[]) {
                 std::cerr << "Invalid --max-units value: " << argv[i] << "\n";
                 return 1;
             }
+        } else if (arg.starts_with("--ai=")) {
+            ai_class = std::string{arg.substr(5)};
         } else if (arg.starts_with("--credits=")) {
             const auto val_str = arg.substr(10);
             const auto [ptr, ec] =
@@ -157,6 +168,9 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    if (max_units >= 0)
+        dune::globals::settings.gameOptions.maximumNumberOfUnitsOverride = max_units; // used by the map loader
+
     GameInitSettings init{
         std::move(map_name),
         std::move(map_data),
@@ -166,7 +180,22 @@ int main(int argc, char* argv[]) {
 
     init.setRandomSeed(seed);
 
+    if (!ai_class.empty()) {
+        for (int h = 0; h < 5; ++h) { // the map has five houses (Sardaukar plus four players)
+            GameInitSettings::HouseInfo info{static_cast<HOUSETYPE>(h), static_cast<uint8_t>(h + 1)};
+            info.addPlayerInfo(GameInitSettings::PlayerInfo{"AI" + std::to_string(h), ai_class});
+            init.addHouseInfo(info);
+        }
+    }
+
     auto t_init_start = std::chrono::high_resolution_clock::now();
+    // Headless: a silent sound player, so that game code calling it does not dereference a null pointer.
+    dune::globals::soundPlayer = std::make_unique<SoundPlayer>();
+    // Headless: localized texts (the _() macro, used by the game logic for notifications) need a text manager.
+    dune::globals::pTextManager = std::make_unique<TextManager>(dune::globals::settings.general.language);
+    dune::globals::pTextManager->loadData();
+    // Headless: a screen border (no rendering), used by units when they are destroyed.
+    dune::globals::screenborder = std::make_unique<ScreenBorder>(SDL_FRect{0.f, 0.f, 1600.f, 900.f});
     dune::globals::currentGame = std::make_unique<Game>();
     dune::globals::currentGame->initGame(init);
     auto t_init_end = std::chrono::high_resolution_clock::now();
@@ -174,6 +203,37 @@ int main(int argc, char* argv[]) {
     auto t_step_start = std::chrono::high_resolution_clock::now();
     dune::globals::currentGame->getCore().stepSimulation(ticks);
     auto t_step_end = std::chrono::high_resolution_clock::now();
+
+    // Optional final state dump of units (DUNE_DUMP=1): used to look for units that stop doing anything.
+    if (std::getenv("DUNE_DUMP") != nullptr) {
+        for (const auto* pUnit : dune::globals::unitList) {
+            if (pUnit == nullptr || pUnit->getOwner() == nullptr)
+                continue;
+            const auto* const harvester = pUnit->getItemID() == Unit_Harvester ? static_cast<const Harvester*>(pUnit) : nullptr;
+            const auto* const carryall  = pUnit->getItemID() == Unit_Carryall ? static_cast<const Carryall*>(pUnit) : nullptr;
+            const auto* const ground    = (harvester != nullptr) ? static_cast<const GroundUnit*>(pUnit) : nullptr;
+            std::cerr << "[UNIT] id=" << pUnit->getObjectID() << " item=" << static_cast<int>(pUnit->getItemID())
+                      << " house=" << static_cast<int>(pUnit->getOwner()->getHouseID())
+                      << " loc=" << pUnit->getLocation().x << "," << pUnit->getLocation().y
+                      << " dest=" << pUnit->getDestination().x << "," << pUnit->getDestination().y
+                      << " mode=" << static_cast<int>(pUnit->getAttackMode())
+                      << " target=" << (pUnit->hasATarget() ? 1 : 0)
+                      << " damaged=" << (pUnit->isBadlyDamaged() ? 1 : 0);
+            if (harvester != nullptr)
+                std::cerr << " spice=" << harvester->getAmountOfSpice().lround()
+                          << " returning=" << (harvester->isReturning() ? 1 : 0)
+                          << " harvesting=" << (harvester->isHarvesting() ? 1 : 0);
+            if (carryall != nullptr)
+                std::cerr << " booked=" << (carryall->isBooked() ? 1 : 0)
+                          << " tgt=" << (carryall->getTarget() != nullptr ? static_cast<int>(carryall->getTarget()->getItemID()) : -1)
+                          << " tloc=" << (carryall->getTarget() != nullptr ? carryall->getTarget()->getLocation().x : -1) << "," << (carryall->getTarget() != nullptr ? carryall->getTarget()->getLocation().y : -1)
+                          << " cargo=" << (carryall->hasCargo() ? 1 : 0)
+                          << " rx=" << carryall->getRealX().lround() << " ry=" << carryall->getRealY().lround();
+            if (ground != nullptr)
+                std::cerr << " awaitingPickup=" << (ground->isAwaitingPickup() ? 1 : 0);
+            std::cerr << "\n";
+        }
+    }
 
     auto t_hash_start = std::chrono::high_resolution_clock::now();
     const auto hash = dune::globals::currentGame->getCore().computeStateHash();

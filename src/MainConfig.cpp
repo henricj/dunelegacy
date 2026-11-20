@@ -99,6 +99,7 @@ void load_settings(const INIFile& myINIFile) {
     settings.video.fullscreen          = myINIFile.getBoolValue("Video", "Fullscreen", false);
     settings.video.frameLimit          = myINIFile.getBoolValue("Video", "FrameLimit", true);
     settings.video.preferredZoomLevel  = myINIFile.getIntValue("Video", "Preferred Zoom Level", 0);
+    settings.video.displayScale        = myINIFile.getDoubleValue("Video", "Display Scale", 0.0);
     settings.video.scaler              = myINIFile.getStringValue("Video", "Scaler", "ScaleHD");
     settings.video.rotateUnitGraphics  = myINIFile.getBoolValue("Video", "RotateUnitGraphics", false);
     settings.video.renderer            = myINIFile.getStringValue("Video", "Renderer", "default");

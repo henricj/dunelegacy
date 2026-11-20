@@ -94,6 +94,13 @@ protected:
 private:
     void init();
 
+    /**
+        Checks the house unit limit before an order for \p itemID is accepted or delivered.
+        \param pendingOrders number of orders already queued at this starport that are not yet counted as units
+        \return true, if the limit would be exceeded
+    */
+    [[nodiscard]] bool isUnitLimitReachedFor(ItemID_enum itemID, int pendingOrders) const;
+
     int32_t arrivalTimer;   ///< When will the frigate arrive?
     bool deploying = false; ///< Currently deploying units
 };
