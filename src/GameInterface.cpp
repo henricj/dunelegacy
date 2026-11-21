@@ -148,6 +148,10 @@ void GameInterface::draw(Point position) {
 
     // read from the per-tick published frame snapshot for power, spice, and credits
     const auto& frame    = context_.game.getLatestFrame();
+    // A published frame may not contain player views during campaign startup.
+    // Do not dereference front() until the first populated frame arrives.
+    if (frame.playerViews.empty())
+        return;
     const auto house_idx = static_cast<size_t>(static_cast<int>(local_house->getHouseID()));
     const auto& player_view =
         (house_idx < frame.playerViews.size()) ? frame.playerViews[house_idx] : frame.playerViews.front();
